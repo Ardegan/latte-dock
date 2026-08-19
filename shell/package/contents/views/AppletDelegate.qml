@@ -86,7 +86,7 @@ PlasmoidItem {
                 Item {
                     id: iconWidget
                     anchors.fill: parent
-                    PlasmaCore.IconItem {
+                    LatteCore.IconItem {
                         anchors.fill: parent
                         source: model.decoration
                         visible: model.screenshot === ""

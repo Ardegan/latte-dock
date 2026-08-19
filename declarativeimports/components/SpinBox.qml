@@ -9,17 +9,18 @@ import QtQuick.Controls.Styles.Plasma 2.0 as Styles
 import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.kirigami as Kirigami
 import org.kde.latte.core 0.2 as LatteCore
+import org.kde.ksvg 1.0 as KSvg
 
 Controls.SpinBox {
     implicitWidth: LatteCore.Tools.mSize(Kirigami.Theme.defaultFont).width * 10
 
     style: Styles.SpinBoxStyle {
-        PlasmaCore.Svg {
+        KSvg.Svg {
             id: arrowSvg
             imagePath: "widgets/arrows"
-            colorGroup: PlasmaCore.Theme.ButtonColorGroup
+            colorSet: KSvg.Svg.Button
         }
-        incrementControl: PlasmaCore.SvgItem {
+        incrementControl: KSvg.SvgItem {
             implicitWidth: LatteCore.Tools.mSize(Kirigami.Theme.defaultFont).width * 1.8
             anchors {
                 centerIn: parent
@@ -31,7 +32,7 @@ Controls.SpinBox {
             elementId: "up-arrow"
             opacity: control.enabled ? (styleData.upPressed ? 1 : 0.6) : 0.5
         }
-        decrementControl: PlasmaCore.SvgItem {
+        decrementControl: KSvg.SvgItem {
             implicitWidth: LatteCore.Tools.mSize(Kirigami.Theme.defaultFont).width * 1.8
             anchors {
                 centerIn: parent

@@ -14,6 +14,8 @@ import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.plasma.components 3.0 as PlasmaComponents
 import org.kde.kirigami 2.2 as Kirigami
 import "private" as Private
+import org.kde.ksvg 1.0 as KSvg
+import org.kde.latte.core 0.2 as LatteCore
 
 T.ComboBox {
     id: control
@@ -86,7 +88,7 @@ T.ComboBox {
         }
     }
 
-    indicator: PlasmaCore.SvgItem {
+    indicator: KSvg.SvgItem {
         implicitWidth: Kirigami.Units.iconSizes.small
         implicitHeight: implicitWidth
         anchors {
@@ -94,9 +96,9 @@ T.ComboBox {
             rightMargin: control.buttonIsTransparent ? 0 : surfaceNormal.margins.right
             verticalCenter: parent.verticalCenter
         }
-        svg: PlasmaCore.Svg {
+        svg: KSvg.Svg {
             imagePath: "widgets/arrows"
-            colorGroup: PlasmaCore.Theme.ButtonColorGroup
+            colorSet: KSvg.Svg.Button
         }
         elementId: "down-arrow"
     }
@@ -202,12 +204,12 @@ T.ComboBox {
                 rightMargin: control.mirrored ? 1 : 0
             }
 
-            PlasmaCore.IconItem {
+            LatteCore.IconItem {
                 id: selectedIcon
                 implicitWidth: textLabel.height
                 implicitHeight: textLabel.height
 
-                colorGroup: PlasmaCore.Theme.ButtonColorGroup
+                colorSet: KSvg.Svg.Button
                 source: {
                     if (control
                             && control.currentIndex>=0
@@ -311,7 +313,7 @@ T.ComboBox {
         y: rect.y + 6
     }*/
 
-    background: PlasmaCore.FrameSvgItem {
+    background: KSvg.FrameSvgItem {
         id: surfaceNormal
         //retrocompatibility with old controls
         implicitWidth: Kirigami.Units.gridUnit * 6

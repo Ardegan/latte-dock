@@ -13,6 +13,8 @@ import org.kde.latte.components 1.0 as LatteComponents
 
 import "private" as Private
 import org.kde.kirigami as Kirigami
+import org.kde.ksvg 1.0 as KSvg
+import org.kde.latte.core 0.2 as LatteCore
 
 T.CheckDelegate {
     id: control
@@ -53,10 +55,10 @@ T.CheckDelegate {
             visible: !isSeparator && icon && (!control.iconOnlyWhenHovered || (control.iconOnlyWhenHovered && control.isHovered))
             color: control.iconToolTip && iconMouseArea.containsMouse ? Kirigami.Theme.highlightColor : "transparent"
 
-            PlasmaCore.IconItem {
+            LatteCore.IconItem {
                 id: iconElement
                 anchors.fill: parent
-                colorGroup: PlasmaCore.Theme.ButtonColorGroup
+                colorSet: KSvg.Svg.Button
                 source: control.icon
             }
 

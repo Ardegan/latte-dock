@@ -186,12 +186,12 @@ Loader {
 
                     readonly property int trademarkHeight: 48
 
-                    PlasmaCore.SvgItem{
+                    KSvg.SvgItem{
                         id: latteTrademark
                         width: Qt.application.layoutDirection !== Qt.RightToLeft ? Math.ceil(1.70 * height) : height
                         height: trademark.height
 
-                        svg: PlasmaCore.Svg{
+                        svg: KSvg.Svg{
                             imagePath: Qt.application.layoutDirection !== Qt.RightToLeft ? universalSettings.trademarkPath() : universalSettings.trademarkIconPath()
                         }
                     }

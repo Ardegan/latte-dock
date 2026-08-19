@@ -30,7 +30,7 @@ T.ToolTip {
     contentItem: Label {
         text: control.text
         font: control.font
-        color: PlasmaCore.ColorScope.textColor
+        color: Kirigami.Theme.textColor
     }
 
     background: KSvg.FrameSvgItem {

@@ -13,13 +13,14 @@ import org.kde.plasma.extras 2.0 as PlasmaExtras
 
 import org.kde.latte.core 0.2 as LatteCore
 import org.kde.kirigami as Kirigami
+import org.kde.ksvg 1.0 as KSvg
 
-PlasmaCore.FrameSvgItem {
+KSvg.FrameSvgItem {
     id: dialog
 
     imagePath: "widgets/panel-background"
     prefix:""
-    enabledBorders: infoWindow ? infoWindow.enabledBorders : PlasmaCore.FrameSvg.AllBorders
+    enabledBorders: infoWindow ? infoWindow.enabledBorders : KSvg.FrameSvg.AllBorders
 
     width: Screen.width + 1
     height: Math.min(Screen.height - Kirigami.Units.gridUnit * 8, logo.height + messageLbl.height + 2 *Kirigami.Units.gridUnit)

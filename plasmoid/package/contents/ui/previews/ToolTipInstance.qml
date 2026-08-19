@@ -96,7 +96,8 @@ Column {
             Layout.preferredHeight: Kirigami.Units.iconSizes.medium
             source: icon
             animated: false
-            usesPlasmaTheme: false
+            //! Kirigami.Icon has no usesPlasmaTheme; it always resolves through
+            //! the icon theme, which is what usesPlasmaTheme: false asked for.
             visible: !isWin
         }
         // all textlabels
@@ -260,7 +261,7 @@ Column {
             }
 
             // when minimized, we don't have a preview, so show the icon
-            PlasmaCore.IconItem {
+            LatteCore.IconItem {
                 width: parent.width
                 height: thumbnail.height - playbackLoader.realHeight
                 anchors.horizontalCenter: parent.horizontalCenter

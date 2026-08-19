@@ -34,7 +34,7 @@ T.Slider {
     KSvg.Svg {
         id: grooveSvg
         imagePath: "widgets/slider"
-        colorGroup: Kirigami.Theme.colorSet
+        colorSet: Kirigami.Theme.colorSet
     }
 
     KSvg.FrameSvgItem {
