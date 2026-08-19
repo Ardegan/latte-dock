@@ -152,28 +152,41 @@ back `generateMimeData`/`jsonArrayToUrlList` (from Plasma 5) and re-implements `
 KWin D-Bus interfaces the Plasma 6 applet now calls from QML — in C++, so Latte's QML call sites are
 unchanged.
 
-### The PlasmaCore migration (largest remaining piece)
+### PlasmaCore migration — done
 
-`org.kde.plasma.core` in Plasma 6 exports only `Action`, `ActionGroup`, `Applet`, `Containment`,
-`Types`, plus `ToolTipArea`/`DefaultToolTip`/`DialogBackground`. Everything else Latte uses is gone.
-`PlasmaCore.Types` (595 uses) is fine; the rest is **the blocker stopping the Latte Tasks plasmoid from
-loading**:
+`org.kde.plasma.core` in Plasma 6 exports only `Action`, `ActionGroup`, `Applet`, `AppletPopup`,
+`Containment`, `Dialog`, `PopupPlasmaWindow`, `ToolTipArea`, `Types`, `Window`, `WindowThumbnail`.
+`PlasmaCore.Types` (595 uses), `Dialog` (12) and `WindowThumbnail` are fine and were left alone.
+Everything else has been migrated: the Svg family to `org.kde.ksvg`, `IconItem` to
+`LatteCore.IconItem`, `ColorScope` to `Kirigami.Theme`, `Theme.ButtonColorGroup` to `KSvg.Svg.Button`,
+and the `colorGroup` property to `colorSet`.
 
-| Type | Uses | Plasma 6 home |
+When auditing which types survive, read the export strings out of
+`/usr/lib/x86_64-linux-gnu/qt6/qml/org/kde/plasma/core/corebindingsplugin.qmltypes` with a pattern like
+`"org\.kde\.plasma\.core/[A-Za-z]+ [0-9.]+"` — matching only the first `exports:` entry per component
+silently misses types that have several version entries.
+
+### Fast QML feedback loop
+
+Chasing one runtime error per launch is slow. A ~25-line harness that walks the tree with
+`QQmlComponent` and reports only structural errors (`Cannot assign to non-existent property`,
+`is not a type`, `is not installed`) surfaces the whole backlog in one pass. Two caveats: it reports
+`org.kde.latte.private.app` as missing (that module is registered by the `latte-dock` executable, not
+installed as a QML module), and `PlasmoidItem` fails outside an applet context — both are artifacts.
+
+### Remaining blockers for the Latte Tasks plasmoid
+
+| Issue | Sites | Notes |
 |---|---|---|
-| `PlasmaCore.Dialog` | 12 | PlasmaQuick, or Latte's own `LatteCore.Dialog` |
-| `PlasmaCore.FrameSvgItem` | 11 | `org.kde.ksvg` |
-| `PlasmaCore.SvgItem` | 9 | `org.kde.ksvg` |
-| `PlasmaCore.Svg` | 6 | `org.kde.ksvg` |
-| `PlasmaCore.FrameSvg` | 6 | `org.kde.ksvg` |
-| `PlasmaCore.Theme` | 5 | only `ButtonColorGroup` left → `KSvg.Svg.Button`; deferred with the elements |
-| `PlasmaCore.IconItem` | 4 | `Kirigami.Icon` (or Latte's `LatteCore.IconItem`) |
-| `PlasmaCore.ColorScope` | 2 | `Kirigami.Theme` colorSet |
-| `PlasmaCore.WindowThumbnail` | 1 | removed; Plasma 6 uses PipeWire |
+| `QtQuick.Controls 1.x` imports | 26 | Controls 1 does not exist in Qt6; needs a Controls 2 port |
+| `iconSource:` on PlasmaComponents buttons | 14 | Components 3 uses `icon.name` |
+| `PlasmaComponents.ContextMenu`, `PC2.ModelContextMenu` | 2 | Components 2 menus, removed |
+| `tooltip:` on custom buttons | 2 | |
+| `PipeWireThumbnail.5.24/5.25.qml` | 2 | version-gated legacy files; check the loader still excludes them |
 
 MPRIS is separate: the `mpris2` data engine is gone, so `Plasma5Support.DataSource` loads but stays
 empty. Media controls in tooltips and the task context menu (~20 call sites) need porting to
-`org.kde.plasma.private.mpris`, which *is* on the import path.
+`org.kde.plasma.private.mpris`, which is on the import path.
 
 ### Still unverified
 
