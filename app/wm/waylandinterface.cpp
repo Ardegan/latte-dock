@@ -584,6 +584,12 @@ AppData WaylandInterface::appDataFor(WindowId wid)
 
 KWayland::Client::PlasmaWindow *WaylandInterface::windowFor(WindowId wid)
 {
+    if (!m_windowManagement) {
+        //! plasma-window-management has not been announced (yet); the sibling
+        //! accessors above guard this the same way.
+        return nullptr;
+    }
+
     auto it = std::find_if(m_windowManagement->windows().constBegin(), m_windowManagement->windows().constEnd(), [&wid](PlasmaWindow * w) noexcept {
             return w->isValid() && w->uuid() == wid;
 });
@@ -609,6 +615,12 @@ QIcon WaylandInterface::iconFor(WindowId wid)
 
 WindowId WaylandInterface::winIdFor(QString appId, QString title)
 {
+    if (!m_windowManagement) {
+        //! plasma-window-management has not been announced (yet); the sibling
+        //! accessors above guard this the same way.
+        return WindowId();
+    }
+
     auto it = std::find_if(m_windowManagement->windows().constBegin(), m_windowManagement->windows().constEnd(), [&appId, &title](PlasmaWindow * w) noexcept {
         return w->isValid() && w->appId() == appId && w->title().startsWith(title);
     });
@@ -622,6 +634,12 @@ WindowId WaylandInterface::winIdFor(QString appId, QString title)
 
 WindowId WaylandInterface::winIdFor(QString appId, QRect geometry)
 {
+    if (!m_windowManagement) {
+        //! plasma-window-management has not been announced (yet); the sibling
+        //! accessors above guard this the same way.
+        return WindowId();
+    }
+
     auto it = std::find_if(m_windowManagement->windows().constBegin(), m_windowManagement->windows().constEnd(), [&appId, &geometry](PlasmaWindow * w) noexcept {
         return w->isValid() && w->appId() == appId && w->geometry() == geometry;
     });
