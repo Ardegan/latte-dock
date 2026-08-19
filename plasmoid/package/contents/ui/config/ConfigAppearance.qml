@@ -5,7 +5,7 @@
 */
 
 import QtQuick 2.0
-import QtQuick.Controls 1.0
+import QtQuick.Controls
 import QtQuick.Layouts 1.0
 import Qt5Compat.GraphicalEffects
 
@@ -43,7 +43,6 @@ PlasmoidItem {
 
         GroupBox {
             title: ""
-            flat: true
             Layout.fillWidth: true
 
             ColumnLayout {
@@ -180,10 +179,9 @@ PlasmoidItem {
                 id: durationTime
                 enabled: true
                 Layout.fillWidth: true
-                minimumValue: 0
-                maximumValue: 3
+                from: 0
+                to: 3
                 stepSize: 1
-                tickmarksEnabled: true
             }
             Label {
                 enabled: durationTime.value > 0
@@ -224,10 +222,9 @@ PlasmoidItem {
                 id: zoomLevel
                 enabled: !mainItem.isInLatteDock
                 Layout.fillWidth: true
-                minimumValue: 0
-                maximumValue: 20
+                from: 0
+                to: 20
                 stepSize: 1
-                tickmarksEnabled: true
             }
 
             Label {

@@ -4,10 +4,17 @@
 */
 
 import org.kde.plasma.components 3.0 as PlasmaComponents
-import "private" as Private
 
 PlasmaComponents.CheckBox {
     property int value: 0
+
+    //! Controls 1 controls carried a `tooltip` property; Controls 2 replaced it
+    //! with the attached ToolTip. Kept as a property here because ~22 call
+    //! sites across the configuration pages set it.
+    property string tooltip: ""
+
+    PlasmaComponents.ToolTip.text: tooltip
+    PlasmaComponents.ToolTip.visible: hovered && tooltip !== ""
 
     onValueChanged: {
         if (partiallyCheckedEnabled) {
@@ -16,7 +23,5 @@ PlasmaComponents.CheckBox {
             checked = value;
         }
     }
-
-    style: Private.CheckBoxStyle {}
 }
 

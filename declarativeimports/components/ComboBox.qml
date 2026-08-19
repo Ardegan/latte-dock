@@ -6,8 +6,8 @@
 
 import QtQuick 2.7
 import QtQuick.Window 2.2
-import QtQuick.Templates 2.2 as T
-import QtQuick.Controls 2.2 as Controls
+import QtQuick.Templates as T
+import QtQuick.Controls as Controls
 import QtQuick.Layouts 1.3
 import Qt5Compat.GraphicalEffects
 import org.kde.plasma.core 2.0 as PlasmaCore
@@ -57,7 +57,7 @@ T.ComboBox {
         width: control.popup.width
         enabled: !isSeparator && (control.enabledRole.length>0 ? (isArray ? modelData[control.enabledRole] : model[control.enabledRole]) : true)
         text: control.textRole.length>0 ? (isArray ? modelData[control.textRole] : model[control.textRole]) : modelData
-        icon: control.iconRole.length>0 ? (isArray ? modelData[control.iconRole] : model[control.iconRole]) : ''
+        icon.name: control.iconRole.length>0 ? (isArray ? modelData[control.iconRole] : model[control.iconRole]) : ''
         iconToolTip: control.iconToolTipRole.length>0 ? (isArray ? modelData[control.iconToolTipRole] : model[control.iconToolTipRole]) : ''
         iconOnlyWhenHovered: control.iconOnlyWhenHoveredRole.length>0 ? (isArray ? modelData[control.iconOnlyWhenHoveredRole] : model[control.iconOnlyWhenHoveredRole]) : ''
         isSeparator: control.isSeparatorRole.length>0 ? (isArray ? modelData[control.isSeparatorRole] : model[control.isSeparatorRole]) : false
@@ -74,7 +74,8 @@ T.ComboBox {
             id: tooltipBtn
             anchors.fill: parent
             opacity: 0
-            tooltip: parent.toolTip
+            PlasmaComponents.ToolTip.text: parent.toolTip
+            PlasmaComponents.ToolTip.visible: hovered && PlasmaComponents.ToolTip.text !== ""
             visible: tooltip !== ''
 
             onPressedChanged: {
@@ -174,7 +175,8 @@ T.ComboBox {
             anchors.fill: parent
             opacity: 0
             visible: control && control.currentIndex>=0 && control.toolTipRole.length>0
-            tooltip: {
+            PlasmaComponents.ToolTip.visible: hovered && PlasmaComponents.ToolTip.text !== ""
+            PlasmaComponents.ToolTip.text: {
                 if (!visible) {
                     return "";
                 }

@@ -7,6 +7,7 @@ import QtQuick 2.15
 import QtQuick.Window 2.15
 
 import org.kde.plasma.core 2.0 as PlasmaCore
+import org.kde.pipewire as PipeWire
 import org.kde.taskmanager 0.1 as TaskManager
 import org.kde.kirigami as Kirigami
 
@@ -14,7 +15,7 @@ import org.kde.kirigami as Kirigami
 Item {
     anchors.fill: parent
 
-    TaskManager.PipeWireSourceItem {
+    PipeWire.PipeWireSourceItem {
         id: pipeWireSourceItem
 
         enabled: false // Must be set in pipewiresourceitem.cpp so opacity animation can work

@@ -6,7 +6,7 @@
 
 import QtQuick 2.5
 import QtQuick.Layouts 1.3
-import QtQuick.Templates 2.2 as T
+import QtQuick.Templates as T
 import org.kde.plasma.core 2.0 as PlasmaCore
 
 import org.kde.latte.components 1.0 as LatteComponents
@@ -31,7 +31,9 @@ T.CheckDelegate {
     property bool isSeparator: false
 
     property bool blankSpaceForEmptyIcons: false
-    property string icon
+    //! T.CheckDelegate declares `icon` FINAL as a grouped property, so a
+    //! `property string icon` override is ignored by Qt6 ("the override won't
+    //! be used") and assignments from outside fail. Use the inherited group.
     property string iconToolTip
     property bool iconOnlyWhenHovered
     property string toolTip
@@ -52,14 +54,14 @@ T.CheckDelegate {
             Layout.maximumWidth: parent.height
             Layout.minimumHeight: parent.height
             Layout.maximumHeight: parent.height
-            visible: !isSeparator && icon && (!control.iconOnlyWhenHovered || (control.iconOnlyWhenHovered && control.isHovered))
+            visible: !isSeparator && control.icon.name && (!control.iconOnlyWhenHovered || (control.iconOnlyWhenHovered && control.isHovered))
             color: control.iconToolTip && iconMouseArea.containsMouse ? Kirigami.Theme.highlightColor : "transparent"
 
             LatteCore.IconItem {
                 id: iconElement
                 anchors.fill: parent
                 colorSet: KSvg.Svg.Button
-                source: control.icon
+                source: control.icon.name
             }
 
             LatteComponents.ToolTip{
@@ -83,7 +85,7 @@ T.CheckDelegate {
             //blank space when no icon is shown
             Layout.minimumHeight: parent.height
             Layout.minimumWidth: parent.height
-            visible: !isSeparator && control.blankSpaceForEmptyIcons && (!icon || (control.iconOnlyWhenHovered && !control.isHovered) )
+            visible: !isSeparator && control.blankSpaceForEmptyIcons && (!control.icon.name || (control.iconOnlyWhenHovered && !control.isHovered) )
             color: "transparent"
         }
 

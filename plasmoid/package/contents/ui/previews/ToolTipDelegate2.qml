@@ -9,6 +9,7 @@
 
 import QtQuick 2.6
 import QtQuick.Layouts 1.1
+import QtQuick.Controls as QQC2
 import Qt5Compat.GraphicalEffects
 import QtQml.Models 2.2
 
@@ -60,13 +61,19 @@ PlasmaComponents.ScrollView {
 
     property int textWidth: LatteCore.Tools.mSize(Kirigami.Theme.defaultFont).width * 20
 
-    verticalScrollBarPolicy: Qt.ScrollBarAlwaysOff
-    horizontalScrollBarPolicy: Qt.ScrollBarAlwaysOff
+    //! Controls 2 ScrollView: the scrollbars are attached properties, the
+    //! Flickable is `contentItem`, and the old `viewport` is the available area.
+    QQC2.ScrollBar.vertical.policy: QQC2.ScrollBar.AlwaysOff
+    QQC2.ScrollBar.horizontal.policy: QQC2.ScrollBar.AlwaysOff
 
-    Component.onCompleted: {
-        flickableItem.interactive = Qt.binding(function() {
-            return isVerticalPanel ? contentItem.height > viewport.height : contentItem.width > viewport.width
-        });
+    //! ScrollView builds its Flickable lazily, so contentItem is not one yet at
+    //! Component.onCompleted; bind declaratively once it exists instead.
+    Binding {
+        target: mainToolTip.contentItem
+        property: "interactive"
+        when: mainToolTip.contentItem instanceof Flickable
+        value: isVerticalPanel ? mainToolTip.contentHeight > mainToolTip.availableHeight
+                               : mainToolTip.contentWidth > mainToolTip.availableWidth
     }
 
     Item{

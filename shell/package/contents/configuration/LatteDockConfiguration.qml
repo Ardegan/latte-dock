@@ -5,8 +5,7 @@
 */
 
 import QtQuick 2.7
-import QtQuick.Controls 1.4
-import QtQuick.Controls 2.12 as QtQuickControls212
+import QtQuick.Controls as QtQuickControls212
 import QtQuick.Layouts 1.3
 import Qt5Compat.GraphicalEffects
 import QtQuick.Window 2.2
@@ -16,7 +15,6 @@ import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.plasma.components 3.0 as PlasmaComponents
 import org.kde.plasma.components 3.0 as PlasmaComponents3
 import org.kde.plasma.extras 2.0 as PlasmaExtras
-import QtQuick.Controls.Styles.Plasma 2.0 as Styles
 
 import org.kde.kquickcontrolsaddons 2.0 as KQuickControlAddons
 
@@ -390,10 +388,10 @@ Loader {
                     id: scrollArea
 
                     anchors.fill: parent
-                    verticalScrollBarPolicy: Qt.ScrollBarAsNeeded
-                    horizontalScrollBarPolicy: Qt.ScrollBarAlwaysOff
+                    QtQuickControls212.ScrollBar.vertical.policy: QtQuickControls212.ScrollBar.AsNeeded
+                    QtQuickControls212.ScrollBar.horizontal.policy: QtQuickControls212.ScrollBar.AlwaysOff
 
-                    flickableItem.flickableDirection: Flickable.VerticalFlick
+                    contentItem.flickableDirection: Flickable.VerticalFlick
 
                     QtQuickControls212.StackView {
                         id: pagesStackView
@@ -616,9 +614,10 @@ Loader {
                     Layout.fillWidth: true
                     enabled: dialog.advancedLevel
                     text: i18n("Remove")
-                    iconSource: "delete"
+                    icon.name: "delete"
                     opacity: enabled ? 1 : 0
-                    tooltip: i18n("Remove current dock")
+                    PlasmaComponents.ToolTip.text: i18n("Remove current dock")
+                    PlasmaComponents.ToolTip.visible: hovered && PlasmaComponents.ToolTip.text !== ""
 
                     onClicked: latteView.removeView()
                 }
@@ -628,8 +627,9 @@ Loader {
                     Layout.fillWidth: true
 
                     text: i18n("Close")
-                    iconSource: "dialog-close"
-                    tooltip: i18n("Close settings window")
+                    icon.name: "dialog-close"
+                    PlasmaComponents.ToolTip.text: i18n("Close settings window")
+                    PlasmaComponents.ToolTip.visible: hovered && PlasmaComponents.ToolTip.text !== ""
 
                     onClicked: viewConfig.hideConfigWindow();
                 }

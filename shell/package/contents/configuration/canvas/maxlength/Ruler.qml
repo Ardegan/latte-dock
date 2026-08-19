@@ -316,6 +316,7 @@ Item{
     PlasmaComponents.Button {
         anchors.fill: parent
         opacity: 0
-        tooltip: rulerItem.tooltip
+        PlasmaComponents.ToolTip.text: rulerItem.tooltip
+        PlasmaComponents.ToolTip.visible: hovered && PlasmaComponents.ToolTip.text !== ""
     }
 }

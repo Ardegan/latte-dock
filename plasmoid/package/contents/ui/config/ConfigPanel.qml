@@ -5,7 +5,7 @@
 */
 
 import QtQuick 2.0
-import QtQuick.Controls 1.0
+import QtQuick.Controls
 import QtQuick.Layouts 1.0
 import Qt5Compat.GraphicalEffects
 
@@ -75,10 +75,9 @@ PlasmoidItem {
                 id: panelSize
                 enabled: parent.panelConfigEnabled
                 Layout.fillWidth: true
-                minimumValue: 0
-                maximumValue: 256
+                from: 0
+                to: 256
                 stepSize: 2
-                tickmarksEnabled: false
             }
 
             Label {

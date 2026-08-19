@@ -5,7 +5,6 @@
 
 import QtQuick 2.7
 import Qt5Compat.GraphicalEffects
-import QtQuick.Controls 1.4
 import QtQuick.Layouts 1.3
 
 import org.kde.plasma.core 2.0 as PlasmaCore
@@ -15,7 +14,6 @@ import org.kde.plasma.plasmoid 2.0
 
 import "." as LatteExtraControls
 
-import "private" as Private
 import org.kde.kirigami as Kirigami
 
 PlasmoidItem {
@@ -95,7 +93,8 @@ PlasmoidItem {
         PlasmaComponents.Button {
             //tooltip ghost
             anchors.fill: textElement
-            tooltip: item.tooltip
+            PlasmaComponents.ToolTip.text: item.tooltip
+            PlasmaComponents.ToolTip.visible: hovered && PlasmaComponents.ToolTip.text !== ""
             opacity: 0
             onPressedChanged: {
                 if (pressed) {
@@ -112,12 +111,11 @@ PlasmoidItem {
         checked: item.checked
         enabled: item.enabled
 
-        style: Private.SwitchStyle {}
-
         PlasmaComponents.Button {
             //tooltip ghost
             anchors.fill: parent
-            tooltip: item.tooltip
+            PlasmaComponents.ToolTip.text: item.tooltip
+            PlasmaComponents.ToolTip.visible: hovered && PlasmaComponents.ToolTip.text !== ""
             opacity: 0
             onPressedChanged: {
                 if (pressed) {

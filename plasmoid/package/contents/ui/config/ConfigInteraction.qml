@@ -5,7 +5,7 @@
 */
 
 import QtQuick 2.0
-import QtQuick.Controls 1.0
+import QtQuick.Controls
 import QtQuick.Layouts 1.0
 
 import org.kde.plasma.core 2.0 as PlasmaCore
@@ -35,7 +35,6 @@ PlasmoidItem {
 
         GroupBox {
             title: ""
-            flat: true
             Layout.fillWidth: true
 
             ColumnLayout {

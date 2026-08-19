@@ -6,7 +6,6 @@
 
 import QtQuick 2.7
 import Qt5Compat.GraphicalEffects
-import QtQuick.Controls 1.4
 import QtQuick.Layouts 1.3
 
 import org.kde.plasma.core 2.0 as PlasmaCore
@@ -42,9 +41,6 @@ Grid {
 
     property bool horizontal: false
 
-    ExclusiveGroup {
-        id: viewTypeGroup
-    }
 
     PlasmaComponents.Button {
         id: dockTypeButton
@@ -54,8 +50,8 @@ Grid {
         checkable: true
         checked: latteView.type === LatteCore.Types.DockView
         text: i18nc("dock type","Dock")
-        exclusiveGroup: viewTypeGroup
-        tooltip: i18n("Change the behavior and appearance to Dock type")
+        PlasmaComponents.ToolTip.text: i18n("Change the behavior and appearance to Dock type")
+        PlasmaComponents.ToolTip.visible: hovered && PlasmaComponents.ToolTip.text !== ""
 
         onPressedChanged: {
             if (pressed && !checked) {
@@ -98,8 +94,8 @@ Grid {
         checkable: true
         checked: latteView.type === LatteCore.Types.PanelView
         text: i18nc("panel type","Panel")
-        exclusiveGroup: viewTypeGroup
-        tooltip: i18n("Change the behavior and appearance to Panel type")
+        PlasmaComponents.ToolTip.text: i18n("Change the behavior and appearance to Panel type")
+        PlasmaComponents.ToolTip.visible: hovered && PlasmaComponents.ToolTip.text !== ""
 
         onPressedChanged: {
             if (pressed && !checked) {

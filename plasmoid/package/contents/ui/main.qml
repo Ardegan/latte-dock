@@ -196,7 +196,7 @@ PlasmoidItem {
     readonly property bool latteInEditMode: latteBridge && latteBridge.inEditMode
     //END  Latte Dock Communicator
 
-    Plasmoid.preferredRepresentation: Plasmoid.fullRepresentation
+    preferredRepresentation: fullRepresentation
     Plasmoid.backgroundHints: inPlasmaDesktop ? PlasmaCore.Types.StandardBackground : PlasmaCore.Types.NoBackground
 
     signal draggingFinished();
