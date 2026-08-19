@@ -8,6 +8,9 @@
 #include "view.h"
 
 // local
+#include "../activities/activitiesstate.h"
+
+// local
 #include "effects.h"
 #include "positioner.h"
 #include "visibilitymanager.h"
@@ -1174,7 +1177,7 @@ QStringList View::activities() const
 {
     QStringList running;
 
-    QStringList runningAll = m_corona->activitiesConsumer()->runningActivities();
+    QStringList runningAll = Latte::Activities::Monitor::self()->runningActivities();
 
     for(int i=0; i<m_activities.count(); ++i) {
         if (runningAll.contains(m_activities[i])) {
@@ -1300,7 +1303,7 @@ void View::setLayout(Layout::GenericLayout *layout)
         });
 
         if (latteCorona->layoutsManager()->memoryUsage() == MemoryUsage::MultipleLayouts) {
-            connectionsLayout << connect(latteCorona->activitiesConsumer(), &KActivities::Consumer::runningActivitiesChanged, this, [&]() {
+            connectionsLayout << connect(Latte::Activities::Monitor::self(), &Latte::Activities::Monitor::runningActivitiesChanged, this, [&]() {
                 if (m_layout && m_visibility) {
                     setActivities(m_layout->appliedActivities());
                     qDebug() << "DOCK VIEW FROM LAYOUT (runningActivitiesChanged) ::: " << m_layout->name()

@@ -5,6 +5,9 @@
 
 #include "tablayoutshandler.h"
 
+// local
+#include "../../activities/activitiesstate.h"
+
 //! local
 #include <coretypes.h>
 #include "ui_settingsdialog.h"
@@ -86,7 +89,7 @@ void TabLayouts::initUi()
     connect(m_layoutsController, &Settings::Controller::Layouts::dataChanged, this, &Generic::dataChanged);
 
     connect(this, &Settings::Handler::TabLayouts::dataChanged, this, &TabLayouts::updatePerLayoutButtonsState);
-    connect(m_corona->activitiesConsumer(), &KActivities::Consumer::runningActivitiesChanged, this, &TabLayouts::updatePerLayoutButtonsState);
+    connect(Latte::Activities::Monitor::self(), &Latte::Activities::Monitor::runningActivitiesChanged, this, &TabLayouts::updatePerLayoutButtonsState);
 
     connect(m_inMemoryButtons, &QButtonGroup::idToggled,
             [ this ](int id, bool checked) {

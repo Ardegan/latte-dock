@@ -9,6 +9,7 @@
 #include <config-latte.h>
 #include "importer.h"
 #include "manager.h"
+#include "../activities/activitiesstate.h"
 #include "../apptypes.h"
 #include "../screenpool.h"
 #include "../data/layoutdata.h"
@@ -67,7 +68,7 @@ Synchronizer::Synchronizer(QObject *parent)
         }
     });
 
-    connect(m_manager->corona()->activitiesConsumer(), &KActivities::Consumer::runningActivitiesChanged,
+    connect(Latte::Activities::Monitor::self(), &Latte::Activities::Monitor::runningActivitiesChanged,
             this, [&]() {
         if (m_manager->memoryUsage() == MemoryUsage::MultipleLayouts) {
             syncMultipleLayoutsToActivities();
@@ -157,7 +158,7 @@ QStringList Synchronizer::freeActivities()
 
 QStringList Synchronizer::runningActivities()
 {   
-    return m_manager->corona()->activitiesConsumer()->runningActivities();
+    return Latte::Activities::Monitor::self()->runningActivities();
 }
 
 QStringList Synchronizer::freeRunningActivities()
@@ -508,28 +509,14 @@ void Synchronizer::hideAllViews()
 
 void Synchronizer::pauseLayout(QString layoutName)
 {
-    if (m_manager->memoryUsage() == MemoryUsage::MultipleLayouts) {
-        CentralLayout *layout = centralLayout(layoutName);
-
-        if (layout->isOnAllActivities()) {
-            return;
-        }
-
-        QStringList appliedactivities = layout->appliedActivities();
-
-        if (layout && !appliedactivities.isEmpty()) {
-            int i = 0;
-
-            for (const auto &activityid : appliedactivities) {
-                //! Stopping the activities must be done asynchronous because otherwise
-                //! the activity manager cant close multiple activities
-                QTimer::singleShot(i * 1000, [this, activityid]() {
-                    m_activitiesController->stopActivity(activityid);
-                });
-
-                i = i + 1;
-            }
-        }
+    if (!Latte::Activities::Monitor::canStopActivities()) {
+        //! Plasma 6 dropped the ability to stop an activity: kactivitymanagerd
+        //! exposes no StopActivity method any more and plasma-activities exports
+        //! no equivalent symbol. Pausing a layout meant stopping every activity
+        //! the layout is assigned to, so the operation cannot be carried out.
+        qWarning() << "Synchronizer::pauseLayout(" << layoutName << ") ignored:"
+                   << "stopping activities is not supported on Plasma 6";
+        return;
     }
 }
 
@@ -864,10 +851,8 @@ bool Synchronizer::switchToLayoutInMultipleModeBasedOnActivities(const QString &
     }
 
     if (!switchToActivity.isEmpty()) {
-        if (!m_manager->corona()->activitiesConsumer()->runningActivities().contains(switchToActivity)) {
-            m_activitiesController->startActivity(switchToActivity);
-        }
-
+        //! No explicit start is needed (or possible) on Plasma 6 — every existing
+        //! activity is permanently running, so switching to it is sufficient.
         m_activitiesController->setCurrentActivity(switchToActivity);
     }
 

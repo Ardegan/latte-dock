@@ -37,6 +37,10 @@ include(WriteBasicConfigVersionFile)
 
 find_package(Qt6 ${QT_MIN_VERSION} CONFIG REQUIRED NO_MODULE COMPONENTS DBus Gui Qml Quick)
 
+# QX11Info moved into Qt::GuiPrivate in Qt6 (it was Qt5::X11Extras before).
+# app/ links it under HAVE_X11, so the component has to be requested explicitly.
+find_package(Qt6 ${QT_MIN_VERSION} CONFIG QUIET COMPONENTS GuiPrivate)
+
 #find_package(KF6 ${KF6_MIN_VERSION} REQUIRED COMPONENTS
 #    Activities Archive CoreAddons GuiAddons Crash DBusAddons Declarative GlobalAccel Kirigami2
 #    I18n IconThemes KIO NewStuff Notifications Plasma PlasmaQuick Wayland WindowSystem XmlGui)

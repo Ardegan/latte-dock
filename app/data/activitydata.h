@@ -16,8 +16,8 @@
 #include <QIcon>
 #include <QString>
 
-//! Plasma Activities
-#include <PlasmaActivities/Info>
+//! local
+#include "../activities/activitiesstate.h"
 
 namespace Latte {
 namespace Data {
@@ -32,7 +32,7 @@ public:
     //! Layout data
     bool isCurrent{false};
     QString icon;
-    KActivities::Info::State state;
+    Latte::Activities::State state{Latte::Activities::Invalid};
 
     bool isValid() const;
     bool isRunning() const;

@@ -53,12 +53,12 @@ Activity &Activity::operator=(Activity &&rhs)
 
 bool Activity::isValid() const
 {
-    return (state != KActivities::Info::Invalid);
+    return (state != Latte::Activities::Invalid);
 }
 
 bool Activity::isRunning() const
 {
-    return ((state == KActivities::Info::Running) || (state == KActivities::Info::Starting));
+    return ((state == Latte::Activities::Running) || (state == Latte::Activities::Starting));
 }
 
 }

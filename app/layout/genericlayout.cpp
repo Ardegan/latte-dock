@@ -7,6 +7,9 @@
 #include "genericlayout.h"
 
 // local
+#include "../activities/activitiesstate.h"
+
+// local
 #include "abstractlayout.h"
 #include "../apptypes.h"
 #include "../lattecorona.h"
@@ -996,7 +999,7 @@ bool GenericLayout::initCorona()
     //! signals
     connect(this, &GenericLayout::activitiesChanged, this, &GenericLayout::updateLastUsedActivity);
     connect(m_corona->activitiesConsumer(), &KActivities::Consumer::currentActivityChanged, this, &GenericLayout::updateLastUsedActivity);
-    connect(m_corona->activitiesConsumer(), &KActivities::Consumer::runningActivitiesChanged, this, &GenericLayout::updateLastUsedActivity);
+    connect(Latte::Activities::Monitor::self(), &Latte::Activities::Monitor::runningActivitiesChanged, this, &GenericLayout::updateLastUsedActivity);
 
     connect(this, &GenericLayout::lastConfigViewForChanged, m_corona->layoutsManager(), &Layouts::Manager::lastConfigViewChangedFrom);
     connect(m_corona->layoutsManager(), &Layouts::Manager::lastConfigViewChangedFrom, this, &GenericLayout::onLastConfigViewChangedFrom);

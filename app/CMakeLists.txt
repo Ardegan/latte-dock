@@ -9,6 +9,7 @@ set(lattedock-app_SRCS
     coretypes.h
 )
 
+add_subdirectory(activities)
 add_subdirectory(data)
 add_subdirectory(declarativeimports)
 add_subdirectory(indicator)
