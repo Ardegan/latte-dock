@@ -31,6 +31,7 @@ import "taskslayout" as TasksLayout
 import "../code/tools.js" as TaskTools
 import "../code/activitiesTools.js" as ActivitiesTools
 import "../code/ColorizerTools.js" as ColorizerTools
+import org.kde.kirigami as Kirigami
 
 PlasmoidItem {
     id:root
@@ -90,8 +91,8 @@ PlasmoidItem {
 
     property real textColorBrightness: ColorizerTools.colorBrightness(themeTextColor)
 
-    property color themeTextColor: theme.textColor
-    property color themeBackgroundColor: theme.backgroundColor
+    property color themeTextColor: Kirigami.Theme.textColor
+    property color themeBackgroundColor: Kirigami.Theme.backgroundColor
 
     property color lightTextColor: textColorBrightness > 127.5 ? themeTextColor : themeBackgroundColor
 

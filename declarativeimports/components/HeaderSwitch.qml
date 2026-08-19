@@ -16,20 +16,21 @@ import org.kde.plasma.plasmoid 2.0
 import "." as LatteExtraControls
 
 import "private" as Private
+import org.kde.kirigami as Kirigami
 
 PlasmoidItem {
     id: item
 
     Layout.rightMargin: {
         if (level === 1) {
-            return Qt.application.layoutDirection === Qt.RightToLeft ? 0 : 2 * units.smallSpacing
+            return Qt.application.layoutDirection === Qt.RightToLeft ? 0 : 2 * Kirigami.Units.smallSpacing
         }
 
         return 0;
     }
     Layout.leftMargin: {
         if (level === 1) {
-            return Qt.application.layoutDirection === Qt.RightToLeft ? 2 * units.smallSpacing : 0
+            return Qt.application.layoutDirection === Qt.RightToLeft ? 2 * Kirigami.Units.smallSpacing : 0
         }
 
         return 0;

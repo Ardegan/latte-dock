@@ -8,6 +8,7 @@ import QtQuick.Controls 1.4
 import QtQuick.Templates 2.2 as T
 import org.kde.ksvg 1.0 as KSvg
 import org.kde.plasma.core 2.0 as PlasmaCore
+import org.kde.kirigami as Kirigami
 
 T.ToolTip {
     id: control
@@ -18,7 +19,7 @@ T.ToolTip {
     implicitWidth: contentItem.implicitWidth + leftPadding + rightPadding
     implicitHeight: contentItem.implicitHeight + topPadding + bottomPadding
 
-    margins: units.gridUnit
+    margins: Kirigami.Units.gridUnit
     leftPadding: background.margins.left
     topPadding: background.margins.top
     rightPadding: background.margins.right

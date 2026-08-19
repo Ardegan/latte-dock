@@ -9,8 +9,10 @@
 // Qt
 #include <QObject>
 #include <QColor>
+#include <QFont>
 #include <QQmlEngine>
 #include <QJSEngine>
+#include <QSizeF>
 
 
 namespace Latte{
@@ -25,6 +27,13 @@ public:
 public slots:
     Q_INVOKABLE float colorBrightness(QColor color);
     Q_INVOKABLE float colorLumina(QColor color);
+
+    //! Size of the letter "M" in @p font, as Plasma::Theme::mSize() used to
+    //! provide. Plasma 6 removed the Theme QML type and Kirigami has no
+    //! equivalent: Kirigami.Units.gridUnit matches the old height but is
+    //! roughly 1.8x the old width, so layouts that scale off the width need
+    //! the real metric.
+    Q_INVOKABLE QSizeF mSize(const QFont &font) const;
 
 private:
     float colorBrightness(QRgb rgb);

@@ -11,6 +11,7 @@ import org.kde.latte.core 0.2 as LatteCore
 import org.kde.latte.abilities.host 0.1 as AbilityHost
 
 import org.kde.latte.private.containment 0.1 as LatteContainment
+import org.kde.kirigami as Kirigami
 
 AbilityHost.MyView {
     id: _myView
@@ -24,7 +25,7 @@ AbilityHost.MyView {
 
     readonly property string itemShadowCurrentColor: {
         if (plasmoid.configuration.shadowColorType === LatteContainment.Types.ThemeColorShadow) {
-            var strC = String(theme.textColor);
+            var strC = String(Kirigami.Theme.textColor);
             return strC.indexOf("#") === 0 ? strC.substr(1) : strC;
         } else if (plasmoid.configuration.shadowColorType === LatteContainment.Types.UserColorShadow) {
             return plasmoid.configuration.shadowColor;

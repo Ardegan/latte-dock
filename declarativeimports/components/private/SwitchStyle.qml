@@ -8,6 +8,7 @@ import QtQuick.Controls.Styles 1.2 as QtQuickControlStyle
 import QtQuick.Controls 1.2
 import org.kde.kirigami 2.20 as Kirigami
 import org.kde.plasma.core 2.0 as PlasmaCore
+import org.kde.latte.core 0.2 as LatteCore
 
 QtQuickControlStyle.SwitchStyle {
     id: styleRoot
@@ -31,7 +32,7 @@ QtQuickControlStyle.SwitchStyle {
         }
         implicitHeight: {
             if (fallbackHandle.visible) {
-                return theme.mSize(theme.defaultFont).height
+                return LatteCore.Tools.mSize(Kirigami.Theme.defaultFont).height
             }
 
             return switchSvg.hasElement("hint-handle-size") ? switchSvg.elementSize("hint-handle-size").height : themeHandleItem.height
@@ -78,8 +79,8 @@ QtQuickControlStyle.SwitchStyle {
     }
 
     groove: Item {
-        width: theme.mSize(theme.defaultFont).height * 2
-        height: themeGroove.visible ? themeGrooveItem.implicitHeight : theme.mSize(theme.defaultFont).height
+        width: LatteCore.Tools.mSize(Kirigami.Theme.defaultFont).height * 2
+        height: themeGroove.visible ? themeGrooveItem.implicitHeight : LatteCore.Tools.mSize(Kirigami.Theme.defaultFont).height
 
         Item{
             id: fallbackGroove
@@ -96,7 +97,7 @@ QtQuickControlStyle.SwitchStyle {
                 visible: opacity > 0                
 
                 Behavior on opacity {
-                    PropertyAnimation { duration: units.shortDuration * 2 }
+                    PropertyAnimation { duration: Kirigami.Units.shortDuration * 2 }
                 }
             }
 
@@ -110,7 +111,7 @@ QtQuickControlStyle.SwitchStyle {
                 visible: opacity > 0
 
                 Behavior on opacity {
-                    PropertyAnimation { duration: units.shortDuration * 2 }
+                    PropertyAnimation { duration: Kirigami.Units.shortDuration * 2 }
                 }
             }
         }
@@ -133,7 +134,7 @@ QtQuickControlStyle.SwitchStyle {
                 onFromCurrentThemeChanged: styleRoot.themeHasSwitch = fromCurrentTheme;
 
                 Behavior on opacity {
-                    PropertyAnimation { duration: units.shortDuration * 2 }
+                    PropertyAnimation { duration: Kirigami.Units.shortDuration * 2 }
                 }
             }
 
@@ -147,7 +148,7 @@ QtQuickControlStyle.SwitchStyle {
                 visible: opacity > 0
 
                 Behavior on opacity {
-                    PropertyAnimation { duration: units.shortDuration * 2 }
+                    PropertyAnimation { duration: Kirigami.Units.shortDuration * 2 }
                 }
             }
         }

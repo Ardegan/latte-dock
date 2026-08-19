@@ -19,6 +19,8 @@ import org.kde.plasma.components 3.0 as PlasmaComponents
 import org.kde.kquickcontrolsaddons 2.0 as KQuickControlsAddons
 
 import org.kde.taskmanager 0.1 as TaskManager
+import org.kde.kirigami as Kirigami
+import org.kde.latte.core 0.2 as LatteCore
 
 PlasmaComponents.ScrollView {
     id: mainToolTip
@@ -56,7 +58,7 @@ PlasmaComponents.ScrollView {
     LayoutMirroring.enabled: Qt.application.layoutDirection === Qt.RightToLeft
     LayoutMirroring.childrenInherit: true
 
-    property int textWidth: theme.mSize(theme.defaultFont).width * 20
+    property int textWidth: LatteCore.Tools.mSize(Kirigami.Theme.defaultFont).width * 20
 
     verticalScrollBarPolicy: Qt.ScrollBarAlwaysOff
     horizontalScrollBarPolicy: Qt.ScrollBarAlwaysOff
@@ -101,7 +103,7 @@ PlasmaComponents.ScrollView {
                 rows: !isVerticalPanel
                 columns: isVerticalPanel
                 flow: isVerticalPanel ? Grid.TopToBottom : Grid.LeftToRight
-                spacing: units.largeSpacing
+                spacing: Kirigami.Units.largeSpacing
 
                 readonly property bool hasVisibleDescription: {
                     for (var i=0; i<children.length; ++i) {

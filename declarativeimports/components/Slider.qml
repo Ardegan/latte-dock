@@ -20,11 +20,11 @@ T.Slider {
         Math.max(handle ? handle.implicitHeight : 0,
                  handle ? handle.implicitHeight : 0) + topPadding + bottomPadding)
 
-    //padding: 3*units.smallSpacing //5//units.gridUnit
-    topPadding: 3*units.smallSpacing
-    bottomPadding: 3*units.smallSpacing
-    leftPadding: units.smallSpacing
-    rightPadding: units.smallSpacing
+    //padding: 3*Kirigami.Units.smallSpacing //5//Kirigami.Units.gridUnit
+    topPadding: 3*Kirigami.Units.smallSpacing
+    bottomPadding: 3*Kirigami.Units.smallSpacing
+    leftPadding: Kirigami.Units.smallSpacing
+    rightPadding: Kirigami.Units.smallSpacing
 
     snapMode: T.Slider.SnapOnRelease
 
@@ -95,8 +95,8 @@ T.Slider {
         imagePath: "widgets/slider"
         prefix: "groove"
         readonly property bool horizontal: control.orientation === Qt.Horizontal
-        implicitWidth: horizontal ? units.gridUnit * 8 : margins.left + margins.right
-        implicitHeight: horizontal ? margins.top + margins.bottom : units.gridUnit * 8
+        implicitWidth: horizontal ? Kirigami.Units.gridUnit * 8 : margins.left + margins.right
+        implicitHeight: horizontal ? margins.top + margins.bottom : Kirigami.Units.gridUnit * 8
         width: horizontal ? control.availableWidth : implicitWidth
         height: horizontal ? implicitHeight : control.availableHeight
         anchors.centerIn: parent

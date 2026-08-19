@@ -10,6 +10,7 @@ import org.kde.plasma.plasmoid 2.0
 
 import org.kde.latte.core 0.2 as LatteCore
 import org.kde.latte.private.containment 0.1 as LatteContainment
+import org.kde.kirigami as Kirigami
 
 Item {
     property bool updateIsEnabled: autosize.inCalculatedIconSize
@@ -70,8 +71,8 @@ Item {
     Binding{
         target: latteView
         property: "fontPixelSize"
-        when: theme
-        value: theme.defaultFont.pixelSize
+        when: Kirigami.Theme
+        value: Kirigami.Theme.defaultFont.pixelSize
     }
 
     Binding{

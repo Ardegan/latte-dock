@@ -21,6 +21,7 @@ import org.kde.latte.abilities.items 0.1 as AbilityItem
 import "colorizer" as Colorizer
 import "communicator" as Communicator
 import "../debugger" as Debugger
+import org.kde.kirigami as Kirigami
 
 Item {
     id: appletItem
@@ -50,7 +51,7 @@ Item {
     readonly property bool isMarginsAreaSeparator: applet && applet.hasOwnProperty("constraintHints")
                                                    && ((applet.constraintHints & PlasmaCore.Types.MarginAreasSeparator) === PlasmaCore.Types.MarginAreasSeparator);
 
-    readonly property color highlightColor: theme.buttonFocusColor
+    readonly property color highlightColor: Kirigami.Theme.focusColor
 
     //! Fill Applet(s)
     property bool inFillCalculations: false //temp record, is used in calculations for fillWidth,fillHeight applets

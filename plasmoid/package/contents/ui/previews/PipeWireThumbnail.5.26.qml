@@ -9,6 +9,7 @@ import QtQuick.Window 2.15
 import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.pipewire 0.1 as PipeWire
 import org.kde.taskmanager 0.1 as TaskManager
+import org.kde.kirigami as Kirigami
 
 // opacity doesn't work in the root item
 Item {
@@ -32,7 +33,7 @@ Item {
 
         /*Behavior on opacity {
             OpacityAnimator {
-                duration: PlasmaCore.Units.longDuration
+                duration: Kirigami.Units.longDuration
                 easing.type: Easing.OutCubic
             }
         }*/

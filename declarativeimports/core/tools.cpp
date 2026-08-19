@@ -6,6 +6,7 @@
 #include "tools.h"
 
 // Qt
+#include <QFontMetrics>
 #include <QtMath>
 
 namespace Latte{
@@ -13,6 +14,11 @@ namespace Latte{
 Tools::Tools(QObject *parent)
     : QObject(parent)
 {
+}
+
+QSizeF Tools::mSize(const QFont &font) const
+{
+    return QFontMetrics(font).boundingRect(QStringLiteral("M")).size();
 }
 
 float Tools::colorBrightness(QColor color)

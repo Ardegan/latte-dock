@@ -19,6 +19,7 @@ import org.kde.kquickcontrolsaddons 2.0
 import org.kde.latte.core 0.2 as LatteCore
 
 import "../colorizer" as Colorizer
+import org.kde.kirigami as Kirigami
 
 BackgroundProperties{
     id:barLine
@@ -551,7 +552,7 @@ BackgroundProperties{
 
         readonly property bool busyBackground: root.forcePanelForBusyBackground
                                                && (solidBackground.opacity === 0 || !solidBackground.paintInstantly)
-        readonly property bool coloredView: colorizerManager.mustBeShown && colorizerManager.applyTheme !== theme
+        readonly property bool coloredView: colorizerManager.mustBeShown && colorizerManager.applyTheme !== Kirigami.Theme
 
         backgroundOpacity: {
             if (busyBackground && !forceSolidness) {

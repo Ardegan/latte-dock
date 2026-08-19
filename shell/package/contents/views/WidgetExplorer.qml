@@ -24,7 +24,7 @@ import org.kde.plasma.private.shell 2.0 as PlasmaShell
 
 PC3.Page {
     id: main
-    width: Math.max(heading.paintedWidth, PlasmaCore.Units.iconSizes.enormous * 3 + PlasmaCore.Units.smallSpacing * 4 + PlasmaCore.Units.gridUnit * 2)
+    width: Math.max(heading.paintedWidth, Kirigami.Units.iconSizes.enormous * 3 + Kirigami.Units.smallSpacing * 4 + Kirigami.Units.gridUnit * 2)
   //  height: 800//Screen.height
     opacity: draggingWidget ? 0.3 : 1
     visible: viewConfig.visible
@@ -179,7 +179,7 @@ PC3.Page {
         }
         mainItem: Tooltip { id: tooltipWidget }
         Behavior on y {
-            NumberAnimation { duration: PlasmaCore.Units.longDuration }
+            NumberAnimation { duration: Kirigami.Units.longDuration }
         }
     }
     Timer {
@@ -285,7 +285,7 @@ PC3.Page {
         opacity: setModelTimer.running ? 0 : 1
         Behavior on opacity {
             OpacityAnimator {
-                duration: PlasmaCore.Units.longDuration
+                duration: Kirigami.Units.longDuration
                 easing.type: Easing.InOutQuad
             }
         }
@@ -298,7 +298,7 @@ PC3.Page {
             activeFocusOnTab: true
             keyNavigationWraps: true
             cellWidth: Math.floor(width / 3)
-            cellHeight: cellWidth + PlasmaCore.Units.gridUnit * 4 + PlasmaCore.Units.smallSpacing * 2
+            cellHeight: cellWidth + Kirigami.Units.gridUnit * 4 + Kirigami.Units.smallSpacing * 2
 
             delegate: AppletDelegate {}
             highlight: PC2.Highlight {}
@@ -310,7 +310,7 @@ PC3.Page {
                 NumberAnimation {
                     properties: "x"
                     from: -list.width
-                    duration: PlasmaCore.Units.shortDuration
+                    duration: Kirigami.Units.shortDuration
                 }
             }
 
@@ -319,7 +319,7 @@ PC3.Page {
                 NumberAnimation {
                     properties: "x"
                     to: list.width
-                    duration: PlasmaCore.Units.shortDuration
+                    duration: Kirigami.Units.shortDuration
                 }
             }
 
@@ -332,7 +332,7 @@ PC3.Page {
             displaced: Transition {
                 NumberAnimation {
                     properties: "x,y"
-                    duration: PlasmaCore.Units.shortDuration
+                    duration: Kirigami.Units.shortDuration
                 }
             }
         }
@@ -340,7 +340,7 @@ PC3.Page {
 
     PlasmaExtras.PlaceholderMessage {
         anchors.centerIn: parent
-        width: parent.width - (PlasmaCore.Units.largeSpacing * 4)
+        width: parent.width - (Kirigami.Units.largeSpacing * 4)
         text: searchInput.text.length > 0 ? i18n("No widgets matched the search terms") : i18n("No widgets available")
         visible: list.count == 0
     }

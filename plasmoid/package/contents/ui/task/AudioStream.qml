@@ -10,6 +10,7 @@ import org.kde.plasma.core 2.0 as PlasmaCore
 
 import org.kde.latte.core 0.2 as LatteCore
 import org.kde.latte.components 1.0 as LatteComponents
+import org.kde.kirigami as Kirigami
 
 Item {
     id: background
@@ -51,7 +52,7 @@ Item {
             showNumber: false
             showText: true
 
-            color: theme.backgroundColor
+            color: Kirigami.Theme.backgroundColor
             borderColor: root.lightTextColor
             proportion: 0
             radiusPerCentage: 100

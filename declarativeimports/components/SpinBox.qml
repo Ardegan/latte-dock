@@ -7,9 +7,11 @@ import QtQuick 2.0
 import QtQuick.Controls 1.4 as Controls
 import QtQuick.Controls.Styles.Plasma 2.0 as Styles
 import org.kde.plasma.core 2.0 as PlasmaCore
+import org.kde.kirigami as Kirigami
+import org.kde.latte.core 0.2 as LatteCore
 
 Controls.SpinBox {
-    implicitWidth: theme.mSize(theme.defaultFont).width * 10
+    implicitWidth: LatteCore.Tools.mSize(Kirigami.Theme.defaultFont).width * 10
 
     style: Styles.SpinBoxStyle {
         PlasmaCore.Svg {
@@ -18,7 +20,7 @@ Controls.SpinBox {
             colorGroup: PlasmaCore.Theme.ButtonColorGroup
         }
         incrementControl: PlasmaCore.SvgItem {
-            implicitWidth: theme.mSize(theme.defaultFont).width * 1.8
+            implicitWidth: LatteCore.Tools.mSize(Kirigami.Theme.defaultFont).width * 1.8
             anchors {
                 centerIn: parent
                 margins: 1
@@ -30,7 +32,7 @@ Controls.SpinBox {
             opacity: control.enabled ? (styleData.upPressed ? 1 : 0.6) : 0.5
         }
         decrementControl: PlasmaCore.SvgItem {
-            implicitWidth: theme.mSize(theme.defaultFont).width * 1.8
+            implicitWidth: LatteCore.Tools.mSize(Kirigami.Theme.defaultFont).width * 1.8
             anchors {
                 centerIn: parent
                 margins: 1

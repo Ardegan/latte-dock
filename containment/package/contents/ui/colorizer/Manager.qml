@@ -13,6 +13,7 @@ import org.kde.latte.private.app 0.1 as LatteApp
 import org.kde.latte.private.containment 0.1 as LatteContainment
 
 import "../../code/ColorizerTools.js" as ColorizerTools
+import org.kde.kirigami as Kirigami
 
 Loader{
     id: manager
@@ -22,8 +23,8 @@ Loader{
 
     readonly property bool backgroundIsBusy: item ? item.isBusy : false
 
-    readonly property real originalThemeTextColorBrightness: ColorizerTools.colorBrightness(theme.textColor)
-    readonly property color originalLightTextColor: originalThemeTextColorBrightness > 127.5 ? theme.textColor : theme.backgroundColor
+    readonly property real originalThemeTextColorBrightness: ColorizerTools.colorBrightness(Kirigami.Theme.textColor)
+    readonly property color originalLightTextColor: originalThemeTextColorBrightness > 127.5 ? Kirigami.Theme.textColor : Kirigami.Theme.backgroundColor
 
     readonly property real themeTextColorBrightness: ColorizerTools.colorBrightness(textColor)
     readonly property real backgroundColorBrightness: ColorizerTools.colorBrightness(backgroundColor)
@@ -47,7 +48,7 @@ Loader{
     readonly property bool editModeTextColorIsBright: ColorizerTools.colorBrightness(editModeTextColor) > 127.5
     readonly property color editModeTextColor: latteView && latteView.layout ? latteView.layout.textColor : "white"
 
-    readonly property bool mustBeShown: (applyTheme && applyTheme !== theme)
+    readonly property bool mustBeShown: (applyTheme && applyTheme !== Kirigami.Theme)
                                         || (root.inConfigureAppletsMode && (root.themeColors === LatteContainment.Types.SmartThemeColors))
 
     readonly property real currentBackgroundBrightness: item ? item.currentBrightness : -1000
@@ -59,7 +60,7 @@ Loader{
 
     property QtObject applyTheme: {
         if (!root.environment.isGraphicsSystemAccelerated) {
-            return theme;
+            return Kirigami.Theme;
         }
 
         if (latteView && latteView.windowsTracker && !(root.plasmaBackgroundForPopups && root.hasExpandedApplet)) {
@@ -87,7 +88,7 @@ Loader{
                         && root.windowColors === LatteContainment.Types.NoneWindowColors
                         && root.forceSolidPanel) ) {
                 /* plasma style*/
-                return theme;
+                return Kirigami.Theme;
             }
 
             if (root.themeColors === LatteContainment.Types.DarkThemeColors) {
@@ -118,13 +119,13 @@ Loader{
                         return themeExtended.darkTheme;
                     } else {
                         //! default plasma theme should be better for panel transparency > 70
-                        return theme;
+                        return Kirigami.Theme;
                     }
                 }
             }
         }
 
-        return theme;
+        return Kirigami.Theme;
     }
 
     property color applyColor: textColor
@@ -142,8 +143,8 @@ Loader{
         return applyTheme.textColor;
     }
 
-    readonly property color inactiveBackgroundColor: applyTheme === theme ? theme.backgroundColor : applyTheme.inactiveBackgroundColor
-    readonly property color inactiveTextColor: applyTheme === theme ? theme.textColor : applyTheme.inactiveTextColor
+    readonly property color inactiveBackgroundColor: applyTheme === Kirigami.Theme ? Kirigami.Theme.backgroundColor : applyTheme.inactiveBackgroundColor
+    readonly property color inactiveTextColor: applyTheme === Kirigami.Theme ? Kirigami.Theme.textColor : applyTheme.inactiveTextColor
 
     readonly property color highlightColor: applyTheme.highlightColor
     readonly property color highlightedTextColor: applyTheme.highlightedTextColor
@@ -151,14 +152,14 @@ Loader{
     readonly property color neutralTextColor: applyTheme.neutralTextColor
     readonly property color negativeTextColor: applyTheme.negativeTextColor
 
-    readonly property color buttonTextColor: applyTheme.buttonTextColor
-    readonly property color buttonBackgroundColor: applyTheme.buttonBackgroundColor
-    readonly property color buttonHoverColor: applyTheme.buttonHoverColor
-    readonly property color buttonFocusColor: applyTheme.buttonFocusColor
+    readonly property color buttonTextColor: applyTheme === Kirigami.Theme ? Kirigami.Theme.textColor : applyTheme.buttonTextColor
+    readonly property color buttonBackgroundColor: applyTheme === Kirigami.Theme ? Kirigami.Theme.backgroundColor : applyTheme.buttonBackgroundColor
+    readonly property color buttonHoverColor: applyTheme === Kirigami.Theme ? Kirigami.Theme.hoverColor : applyTheme.buttonHoverColor
+    readonly property color buttonFocusColor: applyTheme === Kirigami.Theme ? Kirigami.Theme.focusColor : applyTheme.buttonFocusColor
 
     readonly property string scheme: {
         if (root.inConfigureAppletsMode && (root.themeColors === LatteContainment.Types.SmartThemeColors)) {
-            if (!LatteCore.WindowSystem.compositingActive && applyTheme !== theme) {
+            if (!LatteCore.WindowSystem.compositingActive && applyTheme !== Kirigami.Theme) {
                 return applyTheme.schemeFile;
             }
 
@@ -179,7 +180,7 @@ Loader{
             }
         }
 
-        if (applyTheme===theme || !mustBeShown) {
+        if (applyTheme===Kirigami.Theme || !mustBeShown) {
             if (themeExtended) {
                 return themeExtended.defaultTheme.schemeFile;
             } else {

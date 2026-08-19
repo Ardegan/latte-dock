@@ -23,6 +23,7 @@ import org.kde.latte.core 0.2 as LatteCore
 import org.kde.draganddrop 2.0
 
 import org.kde.taskmanager 0.1 as TaskManager
+import QtQuick.Window 2.2
 
 Column {
     id: instance
@@ -37,7 +38,7 @@ Column {
     property int virtualDesktop: (typeof model !== 'undefined') && (typeof model.VirtualDesktop !== 'undefined') ? VirtualDesktop : 0
     property var activities : (typeof model !== 'undefined') && (typeof model.Activities !== 'undefined') ? Activities : []
 
-    spacing: units.smallSpacing
+    spacing: Kirigami.Units.smallSpacing
 
     readonly property bool descriptionIsVisible: winDescription.text !== ""
 
@@ -91,8 +92,8 @@ Column {
 
         // launcher icon
         Kirigami.Icon {
-            Layout.preferredWidth: units.iconSizes.medium
-            Layout.preferredHeight: units.iconSizes.medium
+            Layout.preferredWidth: Kirigami.Units.iconSizes.medium
+            Layout.preferredHeight: Kirigami.Units.iconSizes.medium
             source: icon
             animated: false
             usesPlasmaTheme: false
@@ -212,8 +213,8 @@ Column {
                     anchors.fill:  previewThumbLoader.item
                     visible: previewThumbLoader.item.visible
                     horizontalOffset: 0
-                    verticalOffset: Math.round(3 * PlasmaCore.Units.devicePixelRatio)
-                    radius: Math.round(8.0 * PlasmaCore.Units.devicePixelRatio)
+                    verticalOffset: Math.round(3 * Screen.devicePixelRatio)
+                    radius: Math.round(8.0 * Screen.devicePixelRatio)
                     samples: Math.round(radius * 1.5)
                     color: "Black"
                     source: previewThumbLoader.item
@@ -315,7 +316,7 @@ Column {
                         anchors.bottom: parent.bottom
                         width: parent.width
                         height: playerControlsRow.height
-                        color: theme.backgroundColor
+                        color: Kirigami.Theme.backgroundColor
                         opacity: 0.8
                     }
                 }
@@ -365,7 +366,7 @@ Column {
                             elide: Text.ElideRight
                             text: artist || ""
                             visible: text != ""
-                            font.pointSize: theme.smallestFont.pointSize
+                            font.pointSize: Kirigami.Theme.smallFont.pointSize
                         }
                     }
 
@@ -409,7 +410,7 @@ Column {
             width: header.width
             height: 3
             opacity: isTaskActive() ? 1 : 0
-            color: theme.buttonFocusColor
+            color: Kirigami.Theme.focusColor
         }
     }
 

@@ -10,6 +10,7 @@ import org.kde.plasma.plasmoid 2.0
 import org.kde.latte.core 0.2 as LatteCore
 
 import "./myview" as MyViewTypes
+import org.kde.kirigami as Kirigami
 
 Item {
     property int groupId: -1
@@ -46,7 +47,7 @@ Item {
 
     property var containmentActions: []
 
-    property QtObject palette: theme
+    property QtObject palette: Kirigami.Theme
 
     property MyViewTypes.ItemShadow itemShadow: MyViewTypes.ItemShadow {
         isEnabled: true

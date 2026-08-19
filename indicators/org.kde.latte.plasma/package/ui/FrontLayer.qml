@@ -7,6 +7,7 @@ import QtQuick 2.7
 
 import org.kde.plasma.plasmoid 2.0
 import org.kde.plasma.core 2.0 as PlasmaCore
+import org.kde.kirigami as Kirigami
 
 Item {
     anchors.fill: parent
@@ -72,7 +73,7 @@ Item {
             radius: width/2
             height: width
 
-            color: theme.highlightColor
+            color: Kirigami.Theme.highlightColor
         }
     }
     

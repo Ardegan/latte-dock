@@ -17,6 +17,7 @@ import org.kde.latte.core 0.2 as LatteCore
 import org.kde.latte.private.tasks 0.1 as LatteTasks
 
 import "../code/activitiesTools.js" as ActivitiesTools
+import org.kde.kirigami as Kirigami
 
 PlasmaComponents.ContextMenu {
     id: menu
@@ -125,7 +126,7 @@ PlasmaComponents.ContextMenu {
         // QMenu does not limit its width automatically. Even if we set a maximumWidth
         // it would just cut off text rather than eliding. So we do this manually.
         var textMetrics = Qt.createQmlObject("import QtQuick 2.4; TextMetrics {}", menu);
-        var maximumWidth = theme.mSize(theme.defaultFont).width * 22;
+        var maximumWidth = LatteCore.Tools.mSize(Kirigami.Theme.defaultFont).width * 22;
 
         sections.forEach(function (section) {
             if (section["actions"].length > 0 || section["group"] == "actions") {
