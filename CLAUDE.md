@@ -137,6 +137,44 @@ callers read as deliberate rather than silently doing nothing. Two call sites de
 The shim's D-Bus demarshalling was exercised standalone against the live session bus: it returns the
 Default activity with state `2` (Running) and `Invalid` for an unknown id.
 
+### Taskmanager module (`plasmoid/plugin/taskmanager/`)
+
+Plasma 6 no longer ships `org.kde.plasma.private.taskmanager` as an importable QML module — the applet
+registers `Backend`/`SmartLauncherItem` into `org.kde.plasma.taskmanager`, embedded in a qrc inside
+`plugins/plasma/applets/org.kde.plasma.taskmanager.so`, unreachable from another process. Latte vendors
+the sources and registers them under `org.kde.latte.private.tasks`. See
+`plasmoid/plugin/taskmanager/README.latte` for provenance and every local change. **Re-sync that
+directory when bumping the Plasma baseline.**
+
+The Plasma 6 `Backend` is much smaller than the Plasma 5 one Latte targets, so the vendored copy adds
+back `generateMimeData`/`jsonArrayToUrlList` (from Plasma 5) and re-implements `highlightWindows`,
+`windowViewAvailable`, `windowsHovered()`, `cancelHighlightWindows()`, `activateWindowView()` over the
+KWin D-Bus interfaces the Plasma 6 applet now calls from QML — in C++, so Latte's QML call sites are
+unchanged.
+
+### The PlasmaCore migration (largest remaining piece)
+
+`org.kde.plasma.core` in Plasma 6 exports only `Action`, `ActionGroup`, `Applet`, `Containment`,
+`Types`, plus `ToolTipArea`/`DefaultToolTip`/`DialogBackground`. Everything else Latte uses is gone.
+`PlasmaCore.Types` (595 uses) is fine; the rest is **the blocker stopping the Latte Tasks plasmoid from
+loading**:
+
+| Type | Uses | Plasma 6 home |
+|---|---|---|
+| `PlasmaCore.Dialog` | 12 | PlasmaQuick, or Latte's own `LatteCore.Dialog` |
+| `PlasmaCore.FrameSvgItem` | 11 | `org.kde.ksvg` |
+| `PlasmaCore.SvgItem` | 9 | `org.kde.ksvg` |
+| `PlasmaCore.Svg` | 6 | `org.kde.ksvg` |
+| `PlasmaCore.FrameSvg` | 6 | `org.kde.ksvg` |
+| `PlasmaCore.Theme` | 5 | only `ButtonColorGroup` left → `KSvg.Svg.Button`; deferred with the elements |
+| `PlasmaCore.IconItem` | 4 | `Kirigami.Icon` (or Latte's `LatteCore.IconItem`) |
+| `PlasmaCore.ColorScope` | 2 | `Kirigami.Theme` colorSet |
+| `PlasmaCore.WindowThumbnail` | 1 | removed; Plasma 6 uses PipeWire |
+
+MPRIS is separate: the `mpris2` data engine is gone, so `Plasma5Support.DataSource` loads but stays
+empty. Media controls in tooltips and the task context menu (~20 call sites) need porting to
+`org.kde.plasma.private.mpris`, which *is* on the import path.
+
 ### Still unverified
 
 Nothing has been launched, so all QML-side concerns remain open:
