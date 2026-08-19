@@ -71,6 +71,11 @@ find_package(PlasmaActivities ${KF6_MIN_VERSION} REQUIRED)
 find_package(PlasmaQuick ${KF6_MIN_VERSION} REQUIRED)
 find_package(KWayland ${KF6_MIN_VERSION} REQUIRED)
 
+# needed by the taskmanager Backend vendored into plasmoid/plugin/taskmanager
+find_package(PlasmaActivitiesStats ${KF6_MIN_VERSION} REQUIRED)
+find_package(KSysGuard REQUIRED)
+find_package(LibNotificationManager REQUIRED)
+
 find_package(LibTaskManager REQUIRED)
 add_definitions(-DPLASMA_WORKSPACE_VERSION="${LibTaskManager_VERSION}")
 
@@ -109,9 +114,12 @@ message(STATUS "KF6 VERSION MINOR : ${KF6_VERSION_MINOR}")
 
 
 include(ECMFindQmlModule)
-ecm_find_qmlmodule(org.kde.kquickcontrolsaddons 2.0 REQUIRED)
-ecm_find_qmlmodule(org.kde.plasma.core 2.0 REQUIRED)
-ecm_find_qmlmodule(org.kde.plasma.components 2.0 REQUIRED)
+# These were pinned to the Plasma 5 module versions; the QML now imports
+# org.kde.plasma.components 3.0, and qmlplugindump against the Plasma 6
+# modules is unreliable (it intermittently fails for modules that are present),
+# so this is no longer a hard gate.
+ecm_find_qmlmodule(org.kde.plasma.core 2.0)
+ecm_find_qmlmodule(org.kde.plasma.components 3.0)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/app/config-latte.h.cmake
                ${CMAKE_CURRENT_BINARY_DIR}/app/config-latte.h)

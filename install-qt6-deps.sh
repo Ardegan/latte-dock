@@ -30,6 +30,9 @@ PKGS=(
 
   libplasma-dev
   libplasmaactivities-dev
+  # for the taskmanager Backend vendored into plasmoid/plugin/taskmanager
+  libplasmaactivitiesstats-dev
+  libksysguard-dev
   kwayland-dev
   plasma-workspace-dev
 )

@@ -1,0 +1,25 @@
+Vendored from plasma-desktop applets/taskmanager, branch Plasma/6.6,
+commit 75d05b770f1e791b45a458719466083cf343834f.
+
+Why: Plasma 6 stopped shipping org.kde.plasma.private.taskmanager as an
+importable QML module. The taskmanager applet now registers Backend and
+SmartLauncherItem into its own module (org.kde.plasma.taskmanager) which is
+embedded in a qrc inside plugins/plasma/applets/org.kde.plasma.taskmanager.so
+and is not on the QML import path, so Latte cannot import it.
+
+Local changes to the upstream files:
+  * QML_ELEMENT / QML_NAMED_ELEMENT removed -- Latte registers the types by
+    hand in lattetasksplugin.cpp under org.kde.latte.private.tasks.
+  * log_settings.{h,cpp} added as a stand-in for plasma-desktop's logging
+    category, so the sources compile unmodified in that respect.
+  * Backend regained members Plasma 6 dropped but Latte still uses:
+      - generateMimeData(), jsonArrayToUrlList()   (from the Plasma 5 Backend)
+      - highlightWindows, windowViewAvailable, windowsHovered(),
+        cancelHighlightWindows(), activateWindowView()
+        (re-implemented over the same KWin D-Bus interfaces the Plasma 6
+         applet now calls from QML, so Latte's QML is unchanged)
+  * kactivitymanagerd_plugins_settings.kcfg/.kcfgc copied in, since
+    recentDocumentActions() needs the generated settings class.
+
+Not restored: ungrabMouse(), which no longer exists in Plasma 5.27 either --
+Latte's two call sites were already dead and have been removed.

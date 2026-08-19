@@ -15,7 +15,6 @@ import org.kde.plasma.components 3.0 as PlasmaComponents
 import org.kde.plasma.plasmoid 2.0
 
 import org.kde.taskmanager 0.1 as TaskManager
-import org.kde.plasma.private.taskmanager 0.1 as TaskManagerApplet
 
 import org.kde.activities 0.1 as Activities
 
@@ -32,6 +31,7 @@ import "../code/tools.js" as TaskTools
 import "../code/activitiesTools.js" as ActivitiesTools
 import "../code/ColorizerTools.js" as ColorizerTools
 import org.kde.kirigami as Kirigami
+import org.kde.plasma.plasma5support as Plasma5Support
 
 PlasmoidItem {
     id:root
@@ -560,30 +560,14 @@ PlasmoidItem {
     }
 
 
-    TaskManagerApplet.Backend {
+    LatteTasks.Backend {
         id: backend
-        taskManagerItem: root
         highlightWindows: root.highlightWindows
 
+        //! taskManagerItem, groupDialog and toolTipItem were all dropped from
+        //! the Plasma 6 Backend and are not part of the vendored copy.
         onAddLauncher: {
             tasksModel.requestAddLauncher(url);
-        }
-
-        Component.onCompleted: {
-            //! In Plasma 5.9 TaskManagerBackend required a groupDialog setting
-            //! otherwise it crashes.
-            //! frameworks 5.29.0 provide id 335104
-            //! work only after Plasma 5.9 and frameworks 5.29
-            //! + added a check for groupDialog also when it is present
-            //!   in plasma 5.8 (that was introduced after 5.8.5)
-            if (LatteCore.Environment.frameworksVersion >= 335104 || (groupDialog !== undefined)) {
-                groupDialog = groupDialogGhost;
-            }
-
-            //! In Plasma 5.22 toolTipItem was dropped
-            if (!root.plasmaGreaterThan522) {
-                toolTipItem = toolTipDelegate;
-            }
         }
     }
 
@@ -611,7 +595,12 @@ PlasmoidItem {
         Component.onCompleted: previousActivity = currentActivity;
     }
 
-    PlasmaCore.DataSource {
+    //! PlasmaCore.DataSource was removed in Plasma 6; Plasma5Support provides
+    //! the compatibility type. Note the mpris2 data engine itself is no longer
+    //! shipped either (Plasma 6 replaced it with org.kde.plasma.private.mpris),
+    //! so this source stays empty and the media controls in task tooltips and
+    //! the context menu are inert until they are ported to Mpris2Model.
+    Plasma5Support.DataSource {
         id: mpris2Source
         engine: "mpris2"
         connectedSources: sources

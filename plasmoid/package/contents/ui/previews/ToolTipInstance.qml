@@ -182,7 +182,7 @@ Column {
             readonly property var winId: isWin && windows[flatIndex] !== undefined ? windows[flatIndex] : 0
 
             // There's no PlasmaComponents3 version
-            PlasmaComponents.Highlight {
+            PlasmaExtras.Highlight {
                 anchors.fill: hoverHandler
                 visible: hoverHandler.containsMouse
                 pressed: hoverHandler.containsPress

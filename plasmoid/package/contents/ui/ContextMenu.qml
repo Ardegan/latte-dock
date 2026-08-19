@@ -61,7 +61,6 @@ PlasmaComponents.ContextMenu {
         } else if (status == PlasmaComponents.DialogStatus.Closed) {
             root.contextMenu = null;
             menu.destroy();
-            backend.ungrabMouse(visualParent);
         }
     }
 
@@ -322,7 +321,6 @@ PlasmaComponents.ContextMenu {
     Component.onDestruction: {
         if (!changingLayout) {
             root.contextMenu = null;
-            backend.ungrabMouse(visualParent);
         }
     }
 
