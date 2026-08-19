@@ -1,15 +1,14 @@
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-#
-# FIRST AUTHOR <neumdotjaatgmaildotcom>, 2017.
-# Jan Neumann <neum dot ja at gmail dot com>, 2017, 2018.
-# Burkhard Lück <lueck@hube-lueck.de>, 2017, 2018, 2019, 2020, 2021.
-# Frederik Schwarzer <schwarzer@kde.org>, 2020.
+# Copyright (C) 2025 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the latte-dock package.
+# SPDX-FileCopyrightText: 2017-2021 Burkhard Lück <lueck@hube-lueck.de>
+# SPDX-FileCopyrightText: 2020 Frederik Schwarzer <schwarzer@kde.org>
+# SPDX-FileCopyrightText: 2017 FIRST AUTHOR <neumdotjaatgmaildotcom>
+# SPDX-FileCopyrightText: 2017-2018 Jan Neumann <neum dot ja at gmail dot com>
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
+"Project-Id-Version: latte-dock\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-11-05 12:36+0000\n"
+"POT-Creation-Date: 2025-11-17 09:01+0000\n"
 "PO-Revision-Date: 2021-06-30 09:55+0200\n"
 "Last-Translator: Burkhard Lück <lueck@hube-lueck.de>\n"
 "Language-Team: German <kde-i18n-de@kde.org>\n"
@@ -22,12 +21,12 @@ msgstr ""
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
 msgid "Your names"
-msgstr "Jan Neumann"
+msgstr "Deutsches KDE-Übersetzungsteam"
 
 #, kde-format
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
-msgstr "neum.ja@gmail.com"
+msgstr "kde-i18n-de@kde.org"
 
 #: app/declarativeimports/contextmenulayerquickitem.cpp:400
 #, kde-format
@@ -1156,7 +1155,7 @@ msgstr "&Bildschirme ..."
 
 #: app/settings/settingsdialog/settingsdialog.cpp:147
 #, kde-format
-msgid "Examing your screens and remove deprecated references"
+msgid "Examine your screens and remove deprecated references"
 msgstr ""
 
 #: app/settings/settingsdialog/settingsdialog.cpp:150
@@ -2544,7 +2543,7 @@ msgstr ""
 msgctxt "maximum length tooltip, %1 is maximum length percentage"
 msgid "You can use mouse wheel to change maximum length of %1%"
 msgstr ""
-"Sie können das Mausrad benutzen, um die maximale Länge von %1 % zu ändern"
+"Sie können das Mausrad verwenden, um die maximale Länge von %1 % zu ändern"
 
 #: shell/package/contents/configuration/canvas/maxlength/Ruler.qml:246
 #, kde-format

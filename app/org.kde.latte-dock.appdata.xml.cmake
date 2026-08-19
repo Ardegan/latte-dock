@@ -19,6 +19,7 @@
   <name xml:lang="fi">Latte</name>
   <name xml:lang="fr">Latte</name>
   <name xml:lang="gl">Latte</name>
+  <name xml:lang="he">לאטה</name>
   <name xml:lang="ia">Latte</name>
   <name xml:lang="id">Latte</name>
   <name xml:lang="it">Latte</name>
@@ -36,7 +37,6 @@
   <name xml:lang="sv">Latte</name>
   <name xml:lang="tr">Latte</name>
   <name xml:lang="uk">Латте</name>
-  <name xml:lang="x-test">xxLattexx</name>
   <name xml:lang="zh-CN">Latte</name>
   <name xml:lang="zh-TW">Latte</name>
   <summary>Dock for the masses</summary>
@@ -55,7 +55,8 @@
   <summary xml:lang="eu">Jendartearen kaia</summary>
   <summary xml:lang="fi">Telakka massoille</summary>
   <summary xml:lang="fr">Une barre des tâches pour tout le monde</summary>
-  <summary xml:lang="gl">Doca para as masas.</summary>
+  <summary xml:lang="gl">Doca para as masas</summary>
+  <summary xml:lang="he">מעגן להמונים</summary>
   <summary xml:lang="id">Dock untuk mengelompokkan</summary>
   <summary xml:lang="it">Area di aggancio per le masse</summary>
   <summary xml:lang="ko">다수의 프로그램을 위한 도구집</summary>
@@ -71,7 +72,6 @@
   <summary xml:lang="sv">Dockningsfönster för alla</summary>
   <summary xml:lang="tr">Kitleler için rıhtım</summary>
   <summary xml:lang="uk">Панель для усіх</summary>
-  <summary xml:lang="x-test">xxDock for the massesxx</summary>
   <summary xml:lang="zh-CN">符合大多数人使用习惯的停靠栏程序</summary>
   <summary xml:lang="zh-TW">給大眾使用的 Dock</summary>
   <description>
@@ -90,7 +90,8 @@
     <p xml:lang="eu">Plasma frameworks-en oinarritutako kaia da Latte, bizipen eder eta intuitiboa hornitzen duena zure ataza eta aplikaziotxoentzat. Honek bere edukiak animatzen ditu zoom parabolikoaren efektua erabiliz eta bertan behar denean bakarrik egoten saiatzen da.</p>
     <p xml:lang="fi">Latte on Plasma Frameworksiin perustuva telakka, joka tarjoaa tyylikkään ja intuitiivisen tehtävä- ja sovelmakäyttöliittymän. Se animoi sisältönsä parabolisella lähennystehosteella ja yrittää pysyä poissa, kunnes sitä tarvitaan.</p>
     <p xml:lang="fr">Latte est une barre des tâches conçue à partir de l'environnement de développement de Plasma. Il propose une expérience élégante et intuitive pour vos tâches et pour vos composants graphiques. Son contenu est animé grâce à l'utilisation d'un effet de zoom parabolique. Il n'essaie d'être là que lorsque cela est nécessaire.</p>
-    <p xml:lang="gl">Latte é unha doca construída coas infraestruturas de Plasma que fornece unha experiencia elegante e intuitiva para as súas tarefas e plasmoides. Anima o seu contido usando o efecto de ampliación parabólico e intenta estar aí só cando se necesita.</p>
+    <p xml:lang="gl">Latte é unha doca construída coas infraestruturas de Plasma que fornece unha experiencia elegante e intuitiva para as súas tarefas e trebellos. Anima o seu contido usando o efecto de ampliación parabólico e intenta estar aí só cando se necesita.</p>
+    <p xml:lang="he">לאטה הוא מעגן שמבוססת על תשתיות פלזמה ומספק חוויה אלגנטית ונוכחה למשימות ול־plasmoids שלך. הוא מנפיש את התוכן שלו באמצעות אפקט תקריב פרבולי ומנסה להגיח רק בעת הצורך.</p>
     <p xml:lang="id">Latte adalah dock berdasarkan kerangka kerja plasma yang memberikan pengalaman yang elegan dan intuitif untuk tugas dan plasmoid kamu. Ini menganimasikan konten dengan menggunakan efek zoom parabola dan mencoba untuk berada di sana hanya ketika diperlukan.</p>
     <p xml:lang="it">Latte è un'area di aggancio basata su plasma frameworks. Offre ai tuoi processi e ai tuoi plasmoidi un'esperienza elegante ed intuitiva, animando il loro contenuto con un effetto zoom parabolico e facendosi trovare solo quando necessario.</p>
     <p xml:lang="ko">Latte는 플라즈마 프레임워크를 기반으로 한 도구집으로 작업 및 plasmoids에 대한 우아하고 직관적인 경험을 제공합니다. 포물선 모양의 확대/축소 효과를 사용하여 내용을 애니메이션화하고 필요할 때만 도구집을 표시됩니다.</p>
@@ -106,7 +107,6 @@
     <p xml:lang="sv">Latte är ett dockningsfönster baserat på Plasma ramverk som erbjuder en elegant och intuitiv upplevelse för aktiviteter och Plasmoider. Det animerar innehållet genom att använda en paraboleffekt för zoomning, och försöker bara vara där när det behövs.</p>
     <p xml:lang="tr">Latte, görevleriniz ve Plasmoid'leriniz için zarif ve sezgisel bir deneyim sağlayan Plasma kod kitaplıklarını kullanan bir rıhtımdır. İçeriğini parabolik yakınlaştırma efekti kullanarak canlandırır ve yalnızca gereksinim duyulduğunda orada olmaya çalışır.</p>
     <p xml:lang="uk">Латте — панель на основі бібліотек Плазми, яка забезпечує елегантний і інтуїтивно зрозумілий доступ до ваших завдань та плазмоїдів. Вміст панелі анімується за допомогою ефекту параболічного збільшення і показується лише тоді, коли це потрібно.</p>
-    <p xml:lang="x-test">xxLatte is a dock based on plasma frameworks that provides an elegant and intuitive experience for your tasks and plasmoids. It animates its contents by using parabolic zoom effect and tries to be there only when it is needed.xx</p>
     <p xml:lang="zh-CN">Latte 是一款基于 Plasma 框架的停靠栏程序，它为您的任务和 Plasma 小程序提供了简洁优雅、直观易懂的使用体验。它能够以抛物线缩放动效显示其内容，并尽可能在不需要的时候降低存在感，减少对用户的干扰。</p>
     <p xml:lang="zh-TW">Latte 是一個基於 Plasma 框架並提供您的工作與 plasmoid 優雅與直觀體驗的 dock。它使用拋物線縮放效果來讓您的內容動畫化，並試著只在您需要它時出現。</p>
     <p> "Art In Coffee" </p>
@@ -126,6 +126,7 @@
     <p xml:lang="fi">”Taidetta kahvissa”</p>
     <p xml:lang="fr">« De l'art dans le café »</p>
     <p xml:lang="gl">«Arte en café».</p>
+    <p xml:lang="he">„אומנות בקפה”</p>
     <p xml:lang="id">"Art In Coffee"</p>
     <p xml:lang="it">«Art In Coffee»</p>
     <p xml:lang="ka">"ხელოვნება ყავაში"</p>
@@ -142,7 +143,6 @@
     <p xml:lang="sv">"Konst i kaffe"</p>
     <p xml:lang="tr">"Kahvedeki Sanat"</p>
     <p xml:lang="uk">«Мистецтво кави»</p>
-    <p xml:lang="x-test">xx"Art In Coffee"xx</p>
     <p xml:lang="zh-CN">“咖啡中的艺术”</p>
     <p xml:lang="zh-TW">「咖啡中的藝術」</p>
   </description>
@@ -154,6 +154,7 @@
   <url type="bugtracker">@BUG_ADDRESS@</url>
   <url type="faq">@FAQS@</url>
   <developer_name>Michail Vourlakos, Johan Smith Agudelo Rodriguez</developer_name>
+  <developer_name xml:lang="ar">ميخائيل فورلاكوس، يوهان سميث أجوديلو رودريجيز</developer_name>
   <developer_name xml:lang="az">Michail Vourlakos, Johan Smith Agudelo Rodriguez</developer_name>
   <developer_name xml:lang="ca">Michail Vourlakos, Johan Smith Agudelo Rodriguez</developer_name>
   <developer_name xml:lang="ca-valencia">Michail Vourlakos, Johan Smith Agudelo Rodriguez</developer_name>
@@ -168,6 +169,7 @@
   <developer_name xml:lang="fi">Michail Vourlakos, Johan Smith Agudelo Rodriguez</developer_name>
   <developer_name xml:lang="fr">Michail Vourlakos, Johan Smith Agudelo Rodriguez</developer_name>
   <developer_name xml:lang="gl">Michail Vourlakos e Johan Smith Agudelo Rodriguez</developer_name>
+  <developer_name xml:lang="he">מיכאיל וורלאקוס, יוהאן סמית׳, אגודלו רודריגז</developer_name>
   <developer_name xml:lang="ia">Michail Vourlakos, Johan Smith Agudelo Rodriguez</developer_name>
   <developer_name xml:lang="id">Michail Vourlakos, Johan Smith Agudelo Rodriguez</developer_name>
   <developer_name xml:lang="it">Michail Vourlakos, Johan Smith Agudelo Rodriguez</developer_name>
@@ -185,7 +187,6 @@
   <developer_name xml:lang="sv">Michail Vourlakos, Johan Smith Agudelo Rodriguez</developer_name>
   <developer_name xml:lang="tr">Michail Vourlakos, Johan Smith Agudelo Rodriguez</developer_name>
   <developer_name xml:lang="uk">Michail Vourlakos, Johan Smith Agudelo Rodriguez</developer_name>
-  <developer_name xml:lang="x-test">xxMichail Vourlakos, Johan Smith Agudelo Rodriguezxx</developer_name>
   <developer_name xml:lang="zh-CN">Michail Vourlakos, Johan Smith Agudelo Rodriguez</developer_name>
   <developer_name xml:lang="zh-TW">Michail Vourlakos, Johan Smith Agudelo Rodriguez</developer_name>
   <icon type="stock">latte-dock</icon>

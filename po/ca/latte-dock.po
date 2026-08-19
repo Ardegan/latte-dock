@@ -1,16 +1,16 @@
 # Translation of latte-dock.po to Catalan
-# Copyright (C) 2017-2023 This_file_is_part_of_KDE
+# Copyright (C) 2017-2025 This_file_is_part_of_KDE
 # This file is distributed under the license LGPL version 2.1 or
 # version 3 or later versions approved by the membership of KDE e.V.
 #
-# Josep M. Ferrer <txemaq@gmail.com>, 2017, 2018, 2019, 2020, 2021, 2022, 2023.
-# Antoni Bella Pérez <antonibella5@yahoo.com>, 2017, 2018, 2019, 2020, 2021.
+# SPDX-FileCopyrightText: 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2025 Josep M. Ferrer <txemaq@gmail.com>
+# SPDX-FileCopyrightText: 2017, 2018, 2019, 2020, 2021 Antoni Bella Pérez <antonibella5@yahoo.com>
 msgid ""
 msgstr ""
 "Project-Id-Version: latte-dock\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-11-05 12:36+0000\n"
-"PO-Revision-Date: 2023-10-30 10:15+0100\n"
+"POT-Creation-Date: 2025-11-17 09:01+0000\n"
+"PO-Revision-Date: 2025-10-20 09:12+0200\n"
 "Last-Translator: Josep M. Ferrer <txemaq@gmail.com>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
 "Language: ca\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 22.12.3\n"
+"X-Generator: Lokalize 25.04.0\n"
 "X-Accelerator-Marker: &\n"
 
 #, kde-format
@@ -393,12 +393,12 @@ msgstr "Separador"
 #: app/package/lattepackage.cpp:43
 #, kde-format
 msgid "Latte Trademark"
-msgstr "Marca comercial Latte"
+msgstr "Marca registrada Latte"
 
 #: app/package/lattepackage.cpp:44
 #, kde-format
 msgid "Latte Trademark Icon"
-msgstr "Icona de marca comercial del Latte"
+msgstr "Icona de marca registrada del Latte"
 
 #: app/package/lattepackage.cpp:45
 #, kde-format
@@ -1148,8 +1148,8 @@ msgstr "&Pantalles..."
 
 #: app/settings/settingsdialog/settingsdialog.cpp:147
 #, kde-format
-msgid "Examing your screens and remove deprecated references"
-msgstr "Examineu les pantalles i elimineu les referències obsoletes"
+msgid "Examine your screens and remove deprecated references"
+msgstr "Examina les pantalles i elimina les referències obsoletes"
 
 #: app/settings/settingsdialog/settingsdialog.cpp:150
 #, kde-format

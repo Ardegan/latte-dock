@@ -7,10 +7,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: latte-dock\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-11-05 12:36+0000\n"
+"POT-Creation-Date: 2025-11-17 09:01+0000\n"
 "PO-Revision-Date: 2024-05-30 22:41+0200\n"
 "Last-Translator: Oliver Kellogg <olivermkellogg@gmail.com>\n"
-"Language-Team: Esperanto <kde-i18n-eo.org>\n"
+"Language-Team: Esperanto <kde-i18n-doc@kde.org>\n"
 "Language: eo\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1100,8 +1100,9 @@ msgid "&Screens..."
 msgstr "&Ekranoj..."
 
 #: app/settings/settingsdialog/settingsdialog.cpp:147
-#, kde-format
-msgid "Examing your screens and remove deprecated references"
+#, fuzzy, kde-format
+#| msgid "Examing your screens and remove deprecated references"
+msgid "Examine your screens and remove deprecated references"
 msgstr "Ekzamenante viajn ekranojn kaj forigi malrekomenditajn referencojn"
 
 #: app/settings/settingsdialog/settingsdialog.cpp:150

@@ -1,16 +1,16 @@
 # Translation of latte-dock.po to Catalan (Valencian)
-# Copyright (C) 2017-2023 This_file_is_part_of_KDE
+# Copyright (C) 2017-2025 This_file_is_part_of_KDE
 # This file is distributed under the license LGPL version 2.1 or
 # version 3 or later versions approved by the membership of KDE e.V.
 #
-# Josep M. Ferrer <txemaq@gmail.com>, 2017, 2018, 2019, 2020, 2021, 2022, 2023.
-# Antoni Bella Pérez <antonibella5@yahoo.com>, 2017, 2018, 2019, 2020, 2021.
+# SPDX-FileCopyrightText: 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2025 Josep M. Ferrer <txemaq@gmail.com>
+# SPDX-FileCopyrightText: 2017, 2018, 2019, 2020, 2021 Antoni Bella Pérez <antonibella5@yahoo.com>
 msgid ""
 msgstr ""
 "Project-Id-Version: latte-dock\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-11-05 12:36+0000\n"
-"PO-Revision-Date: 2023-10-30 10:15+0100\n"
+"POT-Creation-Date: 2025-11-17 09:01+0000\n"
+"PO-Revision-Date: 2025-10-20 09:12+0200\n"
 "Last-Translator: Josep M. Ferrer <txemaq@gmail.com>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
 "Language: ca@valencia\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Lokalize 22.12.3\n"
+"X-Generator: Lokalize 25.04.0\n"
 "X-Accelerator-Marker: &\n"
 
 #, kde-format
@@ -40,7 +40,7 @@ msgstr "Opcions de %1"
 #: app/indicator/factory.cpp:284
 #, kde-format
 msgid "Failed to import indicator"
-msgstr "No s'ha pogut importar l'indicador"
+msgstr "Ha fallat mentre s'importava l'indicador"
 
 #: app/indicator/factory.cpp:290
 #, kde-format
@@ -393,12 +393,12 @@ msgstr "Separador"
 #: app/package/lattepackage.cpp:43
 #, kde-format
 msgid "Latte Trademark"
-msgstr "Marca comercial Latte"
+msgstr "Marca registrada Latte"
 
 #: app/package/lattepackage.cpp:44
 #, kde-format
 msgid "Latte Trademark Icon"
-msgstr "Icona de marca comercial de Latte"
+msgstr "Icona de marca registrada de Latte"
 
 #: app/package/lattepackage.cpp:45
 #, kde-format
@@ -496,7 +496,7 @@ msgstr "Accions del menú contextual"
 #, kde-format
 msgctxt "actions shown only in edit mode"
 msgid "Accessible only in edit mode:"
-msgstr "Accessible només en mode d'edició:"
+msgstr "Accessible només en mode edició:"
 
 #. i18n: ectx: property (selectedLabel), widget (KActionSelector, actionsSelector)
 #: app/settings/actionsdialog/actionsdialog.ui:27
@@ -768,7 +768,7 @@ msgstr "Fitxer:"
 #: app/settings/exporttemplatedialog/exporttemplatedialog.ui:102
 #, kde-format
 msgid "Choose..."
-msgstr "Seleccioneu…"
+msgstr "Tria…"
 
 #. i18n: ectx: property (text), widget (QLabel, noteLbl)
 #: app/settings/exporttemplatedialog/exporttemplatedialog.ui:111
@@ -812,18 +812,18 @@ msgstr "Exporta una plantilla de %1"
 #: app/settings/exporttemplatedialog/exporttemplatehandler.cpp:147
 #, kde-format
 msgid "Choose Layout Template file"
-msgstr "Seleccioneu el fitxer de plantilla de disposició"
+msgstr "Trieu el fitxer de plantilla de disposició"
 
 #: app/settings/exporttemplatedialog/exporttemplatehandler.cpp:147
 #, kde-format
 msgid "Choose View Template file"
-msgstr "Seleccioneu el fitxer de plantilla de vista"
+msgstr "Trieu el fitxer de plantilla de vista"
 
 #: app/settings/exporttemplatedialog/exporttemplatehandler.cpp:151
 #, kde-format
 msgctxt "choose file"
 msgid "Choose"
-msgstr "Seleccioneu"
+msgstr "Trieu"
 
 # skip-rule: kct-dock
 #: app/settings/exporttemplatedialog/exporttemplatehandler.cpp:163
@@ -1148,8 +1148,8 @@ msgstr "&Pantalles…"
 
 #: app/settings/settingsdialog/settingsdialog.cpp:147
 #, kde-format
-msgid "Examing your screens and remove deprecated references"
-msgstr "Examineu les pantalles i elimineu les referències obsoletes"
+msgid "Examine your screens and remove deprecated references"
+msgstr "Examina les pantalles i elimina les referències obsoletes"
 
 #: app/settings/settingsdialog/settingsdialog.cpp:150
 #, kde-format
@@ -1889,8 +1889,8 @@ msgid ""
 "After you have made your layout file changes, please click <b>Validate</b> "
 "to confirm them."
 msgstr ""
-"Després d'haver fet els canvis en la disposició, feu clic en <b>Valida</b> "
-"per a confirmar-los."
+"Després d'haver fet els canvis en la disposició, cliqueu damunt <b>Valida</"
+"b> per a confirmar-los."
 
 #: app/settings/viewsdialog/viewscontroller.cpp:657
 #, kde-format
@@ -2085,7 +2085,7 @@ msgid ""
 "&nbsp;&nbsp;1. Click <b>Repair</b> button in order to remove orphaned "
 "subcontainments<br/>"
 msgstr ""
-"&nbsp;&nbsp;1. Feu clic en el botó <b>Repara</b> per tal d'eliminar els "
+"&nbsp;&nbsp;1. Cliqueu damunt del botó <b>Repara</b> per tal d'eliminar els "
 "subcontenidors orfes<br/>"
 
 #: app/settings/viewsdialog/viewscontroller.cpp:830
@@ -2331,17 +2331,17 @@ msgstr "Justificada"
 #: app/settings/viewsdialog/viewsmodel.cpp:499
 #, kde-format
 msgid " - On Primary Screen - "
-msgstr " - En la pantalla primària - "
+msgstr " – En la pantalla primària – "
 
 #: app/settings/viewsdialog/viewsmodel.cpp:500
 #, kde-format
 msgid " - On All Screens - "
-msgstr " - A totes les pantalles - "
+msgstr " – En totes les pantalles – "
 
 #: app/settings/viewsdialog/viewsmodel.cpp:501
 #, kde-format
 msgid " - On All Secondary Screens - "
-msgstr " - A totes les pantalles secundàries - "
+msgstr " – En totes les pantalles secundàries – "
 
 #: app/settings/viewsdialog/viewsmodel.cpp:592
 #, kde-format
@@ -3041,12 +3041,12 @@ msgstr "En la pantalla primària"
 #: shell/package/contents/configuration/pages/BehaviorConfig.qml:90
 #, kde-format
 msgid "On All Screens"
-msgstr "A totes les pantalles"
+msgstr "En totes les pantalles"
 
 #: shell/package/contents/configuration/pages/BehaviorConfig.qml:93
 #, kde-format
 msgid "On All Secondary Screens"
-msgstr "A totes les pantalles secundàries"
+msgstr "En totes les pantalles secundàries"
 
 #: shell/package/contents/configuration/pages/BehaviorConfig.qml:369
 #, kde-format
@@ -3233,7 +3233,7 @@ msgstr "Circula i minimitza les tasques"
 #: shell/package/contents/configuration/pages/BehaviorConfig.qml:778
 #, kde-format
 msgid "Thin title tooltips on hovering"
-msgstr "Títols fins dels consells en passar-hi per damunt"
+msgstr "Títols fins dels consells d'eina en passar-hi per damunt"
 
 #: shell/package/contents/configuration/pages/BehaviorConfig.qml:779
 #, kde-format
@@ -3323,7 +3323,7 @@ msgstr "Retard de l'ocultació del separador flotant fins que el ratolí marxi"
 #, kde-format
 msgid "to avoid clicking on adjacent items accidentally in some cases"
 msgstr ""
-"per a evitar fer clic accidentalment en elements adjacents en algun cas"
+"per a evitar clicar accidentalment damunt d'elements adjacents en algun cas"
 
 #: shell/package/contents/configuration/pages/BehaviorConfig.qml:880
 #, kde-format
@@ -3425,7 +3425,7 @@ msgstr "Utilitza el color de l'ombra definit"
 #: shell/package/contents/configuration/pages/EffectsConfig.qml:265
 #, kde-format
 msgid "Please choose shadow color"
-msgstr "Escolliu el color de l'ombra"
+msgstr "Trieu el color de l'ombra"
 
 #: shell/package/contents/configuration/pages/EffectsConfig.qml:307
 #: shell/package/contents/configuration/pages/TasksConfig.qml:280

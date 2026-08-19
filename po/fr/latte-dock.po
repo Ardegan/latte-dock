@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2020, 2021, 2022, 2023, 2024 Xavier Besnard <xavier.besnard@kde.org>
+# SPDX-FileCopyrightText: 2020, 2021, 2022, 2023, 2024, 2025 Xavier Besnard <xavier.besnard@kde.org>
 # Simon Depiets <sdepiets@gmail.com>, 2019.
 # Christophe Moulin <mevouillon.corp@gmail.com>, 2020.
 # Xavier Besnard <xavier.besnard@kde.org>, 2023.
@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: latte-dock\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-11-05 12:36+0000\n"
-"PO-Revision-Date: 2024-05-07 07:35+0200\n"
+"POT-Creation-Date: 2025-11-17 09:01+0000\n"
+"PO-Revision-Date: 2025-10-21 07:53+0200\n"
 "Last-Translator: Xavier Besnard <xavier.besnard@kde.org>\n"
 "Language-Team: French <French <kde-francophone@kde.org>>\n"
 "Language: fr\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Lokalize 23.08.5\n"
+"X-Generator: Lokalize 25.08.2\n"
 "X-Environment: kde\n"
 "X-Accelerator-Marker: &\n"
 "X-Text-Markup: kde4\n"
@@ -93,19 +93,19 @@ msgstr "Alternative"
 #, kde-format
 msgctxt "import/export config"
 msgid "The extracted file could not be copied!!!"
-msgstr "Le fichier extrait n'a pas pu être copié !!!"
+msgstr "Le fichier extrait n'a pas pu être copié !"
 
 #: app/layouts/importer.cpp:329
 #, kde-format
 msgctxt "import/export config"
 msgid "The file has a wrong format!!!"
-msgstr "Le fichier a un mauvais format !!!"
+msgstr "Le fichier possède un mauvais format !"
 
 #: app/layouts/importer.cpp:335
 #, kde-format
 msgctxt "import/export config"
 msgid "The temp directory could not be created!!!"
-msgstr "Le dossier temporaire n'a pas pu être créé !!!"
+msgstr "Il a été impossible de créer le dossier temporaire !"
 
 #: app/layouts/storage.cpp:49
 #, kde-format
@@ -152,7 +152,7 @@ msgstr "Afficher les messages de débogage sur stdout."
 msgctxt "command line"
 msgid "Clear qml cache. It can be useful after system upgrades."
 msgstr ""
-"Effacer le cache de Qml. Peut être utile après des mises à jour du système."
+"Effacer le cache de QML. Peut être utile après des mises à jour du système."
 
 #: app/main.cpp:103
 #, kde-format
@@ -1160,7 +1160,7 @@ msgstr "Écran&s…"
 
 #: app/settings/settingsdialog/settingsdialog.cpp:147
 #, kde-format
-msgid "Examing your screens and remove deprecated references"
+msgid "Examine your screens and remove deprecated references"
 msgstr "Examiner vos écrans et supprimer les références déconseillées"
 
 #: app/settings/settingsdialog/settingsdialog.cpp:150
@@ -1987,7 +1987,7 @@ msgid ""
 msgstr ""
 "Dans votre mise en page, il y a des pseudo-composants graphiques orphelins, "
 "liés à des sous-containers non existants. C'est le cas, par exemple, d'un "
-"boîte à miniatures, ayant perdu la connexion avec ses composants graphiques "
+"boite à miniatures, ayant perdu la connexion avec ses composants graphiques "
 "fils. Une telle situation peut provoquer des plantages, un comportement "
 "anormal et une perte de données lorsque vous activez et utilisez cette mise "
 "en page.<br/>"
@@ -2770,7 +2770,7 @@ msgid ""
 "Change panel length to maximum screen size when there is a maximized window "
 "present on the screen"
 msgstr ""
-"Modifier la longueur du panneau à la taille maximale de l’écran lorsqu’il y "
+"Modifier la longueur du panneau à la taille maximale de l'écran lorsqu'il y "
 "a une fenêtre maximisée présente à l'écran."
 
 #: shell/package/contents/configuration/pages/AppearanceConfig.qml:602
@@ -3677,7 +3677,7 @@ msgstr "Les tâches groupées font rebondir leurs nouvelles fenêtres"
 #: shell/package/contents/configuration/pages/TasksConfig.qml:332
 #, kde-format
 msgid "Grouped tasks slide out their closed windows"
-msgstr "Les tâches groupées font disparaître leurs fenêtres fermées."
+msgstr "Les tâches groupées font disparaitre leurs fenêtres fermées."
 
 #: shell/package/contents/configuration/pages/TasksConfig.qml:351
 #, kde-format

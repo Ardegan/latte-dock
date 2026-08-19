@@ -1,13 +1,13 @@
 # Copyright (C) YEAR This_file_is_part_of_KDE
 # This file is distributed under the same license as the PACKAGE package.
-# Tommi Nieminen <translator@legisign.org>, 2018, 2019, 2020, 2021, 2022, 2023.
+# SPDX-FileCopyrightText: 2018, 2019, 2020, 2021, 2022, 2023, 2025 Tommi Nieminen <translator@legisign.org>
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-11-05 12:36+0000\n"
-"PO-Revision-Date: 2023-11-19 19:34+0200\n"
+"POT-Creation-Date: 2025-11-17 09:01+0000\n"
+"PO-Revision-Date: 2025-11-30 15:43+0200\n"
 "Last-Translator: Tommi Nieminen <translator@legisign.org>\n"
 "Language-Team: Finnish <kde-i18n-doc@kde.org>\n"
 "Language: fi\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Lokalize 22.12.3\n"
+"X-Generator: Lokalize 25.04.0\n"
 
 #, kde-format
 msgctxt "NAME OF TRANSLATORS"
@@ -1140,8 +1140,8 @@ msgstr "&Näytöt…"
 
 #: app/settings/settingsdialog/settingsdialog.cpp:147
 #, kde-format
-msgid "Examing your screens and remove deprecated references"
-msgstr "Tutkii näyttöjä ja poistaa vanhentuneita viittauksia"
+msgid "Examine your screens and remove deprecated references"
+msgstr "Tutki näyttöjä ja poista vanhentuneet viittaukset"
 
 #: app/settings/settingsdialog/settingsdialog.cpp:150
 #, kde-format

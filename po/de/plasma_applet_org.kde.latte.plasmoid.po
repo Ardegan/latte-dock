@@ -1,15 +1,14 @@
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# Burkhard Lück <lueck@hube-lueck.de>, 2017, 2018, 2019, 2021.
-# Frederik Schwarzer <schwarzer@kde.org>, 2020, 2022.
-#
-# FIRST AUTHOR <neumdotjaatgmaildotcom>, 2017.
-# Jan Neumann <neum dot ja at gmail dot com>, 2017.
+# Copyright (C) 2025 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the latte-dock package.
+# SPDX-FileCopyrightText: 2017-2019, 2021 Burkhard Lück <lueck@hube-lueck.de>
+# SPDX-FileCopyrightText: 2020, 2022 Frederik Schwarzer <schwarzer@kde.org>
+# SPDX-FileCopyrightText: 2017 FIRST AUTHOR <neumdotjaatgmaildotcom>
+# SPDX-FileCopyrightText: 2017 Jan Neumann <neum dot ja at gmail dot com>
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
+"Project-Id-Version: plasma_applet_org.kde.latte.plasmoid\n"
 "Report-Msgid-Bugs-To: https://bugs.kde.org\n"
-"POT-Creation-Date: 2023-11-05 12:36+0000\n"
+"POT-Creation-Date: 2025-11-17 09:01+0000\n"
 "PO-Revision-Date: 2022-07-23 23:19+0200\n"
 "Last-Translator: Frederik Schwarzer <schwarzer@kde.org>\n"
 "Language-Team: German <kde-i18n-de@kde.org>\n"
@@ -97,7 +96,7 @@ msgid ""
 "For the disabled settings you should use the Latte Dock Configuration Window"
 msgstr ""
 "Für die ausgeblendeten Einstellungen bitte das Konfigurationsfenster des "
-"Latte-Dock benutzen"
+"Latte-Dock verwenden"
 
 #: package/contents/ui/config/ConfigInteraction.qml:46
 #, kde-format
