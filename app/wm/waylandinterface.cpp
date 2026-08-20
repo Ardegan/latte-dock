@@ -18,6 +18,7 @@
 // Qt
 #include <QApplication>
 #include <QDebug>
+#include <QScreen>
 #include <QLatin1String>
 #include <QQuickView>
 #include <QTimer>
@@ -69,6 +70,9 @@ public:
         m_layerWindow->setCloseOnDismissed(false);
 
         if (screen) {
+            //! QWindow::setScreen is what the Wayland backend uses to pick the output;
+            //! LayerShellQt reads its own screen() on top of that.
+            setScreen(screen);
             m_layerWindow->setScreen(screen);
         }
 
@@ -86,17 +90,13 @@ public:
     //! longer produces a strut in KWin, which is why maximized windows were sliding
     //! underneath the dock while desktop icons - repositioned over a completely
     //! separate D-Bus path in PlasmaExtended::ScreenGeometries - still moved.
-    void setStruts(const QRect &rect, Plasma::Types::Location location, QScreen *screen) {
-        if (m_validGeometry == rect && m_location == location && this->screen() == screen) {
+    void setStruts(const QRect &rect, Plasma::Types::Location location) {
+        if (m_validGeometry == rect && m_location == location) {
             return;
         }
 
         m_validGeometry = rect;
         m_location = location;
-
-        if (screen) {
-            m_layerWindow->setScreen(screen);
-        }
 
         LayerShellQt::Window::Anchor anchor;
         int zone{0};
@@ -365,11 +365,22 @@ void WaylandInterface::setViewExtraFlags(QObject *view, bool isPanelWindow, Latt
 
 void WaylandInterface::setViewStruts(QWindow &view, const QRect &rect, Plasma::Types::Location location)
 {
-    if (!m_ghostWindows.contains(view.winId())) {
-        m_ghostWindows[view.winId()] = new Private::GhostWindow(this, view.screen());
+    QScreen *screen = view.screen();
+
+    //! A layer surface is bound to the output it was created on and LayerShellQt
+    //! cannot re-bind an existing one, so the ghost has to be rebuilt whenever the
+    //! view changes screen. During startup the view is still on the primary screen
+    //! when struts are first published, so without this the exclusive zone stays
+    //! reserved on the primary screen for a view that lives on another one.
+    if (m_ghostWindows.contains(view.winId()) && m_ghostWindows[view.winId()]->screen() != screen) {
+        delete m_ghostWindows.take(view.winId());
     }
 
-    m_ghostWindows[view.winId()]->setStruts(rect, location, view.screen());
+    if (!m_ghostWindows.contains(view.winId())) {
+        m_ghostWindows[view.winId()] = new Private::GhostWindow(this, screen);
+    }
+
+    m_ghostWindows[view.winId()]->setStruts(rect, location);
 }
 
 void WaylandInterface::switchToNextVirtualDesktop()
