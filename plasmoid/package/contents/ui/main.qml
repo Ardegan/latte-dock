@@ -15,6 +15,7 @@ import org.kde.plasma.components 3.0 as PlasmaComponents
 import org.kde.plasma.plasmoid 2.0
 
 import org.kde.taskmanager 0.1 as TaskManager
+import org.kde.plasma.private.mpris as Mpris
 
 import org.kde.activities 0.1 as Activities
 
@@ -31,7 +32,6 @@ import "../code/tools.js" as TaskTools
 import "../code/activitiesTools.js" as ActivitiesTools
 import "../code/ColorizerTools.js" as ColorizerTools
 import org.kde.kirigami as Kirigami
-import org.kde.plasma.plasma5support as Plasma5Support
 
 PlasmoidItem {
     id:root
@@ -600,85 +600,12 @@ PlasmoidItem {
         Component.onCompleted: previousActivity = currentActivity;
     }
 
-    //! PlasmaCore.DataSource was removed in Plasma 6; Plasma5Support provides
-    //! the compatibility type. Note the mpris2 data engine itself is no longer
-    //! shipped either (Plasma 6 replaced it with org.kde.plasma.private.mpris),
-    //! so this source stays empty and the media controls in task tooltips and
-    //! the context menu are inert until they are ported to Mpris2Model.
-    Plasma5Support.DataSource {
-        id: mpris2Source
-        engine: "mpris2"
-        connectedSources: sources
-        function sourceNameForLauncherUrl(launcherUrl, pid) {
-            if (!launcherUrl || launcherUrl === "") {
-                return "";
-            }
-
-            // MPRIS spec explicitly mentions that "DesktopEntry" is with .desktop extension trimmed
-            // Moreover, remove URL parameters, like wmClass (part after the question mark)
-            var desktopFileName = launcherUrl.toString().split('/').pop().split('?')[0].replace(".desktop", "")
-            if (desktopFileName.indexOf("applications:") === 0) {
-                desktopFileName = desktopFileName.substr(13)
-            }
-
-            for (var i = 0, length = connectedSources.length; i < length; ++i) {
-                var source = connectedSources[i];
-                // we intend to connect directly, otherwise the multiplexer steals the connection away
-                if (source === "@multiplex") {
-                    continue;
-                }
-
-                var sourceData = data[source];
-                if (!sourceData) {
-                    continue;
-                }
-
-                if (sourceData.DesktopEntry === desktopFileName || (pid && sourceData.InstancePid === pid)) {
-                    return source;
-                }
-
-                var metadata = sourceData.Metadata;
-                if (metadata) {
-                    var kdePid = metadata["kde:pid"];
-                    if (kdePid && pid === kdePid) {
-                        return source;
-                    }
-                }
-            }
-
-            return ""
-        }
-
-        function startOperation(source, op) {
-            var service = serviceForSource(source)
-            var operation = service.operationDescription(op)
-            return service.startOperationCall(operation)
-        }
-
-        function goPrevious(source) {
-            startOperation(source, "Previous");
-        }
-        function goNext(source) {
-            startOperation(source, "Next");
-        }
-        function play(source) {
-            startOperation(source, "Play");
-        }
-        function pause(source) {
-            startOperation(source, "Pause");
-        }
-        function playPause(source) {
-            startOperation(source, "PlayPause");
-        }
-        function stop(source) {
-            startOperation(source, "Stop");
-        }
-        function raise(source) {
-            startOperation(source, "Raise");
-        }
-        function quit(source) {
-            startOperation(source, "Quit");
-        }
+    //! Plasma 6 replaced the mpris2 data engine with org.kde.plasma.private.mpris.
+    //! Mpris2Model::playerForLauncherUrl() resolves a task straight to a
+    //! PlayerContainer, which carries the metadata as properties and the transport
+    //! controls as methods, so the old source-name/data[] indirection is gone.
+    Mpris.Mpris2Model {
+        id: mpris2Model
     }
 
     Loader {
@@ -1275,7 +1202,7 @@ PlasmoidItem {
     /*function createContextMenu(task) {
         var menu = root.contextMenuComponent.createObject(task);
         menu.visualParent = task;
-        menu.mpris2Source = mpris2Source;
+        menu.mpris2Model = mpris2Model;
         menu.activitiesCount = activityModelInstance.count;
         return menu;
     }*/
@@ -1284,7 +1211,7 @@ PlasmoidItem {
         var initialArgs = args || {}
         initialArgs.visualParent = rootTask;
         initialArgs.modelIndex = modelIndex;
-        initialArgs.mpris2Source = mpris2Source;
+        initialArgs.mpris2Model = mpris2Model;
         initialArgs.backend = backend;
 
         root.contextMenu = root.contextMenuComponent.createObject(rootTask, initialArgs);

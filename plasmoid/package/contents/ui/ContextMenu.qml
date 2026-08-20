@@ -13,6 +13,7 @@ import org.kde.plasma.components 3.0 as PlasmaComponents
 import org.kde.plasma.extras as PlasmaExtras
 import org.kde.activities 0.1 as Activities
 import org.kde.taskmanager 0.1 as TaskManager
+import org.kde.plasma.private.mpris as Mpris
 
 import org.kde.latte.core 0.2 as LatteCore
 import org.kde.latte.private.tasks 0.1 as LatteTasks
@@ -25,7 +26,7 @@ PlasmaExtras.Menu {
 
     property bool changingLayout: false
 
-    property QtObject mpris2Source
+    property QtObject mpris2Model
     property QtObject backend
 
     property var modelIndex
@@ -171,38 +172,38 @@ PlasmaExtras.Menu {
         });
 
         // Add Media Player control actions
-        var sourceName = mpris2Source.sourceNameForLauncherUrl(launcherUrl, get(atm.AppPid));
+        //! Plasma 6: Mpris2Model resolves the launcher url straight to a
+        //! PlayerContainer; the old data engine source names are gone.
+        var player = mpris2Model.playerForLauncherUrl(launcherUrl, get(atm.AppPid));
 
         var winIdList = atm.WinIdList;
 
-        if (sourceName && !(get(winIdList) !== undefined && get(winIdList).length > 1)) {
-            var playerData = mpris2Source.data[sourceName]
-
-            if (playerData.CanControl) {
+        if (player && !(get(winIdList) !== undefined && get(winIdList).length > 1)) {
+            if (player.canControl) {
                 var menuItem = menu.newMenuItem(menu);
                 menuItem.text = i18nc("Play previous track", "Previous Track");
                 menuItem.icon = "media-skip-backward";
                 menuItem.enabled = Qt.binding(function() {
-                    return playerData.CanGoPrevious;
+                    return player.canGoPrevious;
                 });
                 menuItem.clicked.connect(function() {
-                    mpris2Source.goPrevious(sourceName);
+                    player.Previous();
                 });
                 menu.addMenuItem(menuItem, virtualDesktopsMenuItem);
 
                 menuItem = menu.newMenuItem(menu);
                 // PlasmaCore Menu doesn't actually handle icons or labels changing at runtime...
                 menuItem.text = Qt.binding(function() {
-                    return playerData.PlaybackStatus === "Playing" ? i18nc("Pause playback", "Pause") : i18nc("Start playback", "Play");
+                    return player.playbackStatus === Mpris.PlaybackStatus.Playing ? i18nc("Pause playback", "Pause") : i18nc("Start playback", "Play");
                 });
                 menuItem.icon = Qt.binding(function() {
-                    return playerData.PlaybackStatus === "Playing" ? "media-playback-pause" : "media-playback-start";
+                    return player.playbackStatus === Mpris.PlaybackStatus.Playing ? "media-playback-pause" : "media-playback-start";
                 });
                 menuItem.enabled = Qt.binding(function() {
-                    return playerData.PlaybackStatus === "Playing" ? playerData.CanPause : playerData.CanPlay;
+                    return player.playbackStatus === Mpris.PlaybackStatus.Playing ? player.canPause : player.canPlay;
                 });
                 menuItem.clicked.connect(function() {
-                    mpris2Source.playPause(sourceName);
+                    player.PlayPause();
                 });
                 menu.addMenuItem(menuItem, virtualDesktopsMenuItem);
 
@@ -210,10 +211,10 @@ PlasmaExtras.Menu {
                 menuItem.text = i18nc("Play next track", "Next Track");
                 menuItem.icon = "media-skip-forward";
                 menuItem.enabled = Qt.binding(function() {
-                    return playerData.CanGoNext;
+                    return player.canGoNext;
                 });
                 menuItem.clicked.connect(function() {
-                    mpris2Source.goNext(sourceName);
+                    player.Next();
                 });
                 menu.addMenuItem(menuItem, virtualDesktopsMenuItem);
 
@@ -221,7 +222,7 @@ PlasmaExtras.Menu {
                 menuItem.text = i18nc("Stop playback", "Stop");
                 menuItem.icon = "media-playback-stop";
                 menuItem.clicked.connect(function() {
-                    mpris2Source.stop(sourceName);
+                    player.Stop();
                 });
                 menu.addMenuItem(menuItem, virtualDesktopsMenuItem);
 
@@ -233,7 +234,7 @@ PlasmaExtras.Menu {
 
                 // If we don't have a window associated with the player but we can quit
                 // it through MPRIS we'll offer a "Quit" option instead of "Close"
-                if (!closeWindowItem.visible && playerData.CanQuit) {
+                if (!closeWindowItem.visible && player.canQuit) {
                     menuItem = menu.newMenuItem(menu);
                     menuItem.text = i18nc("Quit media player app", "Quit");
                     menuItem.icon = "application-exit";
@@ -241,22 +242,25 @@ PlasmaExtras.Menu {
                         return !closeWindowItem.visible;
                     });
                     menuItem.clicked.connect(function() {
-                        mpris2Source.quit(sourceName);
+                        player.Quit();
                     });
                     menu.addMenuItem(menuItem);
                 }
 
                 // If we don't have a window associated with the player but we can raise
                 // it through MPRIS we'll offer a "Restore" option
-                if (!startNewInstanceItem.visible && playerData.CanRaise) {
+                if (!startNewInstanceItem.visible && player.canRaise) {
                     menuItem = menu.newMenuItem(menu);
                     menuItem.text = i18nc("Open or bring to the front window of media player app", "Restore");
-                    menuItem.icon = playerData["Desktop Icon Name"];
+                    //! The data engine exposed a "Desktop Icon Name" field; PlayerContainer
+                    //! carries the desktop entry instead, which is what the icon name is
+                    //! derived from for virtually every player.
+                    menuItem.icon = player.desktopEntry;
                     menuItem.visible = Qt.binding(function() {
                         return !startNewInstanceItem.visible;
                     });
                     menuItem.clicked.connect(function() {
-                        mpris2Source.raise(sourceName);
+                        player.Raise();
                     });
                     menu.addMenuItem(menuItem, startNewInstanceItem);
                 }
