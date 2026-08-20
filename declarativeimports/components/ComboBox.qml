@@ -70,19 +70,35 @@ T.ComboBox {
         readonly property bool isArray: Array.isArray(control.model)
         property bool separatorVisible: false
 
+        //! Selecting an entry is otherwise only possible by press-drag-release:
+        //! activated() is emitted from the content MouseArea's onPositionChanged
+        //! while the button is still held. A plain click on an entry did nothing,
+        //! because the only in-delegate handler lives on tooltipBtn, which is
+        //! invisible unless a toolTipRole is set - as on the dock's Screen selector.
+        onClicked: {
+            control.currentIndex = index;
+            control.activated(index);
+            control.down = false;
+            control.popup.visible = false;
+        }
+
         PlasmaComponents.Button {
             id: tooltipBtn
             anchors.fill: parent
             opacity: 0
             PlasmaComponents.ToolTip.text: parent.toolTip
             PlasmaComponents.ToolTip.visible: hovered && PlasmaComponents.ToolTip.text !== ""
-            visible: tooltip !== ''
+            //! Controls 1 Button carried its own `tooltip` property and this read it.
+            //! After the Controls 2 migration that property is gone, so the bare
+            //! `tooltip` was undefined, `undefined !== ''` was always true, and this
+            //! transparent full-size button covered every entry and ate the press.
+            visible: parent.toolTip !== ''
 
             onPressedChanged: {
                 if (!pressed) {
                     control.currentIndex = index;
+                    control.activated(index);
                     control.down = false;
-                    control.pressed = false;
                     control.popup.visible = false;
                 }
             }
@@ -118,7 +134,7 @@ T.ComboBox {
         acceptedButtons: Qt.LeftButton
         preventStealing: true
         property int indexUnderMouse: -1
-        onWheel: {
+        onWheel: (wheel) => {
             if (!control.wheelEnabled) {
                 return;
             }
@@ -134,9 +150,8 @@ T.ComboBox {
         onReleased: onGenericReleased()
         onCanceled: {
             control.down = false;
-            control.pressed = false;
         }
-        onPositionChanged: {
+        onPositionChanged: (mouse) => {
             var pos = listView.mapFromItem(this, mouse.x, mouse.y);
             indexUnderMouse = listView.indexAt(pos.x, pos.y);
             listView.currentIndex = indexUnderMouse;
@@ -147,7 +162,6 @@ T.ComboBox {
             target: popup
             function onClosed() {
                 control.down = false;
-                control.pressed = false;
             }
         }
 
@@ -155,14 +169,12 @@ T.ComboBox {
             indexUnderMouse = -1;
             listView.currentIndex = control.highlightedIndex;
             control.down = true;
-            control.pressed = true;
             control.popup.visible = !control.popup.visible;
         }
 
         function onGenericReleased() {
             if (!containsMouse && !hiddenTooltipButton.hovered) {
                 control.down = false;
-                control.pressed = false;
                 control.popup.visible = false;
             }
             if (indexUnderMouse > -1) {
@@ -242,7 +254,7 @@ T.ComboBox {
 
                 text: control.displayText
                 font: control.font
-                color: control.pressed ? Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor
+                color: control.down ? Kirigami.Theme.highlightedTextColor : Kirigami.Theme.textColor
                 horizontalAlignment: Text.AlignLeft
                 verticalAlignment: Text.AlignVCenter
                 opacity: control.enabled ? 1 : 0.6
@@ -332,7 +344,7 @@ T.ComboBox {
         imagePath: editable ? "widgets/lineedit" : "widgets/button"
         prefix: editable
                 ? "base"
-                : (control.pressed || control.forcePressed ? "pressed" : "normal")
+                : (control.down || control.forcePressed ? "pressed" : "normal")
 
         opacity: control.buttonIsTransparent && prefix !== "pressed" && textFieldPrivate.state !== "hover" && !control.popup.visible ? 0 : 1
 
@@ -348,7 +360,7 @@ T.ComboBox {
             visible: !parent.editable
             anchors.fill: parent
             state: {
-                if (control.pressed) {
+                if (control.down) {
                     return "hidden"
                 } else if (control.hovered) {
                     return "hover"
@@ -367,7 +379,7 @@ T.ComboBox {
                 rightMargin: control.rightPadding
             }
             acceptedButtons: Qt.NoButton
-            onWheel: {
+            onWheel: (wheel) => {
                 if (!control.wheelEnabled) {
                     return;
                 }
@@ -436,7 +448,7 @@ T.ComboBox {
 
             signal iconClicked(int index);
 
-            onIconClicked: control.iconClicked(index);
+            onIconClicked: (index) => control.iconClicked(index);
         }
         background: Rectangle {
             anchors {

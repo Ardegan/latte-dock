@@ -144,7 +144,11 @@ PlasmaComponents.Page {
 
                     Component.onCompleted: screenRow.updateScreens();
 
-                    onActivated: {
+                    //! Qt6 dropped implicit signal-handler parameter injection, so the
+                    //! ComboBox activated(int index) argument must be declared. Without it
+                    //! `index` was undefined, every branch was false and picking a screen
+                    //! silently did nothing.
+                    onActivated: (index) => {
                         if (index === 0) { // primary
                             latteView.positioner.setNextLocation("", LatteCore.Types.SingleScreenGroup, "{primary-screen}", PlasmaCore.Types.Floating, LatteCore.Types.NoneAlignment);
                         } else if (index === 1) { // all screens
