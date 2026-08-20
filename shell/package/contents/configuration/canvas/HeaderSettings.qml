@@ -65,8 +65,7 @@ Item {
         visible: root.isVertical
 
         text: i18n("Stick On Top");
-        SettingsControls.ToolTip.text: i18n("Stick maximum available space at top screen edge and ignore any top docks or panels")
-        SettingsControls.ToolTip.visible: hovered && SettingsControls.ToolTip.text !== ""
+        tooltip: i18n("Stick maximum available space at top screen edge and ignore any top docks or panels")
         checked: plasmoid.configuration.isStickedOnTopEdge
         iconPositionReversed: (plasmoid.location === PlasmaCore.Types.RightEdge)
 
@@ -107,8 +106,7 @@ Item {
         anchors.top: parent.top
 
         text: i18n("Rearrange and configure your widgets")
-        SettingsControls.ToolTip.text: i18n("Feel free to move around your widgets and configure them from their tooltips")
-        SettingsControls.ToolTip.visible: hovered && SettingsControls.ToolTip.text !== ""
+        tooltip: i18n("Feel free to move around your widgets and configure them from their tooltips")
         checked: universalSettings.inConfigureAppletsMode
         iconPositionReversed: plasmoid.location === PlasmaCore.Types.RightEdge
 
@@ -126,8 +124,7 @@ Item {
         visible: root.isVertical
 
         text: i18n("Stick On Bottom");
-        SettingsControls.ToolTip.text: i18n("Stick maximum available space at bottom screen edge and ignore any bottom docks or panels")
-        SettingsControls.ToolTip.visible: hovered && SettingsControls.ToolTip.text !== ""
+        tooltip: i18n("Stick maximum available space at bottom screen edge and ignore any bottom docks or panels")
         checked: plasmoid.configuration.isStickedOnBottomEdge
         iconPositionReversed: (plasmoid.location !== PlasmaCore.Types.RightEdge)
 

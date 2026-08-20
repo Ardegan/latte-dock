@@ -27,7 +27,9 @@ PlasmaComponents.TextField {
     placeholderText: i18n("none")
     horizontalAlignment: Text.AlignLeft
 
-    readonly property int implicitWidth: internalContent.width + LatteCore.Tools.mSize(Kirigami.Theme.defaultFont).width * 3.5
+    //! Qt6 marks QQuickItem::implicitWidth FINAL, so it cannot be shadowed by a
+    //! `readonly property int` of the same name -- bind the inherited one.
+    implicitWidth: internalContent.width + LatteCore.Tools.mSize(Kirigami.Theme.defaultFont).width * 3.5
 
     readonly property int value: text === "" ? minValue : parseInt(text)
     property int step: 100

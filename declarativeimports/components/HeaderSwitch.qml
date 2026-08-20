@@ -38,9 +38,13 @@ Item {
     property bool checked: false
     property bool isFirstSubCategory: false
 
-    readonly property int implicitWidth: row.width
+    //! Qt6 marks this FINAL on QQuickItem; bind it instead of shadowing it.
 
-    readonly property int implicitHeight: {
+    implicitWidth: row.width
+
+    //! Qt6 marks this FINAL on QQuickItem; bind it instead of shadowing it.
+
+    implicitHeight: {
         if (level === 1) {
             return Math.max(headerText.implicitHeight, itemSwitch.implicitHeight);
         } else if (level === 2) {

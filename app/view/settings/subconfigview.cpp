@@ -171,9 +171,11 @@ void SubConfigView::initParentView(Latte::View *view)
 
     viewconnections << connect(m_latteView->positioner(), &ViewPart::Positioner::canvasGeometryChanged, this, &SubConfigView::syncGeometry);
 
-    //! Assign app interfaces in be accessible through containment graphic item
-    QQuickItem *containmentGraphicItem = PlasmaQuick::AppletQuickItem::itemForApplet(m_latteView->containment());
-    rootContext()->setContextProperty(QStringLiteral("plasmoid"), containmentGraphicItem);
+    //! Plasma 6 splits the applet API: `configuration`, `location` and
+    //! `formFactor` -- the only three the configuration QML uses -- live on
+    //! Plasma::Applet, not on the AppletQuickItem. Expose the containment
+    //! itself, matching what Plasma hands to applet QML as `plasmoid`.
+    rootContext()->setContextProperty(QStringLiteral("plasmoid"), m_latteView->containment());
     rootContext()->setContextProperty(QStringLiteral("latteView"), m_latteView);
 }
 

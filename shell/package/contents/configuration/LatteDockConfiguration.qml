@@ -100,8 +100,11 @@ Loader {
         onAdvancedLevelChanged: {
             //! switch to appearancePage when effectsPage becomes hidden because
             //! advancedLevel was disabled by the user
-            if (!advancedLevel && tabBar.currentTab === effectsTabBtn) {
-                tabBar.currentTab = appearanceTabBtn;
+            //! PlasmaComponents 3 TabBar uses currentIndex; Components 2 took the
+            //! button object itself. Indices follow the TabButton declaration
+            //! order below: behavior(0), appearance(1), effects(2).
+            if (!advancedLevel && tabBar.currentIndex === 2) {
+                tabBar.currentIndex = 1;
             }
         }
 
@@ -300,7 +303,7 @@ Loader {
                     id: behaviorTabBtn
                     text: i18n("Behavior")
                     onCheckedChanged: {
-                        if (checked && pagesStackView.currentItem !== behaviorPage) {
+                        if (checked && pagesStackView && pagesStackView.currentItem !== behaviorPage) {
                             pagesStackView.forwardSliding = true;
                             pagesStackView.replace(pagesStackView.currentItem, behaviorPage);
                         }
@@ -310,7 +313,7 @@ Loader {
                         target: viewConfig
                         function onIsReadyChanged() {
                             if (viewConfig.isReady) {
-                                tabBar.currentTab = behaviorTabBtn;
+                                tabBar.currentIndex = 0; //! behaviorTabBtn
                             }
                         }
                     }
@@ -320,7 +323,7 @@ Loader {
                     id: appearanceTabBtn
                     text: i18n("Appearance")
                     onCheckedChanged: {
-                        if (checked && pagesStackView.currentItem !== appearancePage) {
+                        if (checked && pagesStackView && pagesStackView.currentItem !== appearancePage) {
                             pagesStackView.forwardSliding = (pagesStackView.currentItem.pageIndex > 1);
                             pagesStackView.replace(pagesStackView.currentItem, appearancePage);
                         }
@@ -332,7 +335,7 @@ Loader {
                     visible: dialog.advancedLevel
 
                     onCheckedChanged: {
-                        if (checked && pagesStackView.currentItem !== effectsPage) {
+                        if (checked && pagesStackView && pagesStackView.currentItem !== effectsPage) {
                             pagesStackView.forwardSliding = (pagesStackView.currentItem.pageIndex > 2);
                             pagesStackView.replace(pagesStackView.currentItem, effectsPage);
                         }
@@ -391,12 +394,20 @@ Loader {
                     QtQuickControls212.ScrollBar.vertical.policy: QtQuickControls212.ScrollBar.AsNeeded
                     QtQuickControls212.ScrollBar.horizontal.policy: QtQuickControls212.ScrollBar.AlwaysOff
 
-                    contentItem.flickableDirection: Flickable.VerticalFlick
+                    //! ScrollView builds its Flickable lazily, so contentItem cannot
+                    //! be sub-assigned declaratively; bind once it exists.
+                    Binding {
+                        target: scrollArea.contentItem
+                        property: "flickableDirection"
+                        when: scrollArea.contentItem instanceof Flickable
+                        value: Flickable.VerticalFlick
+                    }
 
                     QtQuickControls212.StackView {
                         id: pagesStackView
-                        width: currentItem.width
-                        height: currentItem.height
+                        //! currentItem is null until the first page is pushed
+                        width: currentItem ? currentItem.width : 0
+                        height: currentItem ? currentItem.height : 0
 
                         property bool forwardSliding: true
 

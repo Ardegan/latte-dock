@@ -7,6 +7,7 @@ import QtQuick 2.7
 import QtQuick.Layouts 1.3
 import Qt5Compat.GraphicalEffects
 import QtQuick.Controls as QtQuickControls212
+import QtQuick.Dialogs as QtDialogs
 
 import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.plasma.components 3.0 as PlasmaComponents
@@ -462,12 +463,16 @@ PlasmaComponents.Page {
                         }
 
                         function selectTab(type) {
+                            //! PlasmaComponents 3 TabBar exposes currentIndex; the
+                            //! Components 2 `currentTab`, which took the button object
+                            //! itself, no longer exists. Indices follow the declaration
+                            //! order of the three TabButtons above.
                             if (type === latteBtn.type) {
-                                tabBar.currentTab = latteBtn;
+                                tabBar.currentIndex = 0;
                             } else if (type === plasmaBtn.type) {
-                                tabBar.currentTab = plasmaBtn;
+                                tabBar.currentIndex = 1;
                             } else if (type === customIndicator.type) {
-                                tabBar.currentTab = customBtn;
+                                tabBar.currentIndex = 2;
                             }
                         }
 

@@ -23,14 +23,35 @@ Ability.LaunchersPrivate {
     readonly property var universalLaunchers: latteView && universalSettings ? universalSettings.launchers : []
 
     function addAbilityClient(client) {
+        if (!layoutsManager) {
+            //! Plasma 6 builds the containment QML before View::init() publishes
+            //! _latte_layoutsManager_object. Clients re-register themselves when
+            //! `isReady` turns true, so dropping the early call is safe.
+            return;
+        }
+
         layoutsManager.syncedLaunchers.addAbilityClient(client);
     }
 
     function removeAbilityClient(client) {
+        if (!layoutsManager) {
+            //! Plasma 6 builds the containment QML before View::init() publishes
+            //! _latte_layoutsManager_object. Clients re-register themselves when
+            //! `isReady` turns true, so dropping the early call is safe.
+            return;
+        }
+
         layoutsManager.syncedLaunchers.removeAbilityClient(client);
     }
 
     function addSyncedLauncher(senderId, group, groupId, launcherUrl) {
+        if (!layoutsManager) {
+            //! Plasma 6 builds the containment QML before View::init() publishes
+            //! _latte_layoutsManager_object. Clients re-register themselves when
+            //! `isReady` turns true, so dropping the early call is safe.
+            return;
+        }
+
         layoutsManager.syncedLaunchers.addLauncher(layoutName,
                                                    senderId,
                                                    group,
@@ -39,6 +60,13 @@ Ability.LaunchersPrivate {
     }
 
     function removeSyncedLauncher(senderId, group,groupId, launcherUrl) {
+        if (!layoutsManager) {
+            //! Plasma 6 builds the containment QML before View::init() publishes
+            //! _latte_layoutsManager_object. Clients re-register themselves when
+            //! `isReady` turns true, so dropping the early call is safe.
+            return;
+        }
+
         layoutsManager.syncedLaunchers.removeLauncher(layoutName,
                                                       senderId,
                                                       group,
@@ -47,6 +75,13 @@ Ability.LaunchersPrivate {
     }
 
     function addSyncedLauncherToActivity(senderId, group, groupId, launcherUrl, activityId) {
+        if (!layoutsManager) {
+            //! Plasma 6 builds the containment QML before View::init() publishes
+            //! _latte_layoutsManager_object. Clients re-register themselves when
+            //! `isReady` turns true, so dropping the early call is safe.
+            return;
+        }
+
         layoutsManager.syncedLaunchers.addLauncherToActivity(layoutName,
                                                              senderId,
                                                              group,
@@ -56,6 +91,13 @@ Ability.LaunchersPrivate {
     }
 
     function removeSyncedLauncherFromActivity(senderId, group, groupId, launcherUrl, activityId) {
+        if (!layoutsManager) {
+            //! Plasma 6 builds the containment QML before View::init() publishes
+            //! _latte_layoutsManager_object. Clients re-register themselves when
+            //! `isReady` turns true, so dropping the early call is safe.
+            return;
+        }
+
         layoutsManager.syncedLaunchers.removeLauncherFromActivity(layoutName,
                                                                   senderId,
                                                                   group,
@@ -65,6 +107,13 @@ Ability.LaunchersPrivate {
     }
 
     function addDroppedLaunchers(senderId, group, groupId, urls) {
+        if (!layoutsManager) {
+            //! Plasma 6 builds the containment QML before View::init() publishes
+            //! _latte_layoutsManager_object. Clients re-register themselves when
+            //! `isReady` turns true, so dropping the early call is safe.
+            return;
+        }
+
         layoutsManager.syncedLaunchers.urlsDropped(layoutName,
                                                    senderId,
                                                    group,
@@ -73,6 +122,13 @@ Ability.LaunchersPrivate {
     }
 
     function validateSyncedLaunchersOrder(senderId, group, groupId, orderedlaunchers) {
+        if (!layoutsManager) {
+            //! Plasma 6 builds the containment QML before View::init() publishes
+            //! _latte_layoutsManager_object. Clients re-register themselves when
+            //! `isReady` turns true, so dropping the early call is safe.
+            return;
+        }
+
         layoutsManager.syncedLaunchers.validateLaunchersOrder(layoutName,
                                                               senderId,
                                                               group,

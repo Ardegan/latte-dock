@@ -24,7 +24,8 @@ Item{
     property string tooltip: ""
 
     readonly property bool containsMouse: tooltipBtn.hovered
-    readonly property int implicitHeight: visibleButton.height
+    //! Qt6 marks this FINAL on QQuickItem; bind it instead of shadowing it.
+    implicitHeight: visibleButton.height
 
     readonly property color appliedTextColor: checked ? checkedTextColor : textColor
     readonly property color appliedBackgroundColor: checked ? checkedBackgroundColor : backgroundColor

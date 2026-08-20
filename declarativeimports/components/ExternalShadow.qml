@@ -18,8 +18,11 @@ Item{
 
     readonly property bool isHorizontal : (shadowDirection !== PlasmaCore.Types.LeftEdge) && (shadowDirection !== PlasmaCore.Types.RightEdge)
 
-    readonly property int implicitWidth: shadow.width
-    readonly property int implicitHeight: shadow.height
+    //! Qt6 marks this FINAL on QQuickItem; bind it instead of shadowing it.
+
+    implicitWidth: shadow.width
+    //! Qt6 marks this FINAL on QQuickItem; bind it instead of shadowing it.
+    implicitHeight: shadow.height
 
     Item{
         id: shadow
