@@ -14,7 +14,7 @@ import org.kde.latte.private.tasks 0.1 as LatteTasks
 MouseArea {
     id: taskMouseArea
     anchors.fill: parent
-    acceptedButtons: Qt.LeftButton | Qt.MidButton | Qt.RightButton
+    acceptedButtons: Qt.LeftButton | Qt.MiddleButton | Qt.RightButton
     hoverEnabled: taskItem.visible && (!inAnimation) && (!isStartup) && (!root.taskInAnimation)
                   &&(!inBouncingAnimation) && !isSeparator
 
@@ -117,7 +117,7 @@ MouseArea {
 
         var modAccepted = modifierAccepted(mouse);
 
-        if ((mouse.button == Qt.LeftButton)||(mouse.button == Qt.MidButton) || modAccepted) {
+        if ((mouse.button == Qt.LeftButton)||(mouse.button == Qt.MiddleButton) || modAccepted) {
             lastButtonClicked = mouse.button;
             pressed = true;
             pressX = mouse.x;
@@ -162,7 +162,7 @@ MouseArea {
                 } else {
                     activateTask();
                 }
-            } else if (mouse.button == Qt.MidButton && !root.disableAllWindowsFunctionality){
+            } else if (mouse.button == Qt.MiddleButton && !root.disableAllWindowsFunctionality){
                 if( !taskItem.isLauncher ){
                     if (root.middleClickAction == LatteTasks.Types.NewInstance) {
                         tasksModel.requestNewInstance(modelIndex());
