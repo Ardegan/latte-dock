@@ -76,6 +76,17 @@ Item {
                 sizer.updateIconSize();
             }
         }
+
+        //! updateIconSize() refuses to run while the icon size is still animating,
+        //! because metrics.iconSize is then neither maxIconSize nor sizer.iconSize,
+        //! and the dropped call was never retried. Restoring the max-length ruler
+        //! before the shrink animation finished therefore lost the final grow step
+        //! and left the items stuck at the shrunken size, with the background no
+        //! longer matching them, until an unrelated trigger recomputed the size.
+        //! metrics emits this signal for exactly this purpose but nothing listened.
+        function onIconSizeAnimationEnded() {
+            sizer.updateIconSize();
+        }
     }
 
     Connections {
