@@ -111,7 +111,7 @@ Loader {
 
         Connections {
             target: latteView.positioner
-            onCurrentScreenNameChanged: dialog.updateScales();
+            function onCurrentScreenNameChanged() { dialog.updateScales(); }
         }
 
         function updateScales() {
@@ -308,7 +308,7 @@ Loader {
 
                     Connections {
                         target: viewConfig
-                        onIsReadyChanged: {
+                        function onIsReadyChanged() {
                             if (viewConfig.isReady) {
                                 tabBar.currentTab = behaviorTabBtn;
                             }
@@ -523,7 +523,7 @@ Loader {
 
                         Component.onCompleted:actionsComboBtn.updateModel();
 
-                        onActivated: {
+                        function onActivated() {
                             var item = actionsModel.get(index);
 
                             if (item && item.actionId === "add:") {
@@ -535,7 +535,7 @@ Loader {
                             actionsComboBtn.comboBox.currentIndex = -1;
                         }
 
-                        onEnabledChanged: {
+                        function onEnabledChanged() {
                             if (enabled) {
                                 actionsComboBtn.updateModel();
                             } else {
@@ -546,7 +546,7 @@ Loader {
 
                     Connections{
                         target: viewConfig
-                        onIsReadyChanged: {
+                        function onIsReadyChanged() {
                             if (viewConfig.isReady) {
                                 actionsComboBtn.updateModel();
                             }
@@ -555,12 +555,12 @@ Loader {
 
                     Connections{
                         target: latteView
-                        onTypeChanged: actionsComboBtn.updateDuplicateText();
+                        function onTypeChanged() { actionsComboBtn.updateDuplicateText(); }
                     }
 
                     Connections {
                         target: layoutsManager
-                        onViewTemplatesChanged: actionsComboBtn.updateModel();
+                        function onViewTemplatesChanged() { actionsComboBtn.updateModel(); }
                     }
 
                     function updateModel() {

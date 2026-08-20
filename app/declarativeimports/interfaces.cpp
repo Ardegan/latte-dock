@@ -102,6 +102,19 @@ void Interfaces::setUniversalSettings(QObject *settings)
     emit universalSettingsChanged();
 }
 
+void Interfaces::updateInterfaces()
+{
+    if (!m_plasmoid) {
+        return;
+    }
+
+    setGlobalShortcuts(m_plasmoid->property("_latte_globalShortcuts_object").value<QObject *>());
+    setLayoutsManager(m_plasmoid->property("_latte_layoutsManager_object").value<QObject *>());
+    setThemeExtended(m_plasmoid->property("_latte_themeExtended_object").value<QObject *>());
+    setUniversalSettings(m_plasmoid->property("_latte_universalSettings_object").value<QObject *>());
+    setView(m_plasmoid->property("_latte_view_object").value<QObject *>());
+}
+
 void Interfaces::updateView()
 {
     if (m_plasmoid) {

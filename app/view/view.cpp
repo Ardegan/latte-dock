@@ -379,7 +379,7 @@ void View::init(Plasma::Containment *plasma_containment)
     connect(m_corona->indicatorFactory(), &Latte::Indicator::Factory::indicatorRemoved, this, &View::indicatorPluginRemoved);
 
     //! Assign app interfaces in be accessible through containment graphic item
-    QQuickItem *containmentGraphicItem = qobject_cast<QQuickItem *>(plasma_containment->property("_plasma_graphicObject").value<QObject *>());
+    QQuickItem *containmentGraphicItem = PlasmaQuick::AppletQuickItem::itemForApplet(plasma_containment);
 
     if (containmentGraphicItem) {
         containmentGraphicItem->setProperty("_latte_globalShortcuts_object", QVariant::fromValue(m_corona->globalShortcuts()->shortcutsTracker()));
@@ -390,8 +390,17 @@ void View::init(Plasma::Containment *plasma_containment)
 
         Latte::Interfaces *ifacesGraphicObject = qobject_cast<Latte::Interfaces *>(containmentGraphicItem->property("_latte_view_interfacesobject").value<QObject *>());
 
+        if (!ifacesGraphicObject) {
+            //! Plasma 6 builds the containment QML item before View::init() runs,
+            //! so the Interfaces object has already bound plasmoidInterface and
+            //! read every _latte_*_object property as null -- and could not have
+            //! published itself back through view.interfacesGraphicObj, because
+            //! `view` was null at that point. Find it directly instead.
+            ifacesGraphicObject = containmentGraphicItem->findChild<Latte::Interfaces *>();
+        }
+
         if (ifacesGraphicObject) {
-            ifacesGraphicObject->updateView();
+            ifacesGraphicObject->updateInterfaces();
             setInterfacesGraphicObj(ifacesGraphicObject);
         }
     }
@@ -1498,7 +1507,7 @@ void View::setInterfacesGraphicObj(Latte::Interfaces *ifaces)
     m_interfacesGraphicObj = ifaces;
 
     if (containment()) {
-        QQuickItem *containmentGraphicItem = qobject_cast<QQuickItem *>(containment()->property("_plasma_graphicObject").value<QObject *>());
+        QQuickItem *containmentGraphicItem = PlasmaQuick::AppletQuickItem::itemForApplet(containment());
 
         if (containmentGraphicItem) {
             containmentGraphicItem->setProperty("_latte_view_interfacesobject", QVariant::fromValue(m_interfacesGraphicObj));

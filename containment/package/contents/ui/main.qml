@@ -443,7 +443,7 @@ ContainmentItem {
     //! It is used only when the user chooses different alignment types and not during startup
     Connections {
         target: latteView ? latteView : null
-        onAlignmentChanged: {
+        function onAlignmentChanged() {
             if (latteView.alignment === LatteCore.Types.NoneAlignment) {
                 return;
             }
@@ -486,14 +486,14 @@ ContainmentItem {
 
     Connections {
         target: latteView
-        onPositionerChanged: {
+        function onPositionerChanged() {
             if (latteView.positioner) {
                 latteView.positioner.hidingForRelocationStarted.connect(visibilityManager.slotHideDockDuringLocationChange);
                 latteView.positioner.showingAfterRelocationFinished.connect(visibilityManager.slotShowDockAfterLocationChange);
             }
         }
 
-        onVisibilityChanged: {
+        function onVisibilityChanged() {
             if (latteView.visibility) {
                 latteView.visibility.onContainsMouseChanged.connect(visibilityManager.slotContainsMouseChanged);
                 latteView.visibility.onMustBeHide.connect(visibilityManager.slotMustBeHide);
@@ -1036,7 +1036,12 @@ ContainmentItem {
 
     LatteApp.Interfaces {
         id: _interfaces
-        plasmoidInterface: plasmoid
+        //! In Plasma 5 the QML `plasmoid` context object WAS the
+        //! AppletQuickItem. In Plasma 6 it is the Plasma::Applet, and the
+        //! AppletQuickItem is the ContainmentItem root -- so pass `root`,
+        //! otherwise the qobject_cast in setPlasmoidInterface() yields null
+        //! and `view` (hence latteView) never gets set.
+        plasmoidInterface: root
 
         Component.onCompleted: {
             view.interfacesGraphicObj = _interfaces;
@@ -1070,7 +1075,7 @@ ContainmentItem {
 
     Connections {
         target:fastLayoutManager
-        onHasRestoredAppletsChanged: {
+        function onHasRestoredAppletsChanged() {
             if (fastLayoutManager.hasRestoredApplets) {
                 startupDelayer.start();
             }

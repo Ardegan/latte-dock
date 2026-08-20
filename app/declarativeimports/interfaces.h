@@ -41,6 +41,12 @@ public:
 public slots:
     Q_INVOKABLE void updateView();
 
+    //! Re-read every _latte_*_object property from the plasmoid interface.
+    //! Needed because Plasma 6 constructs the containment QML item before
+    //! View::init() runs, so this object binds plasmoidInterface and reads
+    //! those properties while they are all still null.
+    Q_INVOKABLE void updateInterfaces();
+
 signals:
     void interfaceChanged();
     void globalShortcutsChanged();

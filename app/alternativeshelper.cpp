@@ -16,6 +16,7 @@
 #include <kconfig_version.h>
 
 // Plasma
+#include <PlasmaQuick/AppletQuickItem>
 #include <Plasma/Containment>
 #include <Plasma/PluginLoader>
 
@@ -55,7 +56,7 @@ QString AlternativesHelper::currentPlugin() const
 
 QQuickItem *AlternativesHelper::applet() const
 {
-    return m_applet->property("_plasma_graphicObject").value<QQuickItem *>();
+    return PlasmaQuick::AppletQuickItem::itemForApplet(m_applet);
 }
 
 void AlternativesHelper::loadAlternative(const QString &plugin)
@@ -70,8 +71,8 @@ void AlternativesHelper::loadAlternative(const QString &plugin)
         return;
     }
 
-    QQuickItem *appletItem = m_applet->property("_plasma_graphicObject").value<QQuickItem *>();
-    QQuickItem *contItem = cont->property("_plasma_graphicObject").value<QQuickItem *>();
+    QQuickItem *appletItem = PlasmaQuick::AppletQuickItem::itemForApplet(m_applet);
+    QQuickItem *contItem = PlasmaQuick::AppletQuickItem::itemForApplet(cont);
 
     if (!appletItem || !contItem) {
         return;

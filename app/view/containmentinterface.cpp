@@ -71,7 +71,7 @@ void ContainmentInterface::identifyShortcutsHost()
         return;
     }
 
-    if (QQuickItem *graphicItem = m_view->containment()->property("_plasma_graphicObject").value<QQuickItem *>()) {
+    if (QQuickItem *graphicItem = PlasmaQuick::AppletQuickItem::itemForApplet(m_view->containment())) {
         const auto &childItems = graphicItem->childItems();
 
         for (QQuickItem *item : childItems) {
@@ -133,7 +133,7 @@ bool ContainmentInterface::applicationLauncherInPopup() const
 
     for (auto applet : applets) {
         if (applet->id() == launcherAppletId) {
-            appLauncherItem = applet->property("_plasma_graphicObject").value<PlasmaQuick::AppletQuickItem *>();
+            appLauncherItem = PlasmaQuick::AppletQuickItem::itemForApplet(applet);
         }
     }
 
@@ -206,7 +206,7 @@ bool ContainmentInterface::updateBadgeForLatteTask(const QString identifier, con
 
         if (meta.pluginId() == QLatin1String("org.kde.latte.plasmoid")) {
 
-            if (QQuickItem *appletInterface = applet->property("_plasma_graphicObject").value<QQuickItem *>()) {
+            if (QQuickItem *appletInterface = PlasmaQuick::AppletQuickItem::itemForApplet(applet)) {
                 const auto &childItems = appletInterface->childItems();
 
                 if (childItems.isEmpty()) {
@@ -255,7 +255,7 @@ bool ContainmentInterface::activatePlasmaTask(const int index)
         const QStringList& provides = metadata.value(QStringLiteral("X-Plasma-Provides"), QStringList{});
 
         if (provides.contains(QLatin1String("org.kde.plasma.multitasking"))) {
-            if (QQuickItem *appletInterface = applet->property("_plasma_graphicObject").value<QQuickItem *>()) {
+            if (QQuickItem *appletInterface = PlasmaQuick::AppletQuickItem::itemForApplet(applet)) {
                 const auto &childItems = appletInterface->childItems();
 
                 if (childItems.isEmpty()) {
@@ -303,7 +303,7 @@ bool ContainmentInterface::newInstanceForPlasmaTask(const int index)
         const QStringList& provides = metadata.value(QStringLiteral("X-Plasma-Provides"), QStringList{});
 
         if (provides.contains(QLatin1String("org.kde.plasma.multitasking"))) {
-            if (QQuickItem *appletInterface = applet->property("_plasma_graphicObject").value<QQuickItem *>()) {
+            if (QQuickItem *appletInterface = PlasmaQuick::AppletQuickItem::itemForApplet(applet)) {
                 const auto &childItems = appletInterface->childItems();
 
                 if (childItems.isEmpty()) {
@@ -414,7 +414,7 @@ void ContainmentInterface::deactivateApplets()
     }
 
     for (const auto applet : m_view->containment()->applets()) {
-        PlasmaQuick::AppletQuickItem *ai = applet->property("_plasma_graphicObject").value<PlasmaQuick::AppletQuickItem *>();
+        PlasmaQuick::AppletQuickItem *ai = PlasmaQuick::AppletQuickItem::itemForApplet(applet);
 
         if (ai) {
             ai->setExpanded(false);
@@ -434,7 +434,7 @@ bool ContainmentInterface::appletIsExpandable(const int id) const
                 return true;
             }
 
-            PlasmaQuick::AppletQuickItem *ai = applet->property("_plasma_graphicObject").value<PlasmaQuick::AppletQuickItem *>();
+            PlasmaQuick::AppletQuickItem *ai = PlasmaQuick::AppletQuickItem::itemForApplet(applet);
 
             if (ai) {
                 return appletIsExpandable(ai);
@@ -468,7 +468,7 @@ bool ContainmentInterface::appletIsActivationTogglesExpanded(const int id) const
                 return true;
             }
 
-            PlasmaQuick::AppletQuickItem *ai = applet->property("_plasma_graphicObject").value<PlasmaQuick::AppletQuickItem *>();
+            PlasmaQuick::AppletQuickItem *ai = PlasmaQuick::AppletQuickItem::itemForApplet(applet);
 
             if (ai) {
                 return ai->isActivationTogglesExpanded();
@@ -801,7 +801,7 @@ void ContainmentInterface::toggleAppletExpanded(const int id)
 
     for (const auto applet : m_view->containment()->applets()) {
         if (applet->id() == (uint)id && !Layouts::Storage::self()->isSubContainment(m_view->corona(), applet)/*block for sub-containments*/) {
-            PlasmaQuick::AppletQuickItem *ai = applet->property("_plasma_graphicObject").value<PlasmaQuick::AppletQuickItem *>();
+            PlasmaQuick::AppletQuickItem *ai = PlasmaQuick::AppletQuickItem::itemForApplet(applet);
 
             if (ai) {
                 emit applet->activated();
@@ -928,7 +928,9 @@ KConfigPropertyMap *ContainmentInterface::appletConfiguration(const Plasma::Appl
         return nullptr;
     }
 
-    PlasmaQuick::AppletQuickItem *ai = applet->property("_plasma_graphicObject").value<PlasmaQuick::AppletQuickItem *>();
+    //! itemForApplet() only looks the item up, but its signature is non-const
+    //! while appletConfiguration() takes a const applet.
+    PlasmaQuick::AppletQuickItem *ai = PlasmaQuick::AppletQuickItem::itemForApplet(const_cast<Plasma::Applet *>(applet));
     bool isSubContainment = Layouts::Storage::self()->isSubContainment(m_view->corona(), applet); //we use corona() to make sure that returns true even when it is first created from user
     int currentAppletId = applet->id();
     KConfigPropertyMap *configuration{nullptr};
@@ -942,7 +944,7 @@ KConfigPropertyMap *ContainmentInterface::appletConfiguration(const Plasma::Appl
     } else {
         Plasma::Containment *subcontainment = Layouts::Storage::self()->subContainmentOf(m_view->corona(), applet);
         if (subcontainment) {
-            PlasmaQuick::AppletQuickItem *subcai = subcontainment->property("_plasma_graphicObject").value<PlasmaQuick::AppletQuickItem *>();
+            PlasmaQuick::AppletQuickItem *subcai = PlasmaQuick::AppletQuickItem::itemForApplet(subcontainment);
 
             if (subcai) {
                 int metaconfigindex = subcai->metaObject()->indexOfProperty("configuration");
@@ -962,7 +964,7 @@ void ContainmentInterface::onAppletAdded(Plasma::Applet *applet)
         return;
     }
 
-    PlasmaQuick::AppletQuickItem *ai = applet->property("_plasma_graphicObject").value<PlasmaQuick::AppletQuickItem *>();
+    PlasmaQuick::AppletQuickItem *ai = PlasmaQuick::AppletQuickItem::itemForApplet(applet);
     bool isSubContainment = Layouts::Storage::self()->isSubContainment(m_view->corona(), applet); //we use corona() to make sure that returns true even when it is first created from user
     int currentAppletId = applet->id();
 
@@ -982,7 +984,7 @@ void ContainmentInterface::onAppletAdded(Plasma::Applet *applet)
         }
 
         for (const auto internalApplet : subContainment->applets()) {
-            PlasmaQuick::AppletQuickItem *ai = internalApplet->property("_plasma_graphicObject").value<PlasmaQuick::AppletQuickItem *>();
+            PlasmaQuick::AppletQuickItem *ai = PlasmaQuick::AppletQuickItem::itemForApplet(internalApplet);
 
             if (ai && !m_appletsExpandedConnections.contains(ai) ){
                 m_appletsExpandedConnections[ai] = connect(ai, &PlasmaQuick::AppletQuickItem::expandedChanged, this, &ContainmentInterface::onAppletExpandedChanged);
