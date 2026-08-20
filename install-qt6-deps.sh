@@ -34,10 +34,13 @@ PKGS=(
   libplasmaactivitiesstats-dev
   libksysguard-dev
   kwayland-dev
+  # Plasma 6 reserves screen space through wlr-layer-shell exclusive zones, so the
+  # Wayland strut in app/wm/waylandinterface.cpp needs LayerShellQt::Interface.
+  liblayershellqtinterface-dev
   plasma-workspace-dev
 )
 
 echo "Installing ${#PKGS[@]} packages..."
 # -y because this is run non-interactively (no stdin for apt's prompt).
-# Plan reviewed beforehand: 155 new, 14 upgraded, 0 removed, ~409 MB.
+# Plan reviewed beforehand: ~155 new, 14 upgraded, 0 removed, ~409 MB.
 sudo apt install -y "${PKGS[@]}"
