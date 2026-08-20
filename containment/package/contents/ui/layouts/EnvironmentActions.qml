@@ -223,8 +223,8 @@ Loader {
             Connections {
                 target: mainArea
                 enabled: root.indicators.info.needsMouseEventCoordinates
-                function onPressed() { indicatorBackLayer.level.mousePressed(mouse.x, mouse.y, mouse.button); }
-                function onReleased() { indicatorBackLayer.level.mouseReleased(mouse.x, mouse.y, mouse.button); }
+                function onPressed(mouse) { indicatorBackLayer.level.mousePressed(mouse.x, mouse.y, mouse.button); }
+                function onReleased(mouse) { indicatorBackLayer.level.mouseReleased(mouse.x, mouse.y, mouse.button); }
             }
         }
     }

@@ -11,7 +11,8 @@ KPackage/QML packages (shell, containment, tasks plasmoid, indicators) that Plas
 
 **Branch matters.** `master` is the Qt5/KF5/Plasma5 line and is effectively unmaintained upstream (its
 CI was dropped in 2026 because Plasma 5 CI no longer exists). Active work happens on **`qt6-port`**
-(local, based on upstream `origin/work/plasma6` merged with `origin/master`) — see "Qt6 port status".
+(local, based on upstream `origin/work/plasma6` merged with `origin/master`), where the dock builds and
+runs on Plasma 6 — see "Qt6 port status". Nothing on `qt6-port` has been pushed anywhere.
 
 Stack on `qt6-port`: C++20 / Qt 6.5+ / KF6 6.0+ / Plasma 6. On `master`: C++17 / Qt 5.15 / KF5 5.88.
 Version is set in the top-level `CMakeLists.txt`
@@ -30,13 +31,17 @@ sh install.sh --translations  # also `make fetch-translations` (trunk; --transla
 sh uninstall.sh               # uses build/install_manifest.txt
 ```
 
-Manual equivalent when iterating:
+Manual equivalent when iterating. Use **Release** unless you specifically want the qmllint pass:
+Debug defines `QT_FATAL_WARNINGS`, so any QML warning aborts the process at runtime.
 
 ```bash
-cmake -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Debug -DKDE_L10N_AUTO_TRANSLATIONS=OFF
+cmake -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DKDE_L10N_AUTO_TRANSLATIONS=OFF
 cmake --build build -j$(nproc)
 sudo cmake --install build
 ```
+
+Latte rewrites `~/.config/latte/*.layout.latte` when it exits, so **stop it before editing a layout
+file by hand**, otherwise the change is overwritten on shutdown.
 
 **QML edits require a reinstall.** All QML lives in KPackages installed via `plasma_install_package`
 (`org.kde.latte.shell`, `org.kde.latte.containment`, `org.kde.latte.plasmoid`) and
@@ -70,25 +75,56 @@ User state lives in `~/.config/lattedockrc` (screens, universal settings) and `~
 
 ## Qt6 port status (`qt6-port` branch)
 
-The port is well advanced but **not finished and not runtime-verified**. Done:
+**The dock builds, runs and renders on Plasma 6.** Verified on Qt 6.10.2 / KF6 6.24.0 /
+Plasma 6.6.5 (Wayland): a clean tree configures and builds with no errors, `latte-dock` starts, loads
+its layout, creates its view, and the Latte Tasks plasmoid and Plasma applets appear in it. Startup
+QML warnings are down to 16, of which 11 come from outside Latte.
 
-- CMake fully on Qt6/KF6: `Qt6 6.5+`, `KF6 6.0+`, C++20, `KDEInstallDirs6`, and the Plasma libraries
-  split into their own packages (`Plasma::Plasma`, `Plasma::PlasmaQuick`, `Plasma::Activities`,
-  `Plasma::KWaylandClient`). No `Qt5::`/`KF5::` targets remain.
-- QML root types migrated to Plasma 6 requirements: `ContainmentItem` in
-  `containment/package/contents/ui/main.qml`, `PlasmoidItem` in `plasmoid/package/contents/ui/main.qml`.
-- All 41 `QtGraphicalEffects` users moved to `Qt5Compat.GraphicalEffects`; all 47
-  `PlasmaComponents 2.0` users moved to `3.0`; 14 files moved to `org.kde.ksvg`.
-- C++ API updates: `KSvg` instead of `Plasma::Theme::ColorGroup`, `KX11Extras` for compositing state,
-  `QX11Info` obtained via `Qt::GuiPrivate` (18 call sites, all X11-guarded),
-  `legacy/ManagedTextureNode.{cpp,h}` vendored since Plasma no longer exports it.
+The port started from upstream `origin/work/plasma6` (merged with `origin/master`); everything below
+this line was added on top of it, because upstream's branch compiled but had never been run.
 
-Verified build state (Qt 6.10.2 / KF6 6.24.0 / Plasma 6.6.5): **the whole project compiles and links
-from a clean tree** — `latte-dock` plus `liblattecoreplugin.so`, `liblattecontainmentplugin.so`,
-`liblattetasksplugin.so`, `plasma_containmentactions_lattecontextmenu.so` and `latte_indicator.so`.
-It has **never been run**; nothing below is runtime-verified.
+### How the Plasma 5 -> 6 API split drove most of the work
 
-Fixes applied on top of upstream `work/plasma6`:
+Nearly every runtime bug traced back to one change: in Plasma 5 the QML `plasmoid`/`applet` was an
+`AppletInterface` — a `QQuickItem` that *also* carried `id`, `pluginName`, `status`, `configuration`.
+Plasma 6 splits that into **`PlasmaQuick::AppletQuickItem`** (the Item: geometry, `Layout`, `parent`,
+`anchors`, plus `expanded` and the `toolTip*` family) and **`Plasma::Applet`** (the data), reached from
+QML through the **`Plasmoid` attached object**. When touching applet-facing QML, check which half a
+member belongs to — read it out of
+`/usr/lib/x86_64-linux-gnu/qt6/qml/org/kde/plasma/plasmoid/plasmoidplugin.qmltypes`, and use Plasma's
+own `containments/panel` and `shells/org.kde.plasma.desktop/contents/applet/CompactApplet.qml` as the
+reference implementations.
+
+Consequences already handled:
+
+- `_plasma_graphicObject` no longer exists — use `PlasmaQuick::AppletQuickItem::itemForApplet()`
+  (21 C++ sites).
+- `Containment::applets` is typed `QList<Plasma::Applet*>`; Qt6 will **not** implicitly convert that
+  QVariant to `QList<QObject*>`, it silently yields an empty list.
+- `Containment.onAppletAdded` is `(applet, geometryHint)`, not the Plasma 5 `x`/`y`.
+- `Plasma::Applet::action(name)` -> `internalAction(name)`.
+- Applet-level reads in containment QML go through `applet.Plasmoid.<x>`.
+
+### Qt6 QML traps that fail silently
+
+These produce no error and no visible symptom at the point of failure, so they cost the most time:
+
+- **`Connections { onFoo: ... }` is never connected.** Qt6 requires
+  `Connections { function onFoo() { ... } }`. 149 handlers across the tree were dead; the one driving
+  `hasRestoredApplets` meant `Positioner::m_inStartup` never cleared and the view stayed parked at its
+  deliberate out-of-screen `QRect(-9999, -9999, ...)` for the whole session.
+- **Two `Behavior`s on one property**: Qt6 keeps the first and refuses the rest ("Attempting to set
+  another interceptor"). Latte's animated + `duration: 0` pairs, toggled by `enabled`, must be merged
+  into one Behavior with a conditional duration.
+- **`Binding.value` is evaluated even when `when` is false**, so the value expression must guard its
+  own nulls.
+- **Implicit signal-handler parameter injection is gone** — declare parameters explicitly.
+- `PlasmoidItem`/`ContainmentItem` may only be a **root** item. Upstream's port commit `4cfebe3b8`
+  blanket-replaced `Item {` in nine files that are not applet roots, which left `plasmoid` null inside
+  them.
+- `latteView.visibility` is null until `View::init()` finishes; guard it, not just `latteView`.
+
+### Fixes applied on top of upstream `work/plasma6`
 
 1. **`GuiPrivate` CMake component** (`CMakeLists.txt`). `Qt::GuiPrivate` is a separate CMake package in
    Qt6, not part of the `Gui` component; `app/` links it under `HAVE_X11` for `QX11Info`.
@@ -96,8 +132,27 @@ Fixes applied on top of upstream `work/plasma6`:
 3. **`#include <QHash>`** in `app/shortcuts/shortcutstracker.h`; Qt6 no longer pulls it in transitively.
 4. **`#include <PlasmaActivities/Info>`** in `app/settings/settingsdialog/layoutsmodel.h`, which used to
    get the type transitively through `activitydata.h`.
+5. **Wayland null guards** in `app/wm/waylandinterface.cpp`: `windowFor()` and both `winIdFor()`
+   overloads dereferenced `m_windowManagement` unguarded, while their siblings checked it.
+   plasma-window-management binds asynchronously, so the first view construction segfaulted reliably.
+6. **`Latte::compositingActive()`** in `app/apptypes.h`. `KX11Extras::compositingActive()` warns "may
+   only be used on X11" in KF6 and Latte called it on hot paths — 168 times per startup.
+7. **The `Interfaces` handshake**, see below.
+
+### The `Interfaces` handshake (`app/declarativeimports/interfaces.{h,cpp}`)
+
+`latteView` in containment QML is `_interfaces.view`, fed by `_latte_*_object` dynamic properties that
+`View::init()` sets on the containment item. Two Plasma 6 ordering problems:
+
+- `setPlasmoidInterface()` casts to `AppletQuickItem`, but the QML `plasmoid` is now the
+  `Plasma::Applet`, so the cast yielded null. `main.qml` passes the `ContainmentItem` **`root`** instead.
+- Plasma 6 builds the containment item **before** `View::init()` runs, so the object binds
+  `plasmoidInterface` and reads all five properties while they are still null — and cannot publish
+  itself back via `view.interfacesGraphicObj`, because `view` is null at that point. `View::init()` now
+  locates it with `findChild()` and calls `Interfaces::updateInterfaces()` to re-read them.
 
 ### Activity states: `Latte::Activities::Monitor`
+
 
 Plasma 6 keeps the `KActivities::` namespace but deleted the entire run-state concept from
 plasma-activities: `Info::State`, `Info::state()`, `Info::stateChanged`,
@@ -174,34 +229,56 @@ Chasing one runtime error per launch is slow. A ~25-line harness that walks the 
 `org.kde.latte.private.app` as missing (that module is registered by the `latte-dock` executable, not
 installed as a QML module), and `PlasmoidItem` fails outside an applet context — both are artifacts.
 
-### Remaining blockers for the Latte Tasks plasmoid
+### Diagnosing runtime state
 
-| Issue | Sites | Notes |
-|---|---|---|
-| `QtQuick.Controls 1.x` imports | 26 | Controls 1 does not exist in Qt6; needs a Controls 2 port |
-| `iconSource:` on PlasmaComponents buttons | 14 | Components 3 uses `icon.name` |
-| `PlasmaComponents.ContextMenu`, `PC2.ModelContextMenu` | 2 | Components 2 menus, removed |
-| `tooltip:` on custom buttons | 2 | |
-| `PipeWireThumbnail.5.24/5.25.qml` | 2 | version-gated legacy files; check the loader still excludes them |
+A Release build routes messages through Latte's own handler and prints almost nothing, so use
+`latte-dock --debug`. Beyond that:
 
-MPRIS is separate: the `mpris2` data engine is gone, so `Plasma5Support.DataSource` loads but stays
-empty. Media controls in tooltips and the task context menu (~20 call sites) need porting to
-`org.kde.plasma.private.mpris`, which is on the import path.
+- **Is there actually a window?** Latte's view is a `QQuickWindow`, so ask the compositor rather than
+  guessing. Load a throwaway KWin script that prints `workspace.windowList()` with
+  `resourceClass`/`caption`/`frameGeometry`, via
+  `busctl --user call org.kde.KWin /Scripting org.kde.kwin.Scripting loadScript ss <file> <name>` then
+  `... start`, and read the output back with `journalctl --user`. This is how the "parked at
+  `-9999,-9152`" and the "no latte window exists at all" states were both identified.
+- **Is a QML value what you think?** A one-shot `Timer { interval: 5000; running: true }` in
+  `containment/.../main.qml` that `console.log`s the metrics, layout children and their sizes answers
+  in one run what a dozen launches of error-chasing will not. That is what showed `mainLayout` holding
+  two zero-sized spacers instead of the applets.
+- Do **not** screenshot the whole desktop to find out what rendered. The display may be scaled, so
+  logical geometry does not map to image pixels, and a mis-cropped capture will surface unrelated
+  windows and their contents.
 
-### Still unverified
+### Controls 1 / PlasmaComponents 2 migration — done
 
-Nothing has been launched, so all QML-side concerns remain open:
+`QtQuick.Controls 1` and its styling system do not exist in Qt6. 24 files imported it but only 14 used
+a Controls 1 type; the rest were stale imports. Notable points if you touch this area again:
 
-| Item | Scope |
+- `ExclusiveGroup` was **removed, not converted to `ButtonGroup`**. Every site bound `checked:` to an
+  authoritative state expression and 26 of 28 also set `checkable: false`, so the group drove nothing —
+  and `ButtonGroup` *assigns* to `checked`, which would have broken those bindings.
+- `iconSource:` -> `icon.name:`; `tooltip:` -> the attached `<Alias>.ToolTip.text`/`.visible`.
+  `LatteComponents.CheckBox` keeps a `tooltip` property of its own, since ~22 config sites set it.
+- `PlasmaComponents.ContextMenu`/`MenuItem` -> `PlasmaExtras.Menu`/`MenuItem`, and
+  `PlasmaComponents.DialogStatus` -> `PlasmaExtras.Menu.Status` (same members).
+- Controls 2 `ScrollView` exposes scrollbars as attached properties; the Flickable is `contentItem`
+  and the old `viewport` is `availableWidth`/`availableHeight`.
+- **Do not pin `QtQuick.Templates`/`QtQuick.Controls` to a 2.x minor.** The pins froze the API at the
+  Qt5 feature level — `AbstractButton.icon` only exists from 2.3, which is what made
+  `ItemDelegate`'s grouped `icon` unassignable.
+
+### Known remaining issues
+
+| Item | Notes |
 |---|---|
-| `ecm_find_qmlmodule` asks for `plasma.components 2.0` while QML imports `3.0` | configure passes anyway — resolves against Plasma 6.6.5 |
-| `org.kde.kquickcontrolsaddons` imports | 10 QML files |
-| `import org.kde.plasma.core 2.0` / `plasmoid 2.0` version literals | 122 / 97 QML files |
-| `QtQuick.Controls 1` imports | 24 QML files — Controls 1 does not exist in Qt6 |
+| MPRIS media controls are inert | the `mpris2` data engine is gone in Plasma 6, so `Plasma5Support.DataSource` loads but stays empty. ~20 call sites in task tooltips and the context menu need porting to `org.kde.plasma.private.mpris`, which *is* on the import path |
+| `inNormalState` binding loop (`VisibilityManager.qml`) | byte-identical to `master`, so pre-existing upstream design that Qt6 merely detects; untangling it means reworking the show/hide state machine |
+| `Invalid QML element name "Types"` (x3) | `Latte::Types` is a `Q_GADGET` enum namespace, which Qt6 classes as a value type and wants lowercase. Renaming would break 595 `LatteCore.Types.*` sites and the versioned `LatteBridge` API |
+| `ecm_find_qmlmodule` version literals | relaxed to non-REQUIRED; `qmlplugindump` is unreliable against the Plasma 6 modules and intermittently fails for modules that are present |
 | `KDE_COMPILERSETTINGS_LEVEL "5.84.0"` | left at the KF5 value |
+| Nothing beyond first render is exercised | edit mode, the settings dialogs, multi-screen, per-activity layouts, autohide/dodge modes and the parabolic effect have not been tested |
 
-Because Debug builds define `QT_FATAL_WARNINGS`, any unresolved QML import will abort at runtime
-rather than warn.
+Because Debug builds define `QT_FATAL_WARNINGS`, any unresolved QML import aborts at runtime rather
+than warning — build Release when just running the dock.
 
 ### Build dependencies
 
