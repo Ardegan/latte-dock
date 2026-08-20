@@ -85,14 +85,16 @@ PlasmaExtras.Menu {
 
     function newMenuItem(parent) {
         return Qt.createQmlObject(
-                    "import org.kde.plasma.components 3.0 as PlasmaComponents;" +
+                    //! Qt.createQmlObject compiles this string in isolation, so it
+                    //! needs its own import of the module the type comes from.
+                    "import org.kde.plasma.extras as PlasmaExtras;" +
                     "PlasmaExtras.MenuItem {}",
                     parent);
     }
 
     function newSeparator(parent) {
         return Qt.createQmlObject(
-                    "import org.kde.plasma.components 3.0 as PlasmaComponents;" +
+                    "import org.kde.plasma.extras as PlasmaExtras;" +
                     "PlasmaExtras.MenuItem { separator: true }",
                     parent);
     }
