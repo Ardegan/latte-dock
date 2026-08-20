@@ -241,6 +241,24 @@ back `generateMimeData`/`jsonArrayToUrlList` (from Plasma 5) and re-implements `
 KWin D-Bus interfaces the Plasma 6 applet now calls from QML — in C++, so Latte's QML call sites are
 unchanged.
 
+### MPRIS — done
+
+The `mpris2` data engine is gone in Plasma 6. The media controls in task tooltips and the task context
+menu now use `org.kde.plasma.private.mpris`: `Mpris2Model::playerForLauncherUrl(url, pid)` returns a
+`PlayerContainer` directly, replacing the source-name/`data[]` indirection. `PlayerContainer` carries
+`track`, `artist`, `album`, `artUrl`, `identity`, `desktopEntry`, `instancePid`, `length`, `position`,
+`playbackStatus` and the `can*` flags as properties, and `Play()`, `Pause()`, `PlayPause()`, `Next()`,
+`Previous()`, `Stop()`, `Quit()`, `Raise()` as methods. Two traps:
+
+- The generated `kmpris.qmltypes` lists only seven `Property` entries for `PlayerContainer`; the rest
+  are real `Q_PROPERTY`s with notify signals and are readable from QML. Read the moc string table in
+  `/lib/x86_64-linux-gnu/libkmpris.so.6` rather than trusting the qmltypes here.
+- `PlaybackStatus.Status` is `Unknown=0, Stopped=1, Playing=2, Paused=3` — *not* the order you would
+  guess, so compare against the named enumerator.
+
+Plasma's own `shells/org.kde.plasma.desktop/contents/lockscreen/MediaControls.qml` is the on-disk
+reference implementation.
+
 ### PlasmaCore migration — done
 
 `org.kde.plasma.core` in Plasma 6 exports only `Action`, `ActionGroup`, `Applet`, `AppletPopup`,
@@ -304,7 +322,6 @@ a Controls 1 type; the rest were stale imports. Notable points if you touch this
 
 | Item | Notes |
 |---|---|
-| MPRIS media controls are inert | the `mpris2` data engine is gone in Plasma 6, so `Plasma5Support.DataSource` loads but stays empty. ~20 call sites in task tooltips and the context menu need porting to `org.kde.plasma.private.mpris`, which *is* on the import path |
 | `inNormalState` binding loop (`VisibilityManager.qml`) | byte-identical to `master`, so pre-existing upstream design that Qt6 merely detects; untangling it means reworking the show/hide state machine |
 | `Invalid QML element name "Types"` (x3) | `Latte::Types` is a `Q_GADGET` enum namespace, which Qt6 classes as a value type and wants lowercase. Renaming would break 595 `LatteCore.Types.*` sites and the versioned `LatteBridge` API |
 | `ecm_find_qmlmodule` version literals | relaxed to non-REQUIRED; `qmlplugindump` is unreliable against the Plasma 6 modules and intermittently fails for modules that are present |
