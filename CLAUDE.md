@@ -133,6 +133,12 @@ These produce no error and no visible symptom at the point of failure, so they c
   `workspace.clientArea(KWin.MaximizeArea, ...)` via a KWin script, not the Plasma available rect,
   when verifying window behaviour. Struts are published only from the `AlwaysVisible` branch of
   `VisibilityManager::setMode()`.
+  A missing strut also shows up as a *rendering* fault: a maximized window placed at `0,0` sits under
+  the view's full-height (e.g. 1969x384) transparent window, the area beneath the dock is never
+  painted, and stale wallpaper shows through until hovering the dock damages the region and forces a
+  repaint. That looked exactly like a blur bug in `ViewPart::Effects`, but every startup call there
+  takes the `clearEffects` branch and the final region is a correct `1114x20`. Suspect the strut, not
+  the effects, when a band the height of `viewHeight - strutThickness` appears under the dock.
 - **The Wayland strut `GhostWindow` steals pointer input.** `WaylandInterface::setViewStruts()`
   (`app/wm/waylandinterface.cpp`) creates a transparent panel-role surface sized
   `(thickness+1) x thickness`, pinned to the *horizontal centre of the view*, purely so Plasma
@@ -293,7 +299,6 @@ a Controls 1 type; the rest were stale imports. Notable points if you touch this
 | `Invalid QML element name "Types"` (x3) | `Latte::Types` is a `Q_GADGET` enum namespace, which Qt6 classes as a value type and wants lowercase. Renaming would break 595 `LatteCore.Types.*` sites and the versioned `LatteBridge` API |
 | `ecm_find_qmlmodule` version literals | relaxed to non-REQUIRED; `qmlplugindump` is unreliable against the Plasma 6 modules and intermittently fails for modules that are present |
 | `KDE_COMPILERSETTINGS_LEVEL "5.84.0"` | left at the KF5 value |
-| Blurred rectangle over the top quarter of the screen at startup | the view window is the full parabolic height (e.g. 1969x384) while only the top ~88px should be opaque. The mask/blur region in `ViewPart::Effects` is not applied until something forces a repaint, so the compositor blurs the whole window rect; the first hover over the dock clears it |
 | Nothing beyond first render is exercised | edit mode, the settings dialogs, multi-screen, per-activity layouts and autohide/dodge modes have not been tested. Hover/zoom, left/middle/right click, the context menu and both settings dialogs now work |
 
 Because Debug builds define `QT_FATAL_WARNINGS`, any unresolved QML import aborts at runtime rather
