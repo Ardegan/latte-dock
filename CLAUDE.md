@@ -313,7 +313,7 @@ required CMake config to its providing package). Two gotchas baked into that scr
   is `libplasmaactivities-dev`, Kirigami is `libkirigami-dev`, and KWayland is `kwayland-dev` — not the
   `libkf6*-dev` names the pattern would suggest.
 - `liblayershellqtinterface-dev` is required (`find_package(LayerShellQt)`); `app/` links
-  `LayerShellQt::Interface` for the Wayland strut. It is not in `install-qt6-deps.sh` yet.
+  `LayerShellQt::Interface` for the Wayland strut. It is in `install-qt6-deps.sh`.
 - **Do not install `qt6-wayland-dev-tools`.** `qtwaylandscanner` now ships in `qt6-base-dev-tools`, and
   the older 6.9.2 package `Breaks:` against it, making the transaction unsatisfiable.
 
