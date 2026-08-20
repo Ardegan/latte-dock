@@ -59,7 +59,7 @@ PlasmaComponents.TextField {
 
         PlasmaComponents.Label {
             Layout.alignment: Qt.AlignVCenter
-            color: textField.textColor
+            color: textField.color
             text: i18n("ms.")
             font.italic: true
             opacity: value === 0 ? 0 : 0.6

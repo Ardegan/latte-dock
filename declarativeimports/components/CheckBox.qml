@@ -16,9 +16,12 @@ PlasmaComponents.CheckBox {
     PlasmaComponents.ToolTip.text: tooltip
     PlasmaComponents.ToolTip.visible: hovered && tooltip !== ""
 
+    //! Controls 1 CheckBox had `partiallyCheckedEnabled`/`checkedState`; the
+    //! Controls 2 equivalents are `tristate`/`checkState`. The old names silently
+    //! threw a ReferenceError here, so `checked` was never assigned either.
     onValueChanged: {
-        if (partiallyCheckedEnabled) {
-            checkedState = value;
+        if (tristate) {
+            checkState = value;
         } else {
             checked = value;
         }

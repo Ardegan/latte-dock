@@ -60,7 +60,7 @@ PC3.Page {
 
     onVisibleChanged: {
         if (!visible) {
-            kwindowsystem.showingDesktop = false;
+            KWindowSystem.showingDesktop = false;   //! KF6: KWindowSystem is a singleton, not creatable
         }
     }
 
@@ -87,9 +87,6 @@ PC3.Page {
         }
     }
 
-    KWindowSystem {
-        id: kwindowsystem
-    }
 
     QQC2.Action {
         shortcut: "Escape"
@@ -154,7 +151,8 @@ PC3.Page {
     PlasmaExtras.ModelContextMenu {
         id: getWidgetsDialog
         visualParent: getWidgetsButton
-        placement: PlasmaCore.Types.TopPosedLeftAlignedPopup
+        //! Plasma 6 moved PopupPlacement onto QMenuProxy (PlasmaExtras.Menu).
+        placement: PlasmaExtras.Menu.TopPosedLeftAlignedPopup
         // model set on first invocation
         onClicked: model.trigger()
     }

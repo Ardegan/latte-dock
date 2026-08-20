@@ -31,15 +31,17 @@ PlasmaExtras.Menu {
     property var modelIndex
     readonly property var atm: TaskManager.AbstractTasksModel
 
+    //! Plasma 6 moved the PopupPlacement enum off PlasmaCore.Types; it is now an
+    //! enum on QMenuProxy, exported as PlasmaExtras.Menu.
     placement: {
         if (root.location === PlasmaCore.Types.LeftEdge) {
-            return PlasmaCore.Types.RightPosedTopAlignedPopup;
+            return PlasmaExtras.Menu.RightPosedTopAlignedPopup;
         } else if (root.location === PlasmaCore.Types.TopEdge) {
-            return PlasmaCore.Types.BottomPosedLeftAlignedPopup;
+            return PlasmaExtras.Menu.BottomPosedLeftAlignedPopup;
         } else if (root.location === PlasmaCore.Types.RightEdge) {
-            return PlasmaCore.Types.LeftPosedTopAlignedPopup;
+            return PlasmaExtras.Menu.LeftPosedTopAlignedPopup;
         } else {
-            return PlasmaCore.Types.TopPosedLeftAlignedPopup;
+            return PlasmaExtras.Menu.TopPosedLeftAlignedPopup;
         }
     }
 

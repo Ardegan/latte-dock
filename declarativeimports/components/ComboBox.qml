@@ -217,11 +217,14 @@ T.ComboBox {
                             && control.currentIndex>=0
                             && control.iconRole.length>0) {
 
-                        if (Array.isArray(control.model)) {
-                            return control.model[control.currentIndex][control.iconRole];
-                        } else {
-                            return control.model.get(control.currentIndex)[control.iconRole];
-                        }
+                        //! A model coming from C++ can fail Array.isArray() while still
+                        //! having no get(), so probe for get() rather than for array-ness.
+                        var model = control.model;
+                        var entry = (model && typeof model.get === "function")
+                                ? model.get(control.currentIndex)
+                                : model[control.currentIndex];
+
+                        return entry ? entry[control.iconRole] : "";
                     }
 
                     return "";
