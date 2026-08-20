@@ -20,7 +20,12 @@ Item {
 
     //! Latte::View Main Bindings 
     Binding{
-        target: latteView
+         //! Qt5 defaulted Binding.restoreMode to RestoreNone, so a binding whose
+        //! `when` turned false simply left the property at its last value. Qt6
+        //! defaults to RestoreBindingOrValue and puts the *previous* value back,
+        //! which silently reset properties this code expects to persist.
+        restoreMode: Binding.RestoreNone
+       target: latteView
         property:"maxThickness"
         //! prevents updating window geometry during closing window in wayland and such fixes a crash
         when: latteView && !visibilityManager.inRelocationHiding && !visibilityManager.inClientSideScreenEdgeSliding //&& !inStartup
@@ -28,20 +33,35 @@ Item {
     }
 
     Binding{
-        target: latteView
+         //! Qt5 defaulted Binding.restoreMode to RestoreNone, so a binding whose
+        //! `when` turned false simply left the property at its last value. Qt6
+        //! defaults to RestoreBindingOrValue and puts the *previous* value back,
+        //! which silently reset properties this code expects to persist.
+        restoreMode: Binding.RestoreNone
+       target: latteView
         property:"normalThickness"
         when: latteView && updateIsEnabled
         value: root.behaveAsPlasmaPanel ? visibilityManager.thicknessAsPanel : metrics.mask.screenEdge + metrics.mask.thickness.maxNormalForItemsWithoutScreenEdge
     }
 
     Binding{
-        target: latteView
+         //! Qt5 defaulted Binding.restoreMode to RestoreNone, so a binding whose
+        //! `when` turned false simply left the property at its last value. Qt6
+        //! defaults to RestoreBindingOrValue and puts the *previous* value back,
+        //! which silently reset properties this code expects to persist.
+        restoreMode: Binding.RestoreNone
+       target: latteView
         property:"maxNormalThickness"
         when: latteView && updateIsEnabled
         value: metrics.mask.thickness.maxNormal
     }
 
     Binding {
+        //! Qt5 defaulted Binding.restoreMode to RestoreNone, so a binding whose
+        //! `when` turned false simply left the property at its last value. Qt6
+        //! defaults to RestoreBindingOrValue and puts the *previous* value back,
+        //! which silently reset properties this code expects to persist.
+        restoreMode: Binding.RestoreNone
         target: latteView
         property: "headThicknessGap"
         when: latteView && updateIsEnabled && !visibilityManager.inClientSideScreenEdgeSliding
@@ -55,62 +75,107 @@ Item {
     }
 
     Binding{
-        target: latteView
+         //! Qt5 defaulted Binding.restoreMode to RestoreNone, so a binding whose
+        //! `when` turned false simply left the property at its last value. Qt6
+        //! defaults to RestoreBindingOrValue and puts the *previous* value back,
+        //! which silently reset properties this code expects to persist.
+        restoreMode: Binding.RestoreNone
+       target: latteView
         property: "type"
         when: latteView
         value: root.viewType
     }
 
     Binding{
-        target: latteView
+         //! Qt5 defaulted Binding.restoreMode to RestoreNone, so a binding whose
+        //! `when` turned false simply left the property at its last value. Qt6
+        //! defaults to RestoreBindingOrValue and puts the *previous* value back,
+        //! which silently reset properties this code expects to persist.
+        restoreMode: Binding.RestoreNone
+       target: latteView
         property: "behaveAsPlasmaPanel"
         when: latteView
         value: root.behaveAsPlasmaPanel
     }
 
     Binding{
-        target: latteView
+         //! Qt5 defaulted Binding.restoreMode to RestoreNone, so a binding whose
+        //! `when` turned false simply left the property at its last value. Qt6
+        //! defaults to RestoreBindingOrValue and puts the *previous* value back,
+        //! which silently reset properties this code expects to persist.
+        restoreMode: Binding.RestoreNone
+       target: latteView
         property: "fontPixelSize"
         when: Kirigami.Theme
         value: Kirigami.Theme.defaultFont.pixelSize
     }
 
     Binding{
-        target: latteView
+         //! Qt5 defaulted Binding.restoreMode to RestoreNone, so a binding whose
+        //! `when` turned false simply left the property at its last value. Qt6
+        //! defaults to RestoreBindingOrValue and puts the *previous* value back,
+        //! which silently reset properties this code expects to persist.
+        restoreMode: Binding.RestoreNone
+       target: latteView
         property: "maxLength"
         when: latteView
         value: root.maxLengthPerCentage/100
     }
 
     Binding{
-        target: latteView
+         //! Qt5 defaulted Binding.restoreMode to RestoreNone, so a binding whose
+        //! `when` turned false simply left the property at its last value. Qt6
+        //! defaults to RestoreBindingOrValue and puts the *previous* value back,
+        //! which silently reset properties this code expects to persist.
+        restoreMode: Binding.RestoreNone
+       target: latteView
         property: "offset"
         when: latteView
         value: plasmoid.configuration.offset/100
     }
 
     Binding{
-        target: latteView
+         //! Qt5 defaulted Binding.restoreMode to RestoreNone, so a binding whose
+        //! `when` turned false simply left the property at its last value. Qt6
+        //! defaults to RestoreBindingOrValue and puts the *previous* value back,
+        //! which silently reset properties this code expects to persist.
+        restoreMode: Binding.RestoreNone
+       target: latteView
         property: "screenEdgeMargin"
         when: latteView
         value: Math.max(0, plasmoid.configuration.screenEdgeMargin)
     }
 
     Binding{
-        target: latteView
+         //! Qt5 defaulted Binding.restoreMode to RestoreNone, so a binding whose
+        //! `when` turned false simply left the property at its last value. Qt6
+        //! defaults to RestoreBindingOrValue and puts the *previous* value back,
+        //! which silently reset properties this code expects to persist.
+        restoreMode: Binding.RestoreNone
+       target: latteView
         property: "screenEdgeMarginEnabled"
         when: latteView
         value: root.screenEdgeMarginEnabled && !root.hideThickScreenGap
     }
 
     Binding{
-        target: latteView
+         //! Qt5 defaulted Binding.restoreMode to RestoreNone, so a binding whose
+        //! `when` turned false simply left the property at its last value. Qt6
+        //! defaults to RestoreBindingOrValue and puts the *previous* value back,
+        //! which silently reset properties this code expects to persist.
+        restoreMode: Binding.RestoreNone
+       target: latteView
         property: "alignment"
         when: latteView
         value: myView.alignment
     }
 
     Binding{
+        //! Qt5 defaulted Binding.restoreMode to RestoreNone, so a binding whose
+        //! `when` turned false simply left the property at its last value. Qt6
+        //! defaults to RestoreBindingOrValue and puts the *previous* value back,
+        //! which silently reset properties this code expects to persist.
+        restoreMode: Binding.RestoreNone
         target: latteView
         property: "isTouchingTopViewAndIsBusy"
         when: root.viewIsAvailable
@@ -128,6 +193,11 @@ Item {
     }
 
     Binding{
+        //! Qt5 defaulted Binding.restoreMode to RestoreNone, so a binding whose
+        //! `when` turned false simply left the property at its last value. Qt6
+        //! defaults to RestoreBindingOrValue and puts the *previous* value back,
+        //! which silently reset properties this code expects to persist.
+        restoreMode: Binding.RestoreNone
         target: latteView
         property: "isTouchingBottomViewAndIsBusy"
         when: latteView
@@ -148,14 +218,24 @@ Item {
     }
 
     Binding{
-        target: latteView
+         //! Qt5 defaulted Binding.restoreMode to RestoreNone, so a binding whose
+        //! `when` turned false simply left the property at its last value. Qt6
+        //! defaults to RestoreBindingOrValue and puts the *previous* value back,
+        //! which silently reset properties this code expects to persist.
+        restoreMode: Binding.RestoreNone
+       target: latteView
         property: "colorizer"
         when: latteView
         value: colorizerManager
     }
 
     Binding{
-        target: latteView
+         //! Qt5 defaulted Binding.restoreMode to RestoreNone, so a binding whose
+        //! `when` turned false simply left the property at its last value. Qt6
+        //! defaults to RestoreBindingOrValue and puts the *previous* value back,
+        //! which silently reset properties this code expects to persist.
+        restoreMode: Binding.RestoreNone
+       target: latteView
         property: "metrics"
         when: latteView
         value: metrics
@@ -163,7 +243,12 @@ Item {
 
     //! View::Effects bindings
     Binding{
-        target: latteView && latteView.effects ? latteView.effects : null
+         //! Qt5 defaulted Binding.restoreMode to RestoreNone, so a binding whose
+        //! `when` turned false simply left the property at its last value. Qt6
+        //! defaults to RestoreBindingOrValue and puts the *previous* value back,
+        //! which silently reset properties this code expects to persist.
+        restoreMode: Binding.RestoreNone
+       target: latteView && latteView.effects ? latteView.effects : null
         property: "backgroundAllCorners"
         when: latteView && latteView.effects
         value: plasmoid.configuration.backgroundAllCorners
@@ -175,28 +260,48 @@ Item {
     }
 
     Binding{
-        target: latteView && latteView.effects ? latteView.effects : null
+         //! Qt5 defaulted Binding.restoreMode to RestoreNone, so a binding whose
+        //! `when` turned false simply left the property at its last value. Qt6
+        //! defaults to RestoreBindingOrValue and puts the *previous* value back,
+        //! which silently reset properties this code expects to persist.
+        restoreMode: Binding.RestoreNone
+       target: latteView && latteView.effects ? latteView.effects : null
         property: "backgroundRadius"
         when: latteView && latteView.effects
         value: background.customRadius
     }
 
     Binding{
-        target: latteView && latteView.effects ? latteView.effects : null
+         //! Qt5 defaulted Binding.restoreMode to RestoreNone, so a binding whose
+        //! `when` turned false simply left the property at its last value. Qt6
+        //! defaults to RestoreBindingOrValue and puts the *previous* value back,
+        //! which silently reset properties this code expects to persist.
+        restoreMode: Binding.RestoreNone
+       target: latteView && latteView.effects ? latteView.effects : null
         property: "backgroundRadiusEnabled"
         when: latteView && latteView.effects
         value: background.customRadiusIsEnabled
     }
 
     Binding{
-        target: latteView && latteView.effects ? latteView.effects : null
+         //! Qt5 defaulted Binding.restoreMode to RestoreNone, so a binding whose
+        //! `when` turned false simply left the property at its last value. Qt6
+        //! defaults to RestoreBindingOrValue and puts the *previous* value back,
+        //! which silently reset properties this code expects to persist.
+        restoreMode: Binding.RestoreNone
+       target: latteView && latteView.effects ? latteView.effects : null
         property: "backgroundOpacity"
         when: latteView && latteView.effects
         value: plasmoid.configuration.panelTransparency===-1 /*Default option*/ ? -1 : background.currentOpacity
     }
 
     Binding{
-        target: latteView && latteView.effects ? latteView.effects : null
+         //! Qt5 defaulted Binding.restoreMode to RestoreNone, so a binding whose
+        //! `when` turned false simply left the property at its last value. Qt6
+        //! defaults to RestoreBindingOrValue and puts the *previous* value back,
+        //! which silently reset properties this code expects to persist.
+        restoreMode: Binding.RestoreNone
+       target: latteView && latteView.effects ? latteView.effects : null
         property: "drawEffects"
         when: latteView && latteView.effects && !root.inStartup
         value: LatteCore.WindowSystem.compositingActive
@@ -205,34 +310,59 @@ Item {
     }
 
     Binding{
-        target: latteView && latteView.effects ? latteView.effects : null
+         //! Qt5 defaulted Binding.restoreMode to RestoreNone, so a binding whose
+        //! `when` turned false simply left the property at its last value. Qt6
+        //! defaults to RestoreBindingOrValue and puts the *previous* value back,
+        //! which silently reset properties this code expects to persist.
+        restoreMode: Binding.RestoreNone
+       target: latteView && latteView.effects ? latteView.effects : null
         property: "drawShadows"
         when: latteView && latteView.effects
         value: root.drawShadowsExternal && (!root.inStartup || visibilityManager.inRelocationHiding) && !(latteView && latteView.visibility.isHidden)
     }
 
     Binding{
-        target: latteView && latteView.effects ? latteView.effects : null
+         //! Qt5 defaulted Binding.restoreMode to RestoreNone, so a binding whose
+        //! `when` turned false simply left the property at its last value. Qt6
+        //! defaults to RestoreBindingOrValue and puts the *previous* value back,
+        //! which silently reset properties this code expects to persist.
+        restoreMode: Binding.RestoreNone
+       target: latteView && latteView.effects ? latteView.effects : null
         property:"editShadow"
         when: latteView && latteView.effects
         value: root.editShadow
     }
 
     Binding{
-        target: latteView && latteView.effects ? latteView.effects : null
+         //! Qt5 defaulted Binding.restoreMode to RestoreNone, so a binding whose
+        //! `when` turned false simply left the property at its last value. Qt6
+        //! defaults to RestoreBindingOrValue and puts the *previous* value back,
+        //! which silently reset properties this code expects to persist.
+        restoreMode: Binding.RestoreNone
+       target: latteView && latteView.effects ? latteView.effects : null
         property:"innerShadow"
         when: latteView && latteView.effects
         value: background.shadows.headThickness
     }
 
     Binding{
-        target: latteView && latteView.effects ? latteView.effects : null
+         //! Qt5 defaulted Binding.restoreMode to RestoreNone, so a binding whose
+        //! `when` turned false simply left the property at its last value. Qt6
+        //! defaults to RestoreBindingOrValue and puts the *previous* value back,
+        //! which silently reset properties this code expects to persist.
+        restoreMode: Binding.RestoreNone
+       target: latteView && latteView.effects ? latteView.effects : null
         property: "panelBackgroundSvg"
         when: latteView && latteView.effects
         value: background.panelBackgroundSvg
     }
 
     Binding{
+        //! Qt5 defaulted Binding.restoreMode to RestoreNone, so a binding whose
+        //! `when` turned false simply left the property at its last value. Qt6
+        //! defaults to RestoreBindingOrValue and puts the *previous* value back,
+        //! which silently reset properties this code expects to persist.
+        restoreMode: Binding.RestoreNone
         target: latteView && latteView.effects ? latteView.effects : null
         property:"appletsLayoutGeometry"
         when: latteView && latteView.effects && visibilityManager.inNormalState
@@ -262,14 +392,24 @@ Item {
 
     //! View::Positioner bindings
     Binding{
-        target: latteView && latteView.positioner ? latteView.positioner : null
+         //! Qt5 defaulted Binding.restoreMode to RestoreNone, so a binding whose
+        //! `when` turned false simply left the property at its last value. Qt6
+        //! defaults to RestoreBindingOrValue and puts the *previous* value back,
+        //! which silently reset properties this code expects to persist.
+        restoreMode: Binding.RestoreNone
+       target: latteView && latteView.positioner ? latteView.positioner : null
         property: "isStickedOnTopEdge"
         when: latteView && latteView.positioner
         value: plasmoid.configuration.isStickedOnTopEdge
     }
 
     Binding{
-        target: latteView && latteView.positioner ? latteView.positioner : null
+         //! Qt5 defaulted Binding.restoreMode to RestoreNone, so a binding whose
+        //! `when` turned false simply left the property at its last value. Qt6
+        //! defaults to RestoreBindingOrValue and puts the *previous* value back,
+        //! which silently reset properties this code expects to persist.
+        restoreMode: Binding.RestoreNone
+       target: latteView && latteView.positioner ? latteView.positioner : null
         property: "isStickedOnBottomEdge"
         when: latteView && latteView.positioner
         value: plasmoid.configuration.isStickedOnBottomEdge
@@ -277,13 +417,23 @@ Item {
 
     //! View::VisibilityManager
     Binding{
-        target: latteView && latteView.visibility ? latteView.visibility : null
+         //! Qt5 defaulted Binding.restoreMode to RestoreNone, so a binding whose
+        //! `when` turned false simply left the property at its last value. Qt6
+        //! defaults to RestoreBindingOrValue and puts the *previous* value back,
+        //! which silently reset properties this code expects to persist.
+        restoreMode: Binding.RestoreNone
+       target: latteView && latteView.visibility ? latteView.visibility : null
         property: "isShownFully"
         when: latteView && latteView.visibility
         value: myView.isShownFully
     }
 
     Binding{
+        //! Qt5 defaulted Binding.restoreMode to RestoreNone, so a binding whose
+        //! `when` turned false simply left the property at its last value. Qt6
+        //! defaults to RestoreBindingOrValue and puts the *previous* value back,
+        //! which silently reset properties this code expects to persist.
+        restoreMode: Binding.RestoreNone
         target: latteView && latteView.visibility ? latteView.visibility : null
         property: "strutsThickness"
         when: latteView && latteView.visibility
@@ -312,6 +462,11 @@ Item {
     }
 
     Binding {
+        //! Qt5 defaulted Binding.restoreMode to RestoreNone, so a binding whose
+        //! `when` turned false simply left the property at its last value. Qt6
+        //! defaults to RestoreBindingOrValue and puts the *previous* value back,
+        //! which silently reset properties this code expects to persist.
+        restoreMode: Binding.RestoreNone
         target: latteView && latteView.visibility ? latteView.visibility : null
         property: "isFloatingGapWindowEnabled"
         when: latteView && latteView.visibility
@@ -325,7 +480,12 @@ Item {
 
     //! View::WindowsTracker bindings
     Binding{
-        target: latteView && latteView.windowsTracker ? latteView.windowsTracker : null
+         //! Qt5 defaulted Binding.restoreMode to RestoreNone, so a binding whose
+        //! `when` turned false simply left the property at its last value. Qt6
+        //! defaults to RestoreBindingOrValue and puts the *previous* value back,
+        //! which silently reset properties this code expects to persist.
+        restoreMode: Binding.RestoreNone
+       target: latteView && latteView.windowsTracker ? latteView.windowsTracker : null
         property: "enabled"
         //! During startup phase windows tracking is not enabled and does not
         //! influence startup sequence at all. At the same time no windows tracking
@@ -347,14 +507,24 @@ Item {
 
     //! View::ExtendedInterface bindings
     Binding{
-        target: latteView && latteView.extendedInterface ? latteView.extendedInterface : null
+         //! Qt5 defaulted Binding.restoreMode to RestoreNone, so a binding whose
+        //! `when` turned false simply left the property at its last value. Qt6
+        //! defaults to RestoreBindingOrValue and puts the *previous* value back,
+        //! which silently reset properties this code expects to persist.
+        restoreMode: Binding.RestoreNone
+       target: latteView && latteView.extendedInterface ? latteView.extendedInterface : null
         property: "plasmoid"
         when: latteView && latteView.extendedInterface
         value: plasmoid
     }
 
     Binding{
-        target: latteView && latteView.extendedInterface ? latteView.extendedInterface : null
+         //! Qt5 defaulted Binding.restoreMode to RestoreNone, so a binding whose
+        //! `when` turned false simply left the property at its last value. Qt6
+        //! defaults to RestoreBindingOrValue and puts the *previous* value back,
+        //! which silently reset properties this code expects to persist.
+        restoreMode: Binding.RestoreNone
+       target: latteView && latteView.extendedInterface ? latteView.extendedInterface : null
         property: "layoutManager"
         when: latteView && latteView.extendedInterface
         value: fastLayoutManager

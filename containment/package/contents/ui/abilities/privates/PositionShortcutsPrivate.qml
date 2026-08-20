@@ -23,6 +23,11 @@ AbilityDefinition.PositionShortcuts {
     signal currentAppletStealingPositionShortcuts(int id);
 
     Binding {
+        //! Qt5 defaulted Binding.restoreMode to RestoreNone, so a binding whose
+        //! `when` turned false simply left the property at its last value. Qt6
+        //! defaults to RestoreBindingOrValue and puts the *previous* value back,
+        //! which silently reset properties this code expects to persist.
+        restoreMode: Binding.RestoreNone
         target: _shortcutsprivate
         property: "badges"
         when: !updateIsBlocked && shortcutsEngine
@@ -31,6 +36,11 @@ AbilityDefinition.PositionShortcuts {
     }
 
     Binding {
+        //! Qt5 defaulted Binding.restoreMode to RestoreNone, so a binding whose
+        //! `when` turned false simply left the property at its last value. Qt6
+        //! defaults to RestoreBindingOrValue and puts the *previous* value back,
+        //! which silently reset properties this code expects to persist.
+        restoreMode: Binding.RestoreNone
         target: _shortcutsprivate
         property: "appletIdStealingPositionShortcuts"
         when: !updateIsBlocked

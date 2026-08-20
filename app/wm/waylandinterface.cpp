@@ -26,6 +26,8 @@
 // KDE
 #include <KWindowSystem>
 #include <KWindowInfo>
+#include <KWayland/Client/compositor.h>
+#include <KWayland/Client/region.h>
 #include <KWayland/Client/surface.h>
 
 #include <KWayland/Client/plasmavirtualdesktop.h>
@@ -50,7 +52,8 @@ public:
         setFlags(Qt::FramelessWindowHint
                  | Qt::WindowStaysOnTopHint
                  | Qt::NoDropShadowWindowHint
-                 | Qt::WindowDoesNotAcceptFocus);
+                 | Qt::WindowDoesNotAcceptFocus
+                 | Qt::WindowTransparentForInput);
 
         setColor(QColor(Qt::transparent));
         // FIXME: this call is no longer needed?
@@ -79,6 +82,34 @@ public:
         resize(rect.size());
 
         m_shellSurface->setPosition(rect.topLeft());
+        clearInputRegion();
+    }
+
+    //! This window only exists so that Plasma reserves struts for the view on
+    //! Wayland; it is fully transparent and centered horizontally over the dock.
+    //! Without an empty input region it swallows every pointer event over the
+    //! middle of the view, which leaves whichever item sits there completely
+    //! inert - no hover, no parabolic zoom and no clicks.
+    void clearInputRegion() {
+        using namespace KWayland::Client;
+
+        Surface *s{Surface::fromWindow(this)};
+
+        if (!s) {
+            return;
+        }
+
+        if (!m_compositor) {
+            m_compositor = Compositor::fromApplication(this);
+        }
+
+        if (!m_compositor) {
+            return;
+        }
+
+        std::unique_ptr<Region> empty{m_compositor->createRegion(QRegion())};
+        s->setInputRegion(empty.get());
+        s->commit(Surface::CommitFlag::None);
     }
 
     void setupWaylandIntegration() {
@@ -98,10 +129,13 @@ public:
         m_shellSurface->setSkipTaskbar(true);
         m_shellSurface->setPanelTakesFocus(false);
         m_shellSurface->setRole(PlasmaShellSurface::Role::Panel);
+
+        clearInputRegion();
         m_shellSurface->setPanelBehavior(PlasmaShellSurface::PanelBehavior::AlwaysVisible);
     }
 
     KWayland::Client::PlasmaShellSurface *m_shellSurface{nullptr};
+    KWayland::Client::Compositor *m_compositor{nullptr};
     WindowSystem::WaylandInterface *m_waylandInterface{nullptr};
 
     //! geometry() function under wayland does not return nice results

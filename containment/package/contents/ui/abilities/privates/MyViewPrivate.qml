@@ -50,6 +50,11 @@ AbilityHost.MyView {
     }
 
     Binding{
+        //! Qt5 defaulted Binding.restoreMode to RestoreNone, so a binding whose
+        //! `when` turned false simply left the property at its last value. Qt6
+        //! defaults to RestoreBindingOrValue and puts the *previous* value back,
+        //! which silently reset properties this code expects to persist.
+        restoreMode: Binding.RestoreNone
         target: _myView
         property: "isHidingBlockedFromApplet"
         when: isBindingUpdateEnabled

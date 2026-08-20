@@ -275,6 +275,11 @@ Item{
     }
 
     Binding {
+        //! Qt5 defaulted Binding.restoreMode to RestoreNone, so a binding whose
+        //! `when` turned false simply left the property at its last value. Qt6
+        //! defaults to RestoreBindingOrValue and puts the *previous* value back,
+        //! which silently reset properties this code expects to persist.
+        restoreMode: Binding.RestoreNone
         target: wrapper
         property: "layoutThickness"
         when: latteView && (wrapper.zoomScale === 1 || communicator.parabolicEffectIsSupported)
@@ -293,6 +298,11 @@ Item{
     }
 
     Binding {
+        //! Qt5 defaulted Binding.restoreMode to RestoreNone, so a binding whose
+        //! `when` turned false simply left the property at its last value. Qt6
+        //! defaults to RestoreBindingOrValue and puts the *previous* value back,
+        //! which silently reset properties this code expects to persist.
+        restoreMode: Binding.RestoreNone
         target: wrapper
         property: "layoutLength"
         when: latteView && !appletItem.isAutoFillApplet && (wrapper.zoomScale === 1)
@@ -317,6 +327,11 @@ Item{
     }
 
     Binding {
+        //! Qt5 defaulted Binding.restoreMode to RestoreNone, so a binding whose
+        //! `when` turned false simply left the property at its last value. Qt6
+        //! defaults to RestoreBindingOrValue and puts the *previous* value back,
+        //! which silently reset properties this code expects to persist.
+        restoreMode: Binding.RestoreNone
         target: wrapper
         property: "disableLengthScale"
         when: latteView && !(appletItem.isAutoFillApplet || appletItem.indexerIsSupported)
@@ -355,6 +370,11 @@ Item{
     }
 
     Binding {
+        //! Qt5 defaulted Binding.restoreMode to RestoreNone, so a binding whose
+        //! `when` turned false simply left the property at its last value. Qt6
+        //! defaults to RestoreBindingOrValue and puts the *previous* value back,
+        //! which silently reset properties this code expects to persist.
+        restoreMode: Binding.RestoreNone
         target: wrapper
         property: "marginsLength"
         when: latteView && (!root.inStartup || visibilityManager.inRelocationHiding)
@@ -479,6 +499,11 @@ Item{
         readonly property real zoomScaleThickness: wrapper.zoomScaleThickness
 
         Binding {
+            //! Qt5 defaulted Binding.restoreMode to RestoreNone, so a binding whose
+            //! `when` turned false simply left the property at its last value. Qt6
+            //! defaults to RestoreBindingOrValue and puts the *previous* value back,
+            //! which silently reset properties this code expects to persist.
+            restoreMode: Binding.RestoreNone
             target: _wrapperContainer
             property: "_thickness"
             when: !visibilityManager.inRelocationHiding
@@ -494,6 +519,11 @@ Item{
         }
 
         Binding {
+            //! Qt5 defaulted Binding.restoreMode to RestoreNone, so a binding whose
+            //! `when` turned false simply left the property at its last value. Qt6
+            //! defaults to RestoreBindingOrValue and puts the *previous* value back,
+            //! which silently reset properties this code expects to persist.
+            restoreMode: Binding.RestoreNone
             target: _wrapperContainer
             property: "_length"
             when: !visibilityManager.inRelocationHiding
@@ -559,14 +589,24 @@ Item{
                 usesPlasmaTheme: communicator.appletIconItem && communicator.appletIconItem.visible ? communicator.appletIconItem.usesPlasmaTheme : false
 
                 Binding{
-                    target: _overlayIconLoader
+                     //! Qt5 defaulted Binding.restoreMode to RestoreNone, so a binding whose
+                    //! `when` turned false simply left the property at its last value. Qt6
+                    //! defaults to RestoreBindingOrValue and puts the *previous* value back,
+                    //! which silently reset properties this code expects to persist.
+                    restoreMode: Binding.RestoreNone
+                   target: _overlayIconLoader
                     property: "backgroundColor"
                     when: overlayIconItem.providesColors
                     value: overlayIconItem.backgroundColor
                 }
 
                 Binding{
-                    target: _overlayIconLoader
+                     //! Qt5 defaulted Binding.restoreMode to RestoreNone, so a binding whose
+                    //! `when` turned false simply left the property at its last value. Qt6
+                    //! defaults to RestoreBindingOrValue and puts the *previous* value back,
+                    //! which silently reset properties this code expects to persist.
+                    restoreMode: Binding.RestoreNone
+                   target: _overlayIconLoader
                     property: "glowColor"
                     when: overlayIconItem.providesColors
                     value: overlayIconItem.glowColor

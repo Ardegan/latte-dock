@@ -56,6 +56,11 @@ AbilityDefinition.Indexer {
     }
 
     Binding {
+        //! Qt5 defaulted Binding.restoreMode to RestoreNone, so a binding whose
+        //! `when` turned false simply left the property at its last value. Qt6
+        //! defaults to RestoreBindingOrValue and puts the *previous* value back,
+        //! which silently reset properties this code expects to persist.
+        restoreMode: Binding.RestoreNone
         target: _privates
         property: "firstTailItemIsSeparator"
         when: isReady
@@ -75,6 +80,11 @@ AbilityDefinition.Indexer {
     }
 
     Binding {
+        //! Qt5 defaulted Binding.restoreMode to RestoreNone, so a binding whose
+        //! `when` turned false simply left the property at its last value. Qt6
+        //! defaults to RestoreBindingOrValue and puts the *previous* value back,
+        //! which silently reset properties this code expects to persist.
+        restoreMode: Binding.RestoreNone
         target: _privates
         property: "lastHeadItemIsSeparator"
         when: isReady
@@ -96,6 +106,11 @@ AbilityDefinition.Indexer {
     }
 
     Binding {
+        //! Qt5 defaulted Binding.restoreMode to RestoreNone, so a binding whose
+        //! `when` turned false simply left the property at its last value. Qt6
+        //! defaults to RestoreBindingOrValue and puts the *previous* value back,
+        //! which silently reset properties this code expects to persist.
+        restoreMode: Binding.RestoreNone
         target: _privates
         property: "firstVisibleItemIndex"
         when: isReady
@@ -116,6 +131,11 @@ AbilityDefinition.Indexer {
     }
 
     Binding {
+        //! Qt5 defaulted Binding.restoreMode to RestoreNone, so a binding whose
+        //! `when` turned false simply left the property at its last value. Qt6
+        //! defaults to RestoreBindingOrValue and puts the *previous* value back,
+        //! which silently reset properties this code expects to persist.
+        restoreMode: Binding.RestoreNone
         target: _privates
         property: "lastVisibleItemIndex"
         when: isReady
@@ -173,6 +193,11 @@ AbilityDefinition.Indexer {
     }
 
     Binding {
+        //! Qt5 defaulted Binding.restoreMode to RestoreNone, so a binding whose
+        //! `when` turned false simply left the property at its last value. Qt6
+        //! defaults to RestoreBindingOrValue and puts the *previous* value back,
+        //! which silently reset properties this code expects to persist.
+        restoreMode: Binding.RestoreNone
         target: _indexer
         property: "hidden"
         when: isReady
@@ -191,6 +216,11 @@ AbilityDefinition.Indexer {
     }
 
     Binding {
+        //! Qt5 defaulted Binding.restoreMode to RestoreNone, so a binding whose
+        //! `when` turned false simply left the property at its last value. Qt6
+        //! defaults to RestoreBindingOrValue and puts the *previous* value back,
+        //! which silently reset properties this code expects to persist.
+        restoreMode: Binding.RestoreNone
         target: _indexer
         property: "separators"
         when: isReady

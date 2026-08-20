@@ -387,6 +387,11 @@ ContainmentItem {
 
     //! Wait until the mouse leaves the view
     Binding {
+        //! Qt5 defaulted Binding.restoreMode to RestoreNone, so a binding whose
+        //! `when` turned false simply left the property at its last value. Qt6
+        //! defaults to RestoreBindingOrValue and puts the *previous* value back,
+        //! which silently reset properties this code expects to persist.
+        restoreMode: Binding.RestoreNone
         target: root
         property: "hideThickScreenGap"
         when: !(plasmoid.configuration.floatingGapHidingWaitsMouse && dockContainsMouse)
@@ -399,7 +404,12 @@ ContainmentItem {
     //! Binding is needed in order for hideLengthScreenGaps to be activated or not only after
     //! View sliding in/out has finished. This way the animation is smoother for behaveAsPlasmaPanels
     Binding{
-        target: root
+         //! Qt5 defaulted Binding.restoreMode to RestoreNone, so a binding whose
+        //! `when` turned false simply left the property at its last value. Qt6
+        //! defaults to RestoreBindingOrValue and puts the *previous* value back,
+        //! which silently reset properties this code expects to persist.
+        restoreMode: Binding.RestoreNone
+       target: root
         property: "hideLengthScreenGaps"
         when: latteView && latteView.positioner && latteView.visibility
               && ((root.behaveAsPlasmaPanel && latteView.positioner.slideOffset === 0)

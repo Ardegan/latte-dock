@@ -31,6 +31,11 @@ Item{
     readonly property int maxSize: Math.max(0,Math.ceil(0.55*abilityItem.abilities.metrics.iconSize) - abilityItem.abilities.metrics.totals.lengthEdges)
 
     Binding{
+        //! Qt5 defaulted Binding.restoreMode to RestoreNone, so a binding whose
+        //! `when` turned false simply left the property at its last value. Qt6
+        //! defaults to RestoreBindingOrValue and puts the *previous* value back,
+        //! which silently reset properties this code expects to persist.
+        restoreMode: Binding.RestoreNone
         target: hiddenSpacer
         property: "nHiddenSize"
         when: !hiddenSizeDelayer.running && itemIndex > -1 //! helps to solve BUGLOCALREF: #1
