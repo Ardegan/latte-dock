@@ -1050,7 +1050,12 @@ ContainmentItem {
         plasmoidInterface: root
 
         Component.onCompleted: {
-            view.interfacesGraphicObj = _interfaces;
+            //! `view` is null here under Plasma 6: the containment item is built
+            //! before View::init() publishes _latte_view_object. View::init()
+            //! finds this object itself, so only publish back when we do have it.
+            if (view) {
+                view.interfacesGraphicObj = _interfaces;
+            }
         }
 
         onViewChanged: {

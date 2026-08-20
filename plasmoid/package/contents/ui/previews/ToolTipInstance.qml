@@ -193,7 +193,9 @@ Column {
                 id:previewThumbLoader
                 anchors.fill: parent
                 anchors.margins: Math.max(2, previewShadow.radius)
-                active: LatteCore.WindowSystem.isPlatformX11 || (root.plasma520 && LatteCore.WindowSystem.isPlatformWayland)
+                //! `root.plasma520` was never declared anywhere; the Plasma 5.20
+                //! gate is moot for a Plasma 6-only port.
+                active: LatteCore.WindowSystem.isPlatformX11 || LatteCore.WindowSystem.isPlatformWayland
                 visible: !albumArtImage.visible && !thumbnailSourceItem.isMinimized
                 source:  {
                     //! The Plasma 5.24/5.25 variants are gone: this port requires

@@ -67,17 +67,14 @@ Item{
         }*/
 
     Behavior on zoom {
-        id: animatedBehavior
-        enabled: !abilityItem.abilities.parabolic.directRenderingEnabled || restoreAnimation.running
+        //! Qt6 permits only one interceptor per property. This was a pair
+        //! of Behaviors -- one animated, one instant -- toggled through
+        //! `enabled`; merged into one with a conditional duration.
         NumberAnimation{
-            duration: 3 * abilityItem.animationTime
+            duration: (!abilityItem.abilities.parabolic.directRenderingEnabled || restoreAnimation.running) ? 3 * abilityItem.animationTime : 0
             easing.type: Easing.OutCubic
         }
-    }
-
-    Behavior on zoom {
-        enabled: !animatedBehavior.enabled
-        NumberAnimation { duration: 0 }
+    
     }
 
     Item{

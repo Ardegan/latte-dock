@@ -9,11 +9,12 @@ import QtQuick.Layouts 1.1
 
 import org.kde.ksvg 1.0 as KSvg
 import org.kde.plasma.core 2.0 as PlasmaCore
+import org.kde.plasma.plasmoid
 
 KSvg.FrameSvgItem {
     id: root
 
-    imagePath: containment && containment.backgroundHints === PlasmaCore.Types.NoBackground ? "" : "widgets/panel-background"
+    imagePath: containment && containment.Plasmoid.backgroundHints === PlasmaCore.Types.NoBackground ? "" : "widgets/panel-background"
     //imagePath: "widgets/panel-background"
     //imagePath: ""
     prefix:""
@@ -22,7 +23,7 @@ KSvg.FrameSvgItem {
     property Item containment
     property Item viewLayout
 
-    readonly property bool verticalPanel: containment && containment.formFactor === PlasmaCore.Types.Vertical
+    readonly property bool verticalPanel: containment && containment.Plasmoid.formFactor === PlasmaCore.Types.Vertical
 
     /*  Rectangle{
         anchors.fill: parent
@@ -36,7 +37,7 @@ KSvg.FrameSvgItem {
             return "";
         }
         var pre;
-        switch (containment.location) {
+        switch (containment.Plasmoid.location) {
         case PlasmaCore.Types.LeftEdge:
             pre = "west";
             break;
@@ -63,7 +64,7 @@ KSvg.FrameSvgItem {
         console.log("latte view qml source deleting...");
 
         if (containment) {
-            containment.locationChanged.disconnect(adjustPrefix);
+            containment.Plasmoid.locationChanged.disconnect(adjustPrefix);
         }
     }
 
@@ -77,7 +78,7 @@ KSvg.FrameSvgItem {
         containment.parent = containmentParent;
         containment.visible = true;
         containment.anchors.fill = containmentParent;
-        containment.locationChanged.connect(adjustPrefix);
+        containment.Plasmoid.locationChanged.connect(adjustPrefix);
         adjustPrefix();
 
         for(var i=0; i<containment.children.length; ++i){

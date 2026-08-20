@@ -55,15 +55,11 @@ Item{
     }
 
     Behavior on nHiddenSize {
-        id: animatedBehavior
-        enabled: abilityItem.isHiddenSpacerAnimated || restoreAnimation.running
-        NumberAnimation{ duration: 3 * abilityItem.animationTime }
-    }
-
-    Behavior on nHiddenSize {
-        id: directBehavior
-        enabled: !animatedBehavior.enabled
-        NumberAnimation { duration: 0 }
+        //! Qt6 permits only one interceptor per property. This was a pair
+        //! of Behaviors -- one animated, one instant -- toggled through
+        //! `enabled`; merged into one with a conditional duration.
+        NumberAnimation{ duration: (abilityItem.isHiddenSpacerAnimated || restoreAnimation.running) ? 3 * abilityItem.animationTime : 0}
+    
     }
 
     Loader{

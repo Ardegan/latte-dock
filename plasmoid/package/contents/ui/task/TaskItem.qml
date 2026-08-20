@@ -943,7 +943,12 @@ AbilityItem.BasicItem {
     }
 
     ///Item's Removal Animation
-    ListView.onRemove: TaskAnimations.RealRemovalAnimation{ id: taskRealRemovalAnimation }
+    //! Qt6 deprecates assigning an object to a signal handler. The animation
+    //! sets ListView.delayRemove itself, so declaring it as a child and
+    //! starting it from the handler keeps the removal sequencing intact.
+    TaskAnimations.RealRemovalAnimation{ id: taskRealRemovalAnimation }
+
+    ListView.onRemove: taskRealRemovalAnimation.start()
 
     onIsLauncherAnimationRunningChanged: {
         if (!isLauncherAnimationRunning && taskRealRemovalAnimation.paused) {

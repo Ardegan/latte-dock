@@ -35,15 +35,11 @@ Item{
     property real nScale: 0
 
     Behavior on nHiddenSize {
-        id: animatedBehavior
-        enabled: !appletItem.parabolic.directRenderingEnabled || restoreAnimation.running
-        NumberAnimation { duration: 3 * appletItem.animationTime }
-    }
-
-    Behavior on nHiddenSize {
-        id: directBehavior
-        enabled: !animatedBehavior.enabled
-        NumberAnimation { duration: 0 }
+        //! Qt6 permits only one interceptor per property. This was a pair
+        //! of Behaviors -- one animated, one instant -- toggled through
+        //! `enabled`; merged into one with a conditional duration.
+        NumberAnimation { duration: (!appletItem.parabolic.directRenderingEnabled || restoreAnimation.running) ? 3 * appletItem.animationTime : 0}
+    
     }
 
     Connections{

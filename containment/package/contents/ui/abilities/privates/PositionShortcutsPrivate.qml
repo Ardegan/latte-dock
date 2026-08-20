@@ -26,7 +26,8 @@ AbilityDefinition.PositionShortcuts {
         target: _shortcutsprivate
         property: "badges"
         when: !updateIsBlocked && shortcutsEngine
-        value: shortcutsEngine.badgesForActivate
+        //! Qt6 evaluates Binding.value even while `when` is false.
+        value: shortcutsEngine ? shortcutsEngine.badgesForActivate : []
     }
 
     Binding {

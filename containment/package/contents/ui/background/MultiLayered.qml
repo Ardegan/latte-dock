@@ -288,18 +288,14 @@ BackgroundProperties{
 
     property QtObject themeExtendedBackground: null
 
-    Behavior on opacity{
-        enabled: LatteCore.WindowSystem.compositingActive
+    Behavior on opacity {
+        //! Qt6 permits only one interceptor per property. This was a pair
+        //! of Behaviors -- one animated, one instant -- toggled through
+        //! `enabled`; merged into one with a conditional duration.
         NumberAnimation {
-            duration: barLine.animationTime
+            duration: (LatteCore.WindowSystem.compositingActive) ? barLine.animationTime : 0
         }
-    }
-
-    Behavior on opacity{
-        enabled: !LatteCore.WindowSystem.compositingActive
-        NumberAnimation {
-            duration: 0
-        }
+    
     }
 
     Binding {
@@ -307,6 +303,11 @@ BackgroundProperties{
         property: "themeExtendedBackground"
         when: themeExtended
         value: {
+            //! Qt6 evaluates Binding.value even while `when` is false.
+            if (!themeExtended) {
+                return null;
+            }
+
             switch(plasmoid.location) {
             case PlasmaCore.Types.BottomEdge: return themeExtended.backgroundBottomEdge;
             case PlasmaCore.Types.LeftEdge: return themeExtended.backgroundLeftEdge;
@@ -344,14 +345,11 @@ BackgroundProperties{
                                            || customShadowedRectangleIsEnabled
 
         Behavior on opacity {
-            enabled: LatteCore.WindowSystem.compositingActive
-            NumberAnimation { duration: barLine.animationTime }
-        }
-
-
-        Behavior on opacity{
-            enabled: !LatteCore.WindowSystem.compositingActive
-            NumberAnimation { duration: 0 }
+            //! Qt6 permits only one interceptor per property. This was a pair
+            //! of Behaviors -- one animated, one instant -- toggled through
+            //! `enabled`; merged into one with a conditional duration.
+            NumberAnimation { duration: (LatteCore.WindowSystem.compositingActive) ? barLine.animationTime : 0}
+        
         }
     }
 
@@ -369,14 +367,12 @@ BackgroundProperties{
         readonly property real normalizedOpacity: visible ?  Math.min(1, (appliedOpacity - solidBackground.themeMaxOpacity)/(1-solidBackground.themeMaxOpacity)) : 0
         readonly property real appliedOpacity: visible ? solidBackground.appliedOpacity : 0
 
-        Behavior on opacity{
-            enabled: LatteCore.WindowSystem.compositingActive
-            NumberAnimation { duration: barLine.animationTime }
-        }
-
-        Behavior on opacity{
-            enabled: !LatteCore.WindowSystem.compositingActive
-            NumberAnimation { duration: 0 }
+        Behavior on opacity {
+            //! Qt6 permits only one interceptor per property. This was a pair
+            //! of Behaviors -- one animated, one instant -- toggled through
+            //! `enabled`; merged into one with a conditional duration.
+            NumberAnimation { duration: (LatteCore.WindowSystem.compositingActive) ? barLine.animationTime : 0}
+        
         }
     }
 
@@ -508,14 +504,12 @@ BackgroundProperties{
 
         enabledBorders: latteView && latteView.effects ? latteView.effects.enabledBorders : KSvg.FrameSvg.NoBorder
 
-        Behavior on opacity{
-            enabled: LatteCore.WindowSystem.compositingActive && !solidBackground.paintInstantly
-            NumberAnimation { duration: barLine.animationTime }
-        }
-
-        Behavior on opacity{
-            enabled: !LatteCore.WindowSystem.compositingActive
-            NumberAnimation { duration: 0 }
+        Behavior on opacity {
+            //! Qt6 permits only one interceptor per property. This was a pair
+            //! of Behaviors -- one animated, one instant -- toggled through
+            //! `enabled`; merged into one with a conditional duration.
+            NumberAnimation { duration: (LatteCore.WindowSystem.compositingActive && !solidBackground.paintInstantly) ? barLine.animationTime : 0}
+        
         }
 
         function adjustPrefix() {
@@ -590,24 +584,20 @@ BackgroundProperties{
 
         readonly property bool forceSolidness: root.forceSolidPanel || !LatteCore.WindowSystem.compositingActive
 
-        Behavior on backgroundOpacity{
-            enabled: LatteCore.WindowSystem.compositingActive
-            NumberAnimation { duration: barLine.animationTime }
+        Behavior on backgroundOpacity {
+            //! Qt6 permits only one interceptor per property. This was a pair
+            //! of Behaviors -- one animated, one instant -- toggled through
+            //! `enabled`; merged into one with a conditional duration.
+            NumberAnimation { duration: (LatteCore.WindowSystem.compositingActive) ? barLine.animationTime : 0}
+        
         }
 
-        Behavior on backgroundOpacity{
-            enabled: !LatteCore.WindowSystem.compositingActive
-            NumberAnimation { duration: 0 }
-        }
-
-        Behavior on backgroundColor{
-            enabled: LatteCore.WindowSystem.compositingActive
-            ColorAnimation { duration: barLine.animationTime }
-        }
-
-        Behavior on backgroundColor{
-            enabled: !LatteCore.WindowSystem.compositingActive
-            ColorAnimation { duration: 0 }
+        Behavior on backgroundColor {
+            //! Qt6 permits only one interceptor per property. This was a pair
+            //! of Behaviors -- one animated, one instant -- toggled through
+            //! `enabled`; merged into one with a conditional duration.
+            ColorAnimation { duration: (LatteCore.WindowSystem.compositingActive) ? barLine.animationTime : 0}
+        
         }
     }
 
