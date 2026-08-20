@@ -16,6 +16,9 @@
 #include "../layout/abstractlayout.h"
 #include "../view/view.h"
 
+// C++
+#include <algorithm>
+
 // Qt
 #include <QDebug>
 #include <QDir>
@@ -395,6 +398,17 @@ QString Storage::newUniqueIdsFile(QString originFile, const Layout::GenericLayou
             }
         }
     }
+
+    //! KConfigGroup::groupList() returns its groups in an unspecified order, and the
+    //! loops below hand out the new ids sequentially in exactly that order. Latte lays
+    //! applets out in id order, so a copied view - a screen clone, a duplicated view or
+    //! an imported layout - could come out with its applets in a different order than
+    //! the original, differently on every run. Sort the source ids numerically so the
+    //! relative order is carried over deterministically.
+    std::sort(toInvestigateContainmentIds.begin(), toInvestigateContainmentIds.end(),
+              [](const QString &a, const QString &b) { return a.toInt() < b.toInt(); });
+    std::sort(toInvestigateAppletIds.begin(), toInvestigateAppletIds.end(),
+              [](const QString &a, const QString &b) { return a.toInt() < b.toInt(); });
 
     //! Reassign containment and applet ids to unique ones
     for (const auto &contId : toInvestigateContainmentIds) {        
