@@ -199,9 +199,9 @@ Item {
                     }
 
                     /*if (inMaxAutoFillCalculations) {
-                        console.log(" org.kde.latte s4_1  "+ mostDemandingApplet.applet.pluginName + " assigned max : "  + mostDemandingApplet.maxAutoFillLength + "\n");
+                        console.log(" org.kde.latte s4_1  "+ mostDemandingApplet.applet.Plasmoid.pluginName + " assigned max : "  + mostDemandingApplet.maxAutoFillLength + "\n");
                     } else {
-                        console.log(" org.kde.latte s4_1  "+ mostDemandingApplet.applet.pluginName + " assigned min: "  + mostDemandingApplet.minAutoFillLength + "\n");
+                        console.log(" org.kde.latte s4_1  "+ mostDemandingApplet.applet.Plasmoid.pluginName + " assigned min: "  + mostDemandingApplet.minAutoFillLength + "\n");
                     }*/
                 } else if (neutralAppletsNo>0) {
                     //! if no demanding applets was found then the available space is splitted equally

@@ -243,7 +243,7 @@ PlasmoidItem {
 
         function onIsReadyChanged() {
             if (appletAbilities.myView.isReady) {
-                plasmoid.action("configure").visible = false;
+                plasmoid.internalAction("configure").visible = false;
                 plasmoid.configuration.isInLatteDock = true;
             }
         }

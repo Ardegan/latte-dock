@@ -833,10 +833,10 @@ PlasmaExtras.Menu {
         id: alternativesMenuItem
         visible: (appletAbilities.myView.isReady && appletAbilities.myView.inEditMode)
                  || (!appletAbilities.myView.isReady && plasmoid.userConfiguring /*normal plasmoid in the desktop*/)
-        text: plasmoid.action("alternatives").text
-        icon: plasmoid.action("alternatives").icon
+        text: plasmoid.internalAction("alternatives").text
+        icon: plasmoid.internalAction("alternatives").icon
 
-        onClicked: plasmoid.action("alternatives").trigger();
+        onClicked: plasmoid.internalAction("alternatives").trigger();
     }
 
     PlasmaExtras.MenuItem {
@@ -853,13 +853,13 @@ PlasmaExtras.Menu {
     PlasmaExtras.MenuItem {
         id: removePlasmoidInMyViewEditMode
         //! Workaround: this is preferred compared to:
-        //!   action:plasmoid.action("remove")
+        //!   action:plasmoid.internalAction("remove")
         //! which shows the action always and not dependent of myView.inEditMode flag
-        text: plasmoid.action("remove").text
-        icon: plasmoid.action("remove").icon
+        text: plasmoid.internalAction("remove").text
+        icon: plasmoid.internalAction("remove").icon
         visible: appletAbilities.myView.isReady && appletAbilities.myView.inEditMode
 
-        onClicked: plasmoid.action("remove").trigger();
+        onClicked: plasmoid.internalAction("remove").trigger();
     }
 
     PlasmaExtras.MenuItem {

@@ -176,7 +176,7 @@ Item{
     Connections {
         target: root
         function onBroadcastedToApplet(pluginName, action, value) {
-            if (appletItem.applet && appletItem.applet.pluginName === pluginName) {
+            if (appletItem.applet && appletItem.applet.Plasmoid.pluginName === pluginName) {
                 settings.broadcasted(action, value);
             }
         }

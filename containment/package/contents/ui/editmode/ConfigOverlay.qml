@@ -201,9 +201,9 @@ MouseArea {
 
         if(currentApplet && currentApplet.applet){
             if (plasmoid.formFactor === PlasmaCore.Types.Vertical) {
-                currentApplet.applet.configuration.length = handle.height;
+                currentApplet.applet.Plasmoid.configuration.length = handle.height;
             } else {
-                currentApplet.applet.configuration.length = handle.width;
+                currentApplet.applet.Plasmoid.configuration.length = handle.width;
             }
         }
 
@@ -407,10 +407,10 @@ MouseArea {
                     && (currentApplet.applet || currentApplet.isSeparator || currentApplet.isInternalViewSplitter)) {
 
                 configureButton.visible = !currentApplet.isInternalViewSplitter
-                        && (currentApplet.applet.pluginName !== "org.kde.latte.plasmoid")
-                        && currentApplet.applet.action("configure")
-                        && currentApplet.applet.action("configure").enabled;
-                closeButton.visible = !currentApplet.isInternalViewSplitter && currentApplet.applet.action("remove") && currentApplet.applet.action("remove").enabled;
+                        && (currentApplet.applet.Plasmoid.pluginName !== "org.kde.latte.plasmoid")
+                        && currentApplet.applet.Plasmoid.internalAction("configure")
+                        && currentApplet.applet.Plasmoid.internalAction("configure").enabled;
+                closeButton.visible = !currentApplet.isInternalViewSplitter && currentApplet.applet.Plasmoid.internalAction("remove") && currentApplet.applet.Plasmoid.internalAction("remove").enabled;
                 lockButton.visible = !currentApplet.isInternalViewSplitter
                         && !currentApplet.communicator.indexerIsSupported
                         && !currentApplet.communicator.appletBlocksParabolicEffect
@@ -418,7 +418,7 @@ MouseArea {
 
                 colorizingButton.visible = root.colorizerEnabled && !currentApplet.appletBlocksColorizing && !currentApplet.isInternalViewSplitter;
 
-                label.text = currentApplet.isInternalViewSplitter ? i18n("Justify Splitter") : currentApplet.applet.title;
+                label.text = currentApplet.isInternalViewSplitter ? i18n("Justify Splitter") : currentApplet.applet.Plasmoid.title;
             }
         }
 
@@ -449,7 +449,7 @@ MouseArea {
                         // tooltip: i18n("Configure applet")
                         onClicked: {
                             // tooltip.visible = false;
-                            currentApplet.applet.action("configure").trigger();
+                            currentApplet.applet.Plasmoid.internalAction("configure").trigger();
                         }
                     }
 
@@ -471,7 +471,7 @@ MouseArea {
                             // tooltip: i18n("Enable painting for this applet")
 
                             onClicked: {
-                                fastLayoutManager.setOption(currentApplet.applet.id, "userBlocksColorizing", !checked);
+                                fastLayoutManager.setOption(currentApplet.applet.Plasmoid.id, "userBlocksColorizing", !checked);
                             }
                         }
 
@@ -482,7 +482,7 @@ MouseArea {
                             // tooltip: i18n("Disable parabolic effect for this applet")
 
                             onClicked: {
-                                fastLayoutManager.setOption(currentApplet.applet.id, "lockZoom", checked);
+                                fastLayoutManager.setOption(currentApplet.applet.Plasmoid.id, "lockZoom", checked);
                             }
                         }
 
@@ -494,7 +494,7 @@ MouseArea {
                             onClicked: {
                                 // tooltip.visible = false;
                                 if(currentApplet && currentApplet.applet)
-                                    currentApplet.applet.action("remove").trigger();
+                                    currentApplet.applet.Plasmoid.internalAction("remove").trigger();
                             }
                         }
                     }

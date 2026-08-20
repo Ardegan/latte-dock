@@ -531,8 +531,8 @@ ContainmentItem {
         upgrader_v010_alignment();
 
         fastLayoutManager.restore();
-        plasmoid.action("configure").visible = !plasmoid.immutable;
-        plasmoid.action("configure").enabled = !plasmoid.immutable;
+        plasmoid.internalAction("configure").visible = !plasmoid.immutable;
+        plasmoid.internalAction("configure").enabled = !plasmoid.immutable;
     }
 
     Component.onDestruction: {
@@ -555,7 +555,13 @@ ContainmentItem {
         }
     }
 
-    Containment.onAppletAdded: {
+    //! Plasma 6 signature is appletAdded(applet, geometryHint) -- the Plasma 5
+    //! form carried separate x/y. Qt6 also dropped implicit parameter
+    //! injection, so the parameters must be declared.
+    Containment.onAppletAdded: (applet, geometryHint) => {
+        var x = geometryHint.x;
+        var y = geometryHint.y;
+
         if (fastLayoutManager.isMasqueradedIndex(x, y)) {
             var index = fastLayoutManager.masquearadedIndex(x, y);
             fastLayoutManager.addAppletItem(applet, index);
@@ -564,7 +570,7 @@ ContainmentItem {
         }
     }
 
-    Containment.onAppletRemoved: fastLayoutManager.removeAppletItem(applet);
+    Containment.onAppletRemoved: (applet) => fastLayoutManager.removeAppletItem(applet);
 
     Plasmoid.onUserConfiguringChanged: {
         if (plasmoid.userConfiguring) {
@@ -575,8 +581,8 @@ ContainmentItem {
     }
 
     Plasmoid.onImmutableChanged: {
-        plasmoid.action("configure").visible = !plasmoid.immutable;
-        plasmoid.action("configure").enabled = !plasmoid.immutable;
+        plasmoid.internalAction("configure").visible = !plasmoid.immutable;
+        plasmoid.internalAction("configure").enabled = !plasmoid.immutable;
     }
     //////////////END OF CONNECTIONS
 
@@ -587,7 +593,7 @@ ContainmentItem {
 
         // don't show applet if it chooses to be hidden but still make it  accessible in the panelcontroller
         appletContainer.visible = Qt.binding(function() {
-            return (appletContainer.applet && appletContainer.applet.status !== PlasmaCore.Types.HiddenStatus || (!plasmoid.immutable && root.inConfigureAppletsMode)) && !appletContainer.isHidden;
+            return (appletContainer.applet && appletContainer.applet.Plasmoid.status !== PlasmaCore.Types.HiddenStatus || (!plasmoid.immutable && root.inConfigureAppletsMode)) && !appletContainer.isHidden;
         });
         return appletContainer;
     }
@@ -613,21 +619,21 @@ ContainmentItem {
         for (var i = 0; i < layoutsContainer.startLayout.children.length; ++i) {
             var child = layoutsContainer.startLayout.children[i];
 
-            if (child && child.applet && child.applet.id === appletId && child.containsPos(pos))
+            if (child && child.applet && child.applet.Plasmoid.id === appletId && child.containsPos(pos))
                 return true;
         }
 
         for (var i = 0; i < layoutsContainer.mainLayout.children.length; ++i) {
             var child = layoutsContainer.mainLayout.children[i];
 
-            if (child && child.applet && child.applet.id === appletId && child.containsPos(pos))
+            if (child && child.applet && child.applet.Plasmoid.id === appletId && child.containsPos(pos))
                 return true;
         }
 
         for (var i = 0; i < layoutsContainer.endLayout.children.length; ++i) {
             var child = layoutsContainer.endLayout.children[i];
 
-            if (child && child.applet && child.applet.id === appletId && child.containsPos(pos))
+            if (child && child.applet && child.applet.Plasmoid.id === appletId && child.containsPos(pos))
                 return true;
         }
 

@@ -196,8 +196,8 @@ Item{
     // property int pHeight: applet ? applet.Layout.preferredHeight : -10
 
     /*function debugLayouts(){
-        if(applet && applet.pluginName==="org.kde.plasma.systemtray"){
-            console.log("---------- "+ applet.pluginName +" ----------");
+        if(applet && applet.Plasmoid.pluginName==="org.kde.plasma.systemtray"){
+            console.log("---------- "+ applet.Plasmoid.pluginName +" ----------");
             console.log("MinW "+applet.Layout.minimumWidth);
             console.log("PW "+applet.Layout.preferredWidth);
             console.log("MaxW "+applet.Layout.maximumWidth);
@@ -378,7 +378,7 @@ Item{
         Connections {
             target: root.latteView ? root.latteView.extendedInterface : null
             function onAppletRequestedVisualIndicator(plasmoidId) {
-                if (plasmoidId === appletItem.applet.id) {
+                if (plasmoidId === appletItem.applet.Plasmoid.id) {
                     visualIndicator.showVisualIndicatorRequested = true;
                 }
             }

@@ -300,7 +300,16 @@ bool LayoutManager::isValidApplet(const int &id)
         return false;
     }
 
-    QList<QObject *> applets = m_plasmoid->property("applets").value<QList<QObject *>>();
+    //! Plasma 6 types this property as QList<Plasma::Applet*>; Qt6 will not
+    //! implicitly convert that QVariant to QList<QObject*>, it just yields an
+    //! empty list, so read the real type. The QML side needs the graphic item
+    //! (AppletQuickItem), which is what Plasma 5 used to hand over directly.
+    QList<QObject *> applets;
+    for (Plasma::Applet *a : m_plasmoid->property("applets").value<QList<Plasma::Applet *>>()) {
+        if (auto *item = PlasmaQuick::AppletQuickItem::itemForApplet(a)) {
+            applets << item;
+        }
+    }
 
     for(int i=0; i<applets.count(); ++i) {
         uint appletid = applets[i]->property("id").toUInt();
@@ -316,7 +325,16 @@ bool LayoutManager::isValidApplet(const int &id)
 void LayoutManager::restore()
 {
     QList<int> appletIdsOrder = toIntList((*m_configuration)["appletOrder"].toString());
-    QList<QObject *> applets = m_plasmoid->property("applets").value<QList<QObject *>>();
+    //! Plasma 6 types this property as QList<Plasma::Applet*>; Qt6 will not
+    //! implicitly convert that QVariant to QList<QObject*>, it just yields an
+    //! empty list, so read the real type. The QML side needs the graphic item
+    //! (AppletQuickItem), which is what Plasma 5 used to hand over directly.
+    QList<QObject *> applets;
+    for (Plasma::Applet *a : m_plasmoid->property("applets").value<QList<Plasma::Applet *>>()) {
+        if (auto *item = PlasmaQuick::AppletQuickItem::itemForApplet(a)) {
+            applets << item;
+        }
+    }
 
     Latte::Types::Alignment alignment = static_cast<Latte::Types::Alignment>((*m_configuration)["alignment"].toInt());
     int splitterPosition = (*m_configuration)["splitterPosition"].toInt();
