@@ -123,6 +123,14 @@ These produce no error and no visible symptom at the point of failure, so they c
   blanket-replaced `Item {` in nine files that are not applet roots, which left `plasmoid` null inside
   them.
 - `latteView.visibility` is null until `View::init()` finishes; guard it, not just `latteView`.
+- **The Wayland strut `GhostWindow` steals pointer input.** `WaylandInterface::setViewStruts()`
+  (`app/wm/waylandinterface.cpp`) creates a transparent panel-role surface sized
+  `(thickness+1) x thickness`, pinned to the *horizontal centre of the view*, purely so Plasma
+  reserves space. Being transparent it is invisible, but without an empty input region it consumes
+  every pointer event over the middle of the dock, leaving whichever item sits there totally inert
+  while still rendering normally. It now sets `Qt::WindowTransparentForInput` plus an explicit empty
+  KWayland input region, re-applied on each resize. When one dock item misbehaves and its
+  *neighbours* are fine, check for overlapping surfaces before reading any QML.
 
 ### Fixes applied on top of upstream `work/plasma6`
 
@@ -275,7 +283,9 @@ a Controls 1 type; the rest were stale imports. Notable points if you touch this
 | `Invalid QML element name "Types"` (x3) | `Latte::Types` is a `Q_GADGET` enum namespace, which Qt6 classes as a value type and wants lowercase. Renaming would break 595 `LatteCore.Types.*` sites and the versioned `LatteBridge` API |
 | `ecm_find_qmlmodule` version literals | relaxed to non-REQUIRED; `qmlplugindump` is unreliable against the Plasma 6 modules and intermittently fails for modules that are present |
 | `KDE_COMPILERSETTINGS_LEVEL "5.84.0"` | left at the KF5 value |
-| Nothing beyond first render is exercised | edit mode, the settings dialogs, multi-screen, per-activity layouts, autohide/dodge modes and the parabolic effect have not been tested |
+| Blurred rectangle over the top quarter of the screen at startup | the view window is the full parabolic height (e.g. 1969x384) while only the top ~88px should be opaque. The mask/blur region in `ViewPart::Effects` is not applied until something forces a repaint, so the compositor blurs the whole window rect; the first hover over the dock clears it |
+| Top strut is not reserved on Wayland | KWin reports `MaximizeArea = 0,0 1969x1187`, so maximized windows sit *under* the dock even though Latte reads Plasma's available rect as `QRect(0,88 ...)`. Verified pre-existing: a build with the `GhostWindow` untouched gives the identical MaximizeArea, so this is not fallout from the input-region fix |
+| Nothing beyond first render is exercised | edit mode, the settings dialogs, multi-screen, per-activity layouts and autohide/dodge modes have not been tested. Hover/zoom, left/middle/right click, the context menu and both settings dialogs now work |
 
 Because Debug builds define `QT_FATAL_WARNINGS`, any unresolved QML import aborts at runtime rather
 than warning — build Release when just running the dock.
