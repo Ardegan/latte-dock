@@ -212,6 +212,15 @@ bool InfoView::event(QEvent *e)
 
 void InfoView::setOnActivities(QStringList activities)
 {
+    //! KX11Extras warns and does nothing off X11. SettingsDialog already guards its
+    //! equivalent call the same way; InfoView is a transient message window, so being
+    //! left on all activities under Wayland is harmless. Doing it properly would need
+    //! a tracked WindowId to route through AbstractWindowInterface, which InfoView,
+    //! unlike the config views, does not have.
+    if (!KWindowSystem::isPlatformX11()) {
+        return;
+    }
+
     KX11Extras::setOnActivities(winId(), activities);
 }
 
