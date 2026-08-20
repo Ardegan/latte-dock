@@ -123,6 +123,16 @@ These produce no error and no visible symptom at the point of failure, so they c
   blanket-replaced `Item {` in nine files that are not applet roots, which left `plasmoid` null inside
   them.
 - `latteView.visibility` is null until `View::init()` finishes; guard it, not just `latteView`.
+- **Screen space is reserved through two independent paths, and they can disagree.** Desktop icons
+  are repositioned because `PlasmaExtended::ScreenGeometries` broadcasts the available rect to
+  plasmashell over D-Bus (`setAvailableScreenRect`), gated by the `isAvailableGeometryBroadcastedToPlasma`
+  universal setting and skipping `AutoHide`/`SidebarOnDemand`/`SidebarAutoHide`. Maximized *windows*
+  are governed by KWin's work area, which on Wayland comes from a **wlr-layer-shell exclusive zone**
+  on the `GhostWindow` - the legacy `org_kde_plasma_surface` Panel role no longer produces a strut in
+  KWin 6. Latte had only the first, so icons moved but windows slid under the dock. Check
+  `workspace.clientArea(KWin.MaximizeArea, ...)` via a KWin script, not the Plasma available rect,
+  when verifying window behaviour. Struts are published only from the `AlwaysVisible` branch of
+  `VisibilityManager::setMode()`.
 - **The Wayland strut `GhostWindow` steals pointer input.** `WaylandInterface::setViewStruts()`
   (`app/wm/waylandinterface.cpp`) creates a transparent panel-role surface sized
   `(thickness+1) x thickness`, pinned to the *horizontal centre of the view*, purely so Plasma
@@ -284,7 +294,6 @@ a Controls 1 type; the rest were stale imports. Notable points if you touch this
 | `ecm_find_qmlmodule` version literals | relaxed to non-REQUIRED; `qmlplugindump` is unreliable against the Plasma 6 modules and intermittently fails for modules that are present |
 | `KDE_COMPILERSETTINGS_LEVEL "5.84.0"` | left at the KF5 value |
 | Blurred rectangle over the top quarter of the screen at startup | the view window is the full parabolic height (e.g. 1969x384) while only the top ~88px should be opaque. The mask/blur region in `ViewPart::Effects` is not applied until something forces a repaint, so the compositor blurs the whole window rect; the first hover over the dock clears it |
-| Top strut is not reserved on Wayland | KWin reports `MaximizeArea = 0,0 1969x1187`, so maximized windows sit *under* the dock even though Latte reads Plasma's available rect as `QRect(0,88 ...)`. Verified pre-existing: a build with the `GhostWindow` untouched gives the identical MaximizeArea, so this is not fallout from the input-region fix |
 | Nothing beyond first render is exercised | edit mode, the settings dialogs, multi-screen, per-activity layouts and autohide/dodge modes have not been tested. Hover/zoom, left/middle/right click, the context menu and both settings dialogs now work |
 
 Because Debug builds define `QT_FATAL_WARNINGS`, any unresolved QML import aborts at runtime rather
@@ -298,6 +307,8 @@ required CMake config to its providing package). Two gotchas baked into that scr
 - `libplasma-dev` provides **both** `Plasma::Plasma` and `Plasma::PlasmaQuick`; the activities package
   is `libplasmaactivities-dev`, Kirigami is `libkirigami-dev`, and KWayland is `kwayland-dev` — not the
   `libkf6*-dev` names the pattern would suggest.
+- `liblayershellqtinterface-dev` is required (`find_package(LayerShellQt)`); `app/` links
+  `LayerShellQt::Interface` for the Wayland strut. It is not in `install-qt6-deps.sh` yet.
 - **Do not install `qt6-wayland-dev-tools`.** `qtwaylandscanner` now ships in `qt6-base-dev-tools`, and
   the older 6.9.2 package `Breaks:` against it, making the transaction unsatisfiable.
 
