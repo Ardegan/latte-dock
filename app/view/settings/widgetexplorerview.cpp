@@ -6,6 +6,7 @@
 */
 
 #include "widgetexplorerview.h"
+#include "../../apptypes.h"
 
 // local
 #include "../panelshadows_p.h"
@@ -206,7 +207,7 @@ void WidgetExplorerView::updateEffects()
         setMask(QRegion());
     }
 
-    if (KX11Extras::compositingActive()) {
+    if (Latte::compositingActive()) {
         KWindowEffects::enableBlurBehind(this, true, fixedMask);
     } else {
         KWindowEffects::enableBlurBehind(this, false);

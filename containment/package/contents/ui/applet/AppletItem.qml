@@ -898,7 +898,7 @@ Item {
     //Busy Indicator
     PlasmaComponents.BusyIndicator {
         z: 1000
-        visible: applet && applet.busy
+        visible: applet && applet.Plasmoid.busy
         running: visible
         anchors.centerIn: parent
         width: Math.min(parent.width, parent.height)

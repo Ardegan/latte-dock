@@ -16,7 +16,7 @@ import org.kde.draganddrop 2.0
 import org.kde.kirigami as Kirigami
 import org.kde.latte.core 0.2 as LatteCore
 
-PlasmoidItem {
+Item {
     id: delegate
 
     readonly property string pluginName: model.pluginName

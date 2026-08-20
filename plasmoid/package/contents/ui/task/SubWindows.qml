@@ -31,7 +31,9 @@ Item{
     property bool isStartup: IsStartup ? true : false
     property bool isWindow: IsWindow ? true : false
 
-    property int lastActiveWinInGroup: -1
+    //! Plasma 6 window ids are strings under Wayland (uuids), so this cannot
+    //! be an int any more; -1 is kept as the "none" sentinel.
+    property var lastActiveWinInGroup: -1
 
     //states that exist in windows in a Group of windows
     property bool hasMinimized: false;

@@ -13,7 +13,7 @@ import org.kde.latte.core 0.2 as LatteCore
 
 import "controls" as SettingsControls
 
-PlasmoidItem {
+Item {
     id: headerSettings
     width: plasmoid.formFactor === PlasmaCore.Types.Horizontal ? parent.width : parent.height
     height: thickness

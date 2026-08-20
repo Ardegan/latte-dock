@@ -9,8 +9,24 @@
 // Qt
 #include <QObject>
 
+// KDE
+#include <KWindowSystem>
+#include <KX11Extras>
+
 //! These are LatteApp::Types that will be used ONLY from Latte App c++ implementation.
 //! Such types are irrelevant and not used from plasma applets.
+
+namespace Latte {
+
+//! KX11Extras::compositingActive() warns loudly when called off X11 in KF6
+//! ("may only be used on X11"), and Latte calls it on hot paths. Compositing
+//! is always on under Wayland, so answer that directly.
+inline bool compositingActive()
+{
+    return KWindowSystem::isPlatformWayland() ? true : KX11Extras::compositingActive();
+}
+
+}
 
 namespace Latte {
 namespace ImportExport {

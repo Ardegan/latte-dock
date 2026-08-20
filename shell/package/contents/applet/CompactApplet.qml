@@ -10,6 +10,7 @@ import Qt5Compat.GraphicalEffects
 
 import org.kde.ksvg 1.0 as KSvg
 import org.kde.plasma.core 2.0 as PlasmaCore
+import org.kde.plasma.plasmoid
 import org.kde.plasma.components 3.0 as PlasmaComponents
 import org.kde.kquickcontrolsaddons 2.0
 
@@ -21,12 +22,17 @@ PlasmaCore.ToolTipArea {
     objectName: "org.kde.desktop-CompactApplet"
     anchors.fill: parent
 
-    mainText: plasmoid.toolTipMainText
-    subText: plasmoid.toolTipSubText
+    mainText: plasmoidItem.toolTipMainText
+    subText: plasmoidItem.toolTipSubText
     location: plasmoid.location
-    active: !plasmoid.expanded
-    textFormat: plasmoid.toolTipTextFormat
-    mainItem: plasmoid.toolTipItem ? plasmoid.toolTipItem : null
+    active: !plasmoidItem.expanded
+    textFormat: plasmoidItem.toolTipTextFormat
+    mainItem: plasmoidItem.toolTipItem ? plasmoidItem.toolTipItem : null
+
+    //! Plasma 6 splits the applet API: PlasmoidItem (this is injected by
+    //! AppletQuickItem under exactly this name) carries the tooltip/expanded
+    //! state, while `plasmoid` is the Plasma::Applet carrying location/status.
+    property PlasmoidItem plasmoidItem
 
     property Item fullRepresentation: null
     property Item compactRepresentation: null
@@ -130,7 +136,7 @@ PlasmaCore.ToolTipArea {
                 }
                 return prefix;
             }
-        opacity: plasmoid.expanded ? 1 : 0
+        opacity: plasmoidItem.expanded ? 1 : 0
         Behavior on opacity {
             NumberAnimation {
                 duration: Kirigami.Units.shortDuration
@@ -144,12 +150,12 @@ PlasmaCore.ToolTipArea {
     Timer {
         id: expandedSync
         interval: 500
-        onTriggered: plasmoid.expanded = popupWindow.visible;
+        onTriggered: plasmoidItem.expanded = popupWindow.visible;
     }
 
     Connections {
         target: plasmoid.internalAction("configure")
-        function onTriggered() { plasmoid.expanded = false }
+        function onTriggered() { plasmoidItem.expanded = false }
     }
 
     Connections {
@@ -161,11 +167,11 @@ PlasmaCore.ToolTipArea {
         id: popupWindow
         objectName: "popupWindow"
         flags: Qt.WindowStaysOnTopHint
-        visible: plasmoid.expanded && fullRepresentation
+        visible: plasmoidItem.expanded && fullRepresentation
         visualParent: compactRepresentationVisualParent ? compactRepresentationVisualParent : (compactRepresentation ? compactRepresentation : null)
        // location: PlasmaCore.Types.Floating //plasmoid.location
         edge: plasmoid.location /*this way dialog borders are not updated and it is used only for adjusting dialog position*/
-        hideOnWindowDeactivate: plasmoid.hideOnWindowDeactivate
+        hideOnWindowDeactivate: plasmoidItem.hideOnWindowDeactivate
         backgroundHints: (plasmoid.containmentDisplayHints & PlasmaCore.Types.DesktopFullyCovered) ? PlasmaCore.Dialog.SolidBackground : PlasmaCore.Dialog.StandardBackground
 
         property var oldStatus: PlasmaCore.Types.UnknownStatus
@@ -177,7 +183,7 @@ PlasmaCore.ToolTipArea {
             focus: true
 
             Keys.onEscapePressed: {
-                plasmoid.expanded = false;
+                plasmoidItem.expanded = false;
             }
 
             LayoutMirroring.enabled: Qt.application.layoutDirection === Qt.RightToLeft

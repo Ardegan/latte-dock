@@ -4,6 +4,7 @@
 */
 
 #include "screenedgeghostwindow.h"
+#include "../../apptypes.h"
 
 // local
 #include "../view.h"
@@ -78,7 +79,7 @@ void ScreenEdgeGhostWindow::updateGeometry()
 
     QRect newGeometry = m_latteView->absoluteGeometry();
 
-    if (KX11Extras::compositingActive()) {
+    if (Latte::compositingActive()) {
         m_thickness = 6;
     } else {
         m_thickness = 2;

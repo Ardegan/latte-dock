@@ -10,7 +10,7 @@ import Qt5Compat.GraphicalEffects
 import org.kde.plasma.plasmoid 2.0
 import org.kde.plasma.core 2.0 as PlasmaCore
 
-PlasmoidItem {
+Item {
 
     readonly property int gradientLength: appletAbilities.metrics.iconSize / 3
 

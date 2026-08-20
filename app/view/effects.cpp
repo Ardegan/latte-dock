@@ -4,6 +4,7 @@
 */
 
 #include "effects.h"
+#include "../apptypes.h"
 
 // local
 #include <config-latte.h>
@@ -57,7 +58,7 @@ void Effects::init()
     connect(m_view, &QQuickWindow::heightChanged, this, &Effects::updateMask);
     connect(m_view, &Latte::View::behaveAsPlasmaPanelChanged, this, &Effects::updateMask);
     connect(KX11Extras::self(), &KX11Extras::compositingChanged, this, [&]() {
-        if (!KX11Extras::compositingActive() && !m_view->behaveAsPlasmaPanel()) {
+        if (!Latte::compositingActive() && !m_view->behaveAsPlasmaPanel()) {
             setMask(m_rect);
         }
 
@@ -65,7 +66,7 @@ void Effects::init()
     });
 
     connect(this, &Effects::rectChanged, this, [&]() {
-        if (!KX11Extras::compositingActive() && !m_view->behaveAsPlasmaPanel()) {
+        if (!Latte::compositingActive() && !m_view->behaveAsPlasmaPanel()) {
             setMask(m_rect);
         }
     });
@@ -471,7 +472,7 @@ void Effects::updateBackgroundCorners()
 
 void Effects::updateMask()
 {
-    if (KX11Extras::compositingActive()) {
+    if (Latte::compositingActive()) {
         if (KWindowSystem::isPlatformX11()) {
             if (m_view->behaveAsPlasmaPanel()) {
                 // set as NULL in order for plasma framrworks to identify NULL Mask properly

@@ -4,6 +4,7 @@
 */
 
 #include "secondaryconfigview.h"
+#include "../../apptypes.h"
 
 // local
 #include <config-latte.h>
@@ -255,7 +256,7 @@ void SecondaryConfigView::updateEffects()
         setMask(QRegion());
     }
 
-    if (KX11Extras::compositingActive()) {
+    if (Latte::compositingActive()) {
         KWindowEffects::enableBlurBehind(this, true, fixedMask);
     } else {
         KWindowEffects::enableBlurBehind(this, false);

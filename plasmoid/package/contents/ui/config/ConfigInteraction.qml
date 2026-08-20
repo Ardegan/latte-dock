@@ -13,7 +13,7 @@ import org.kde.plasma.components 3.0 as PlasmaComponents
 
 import org.kde.latte.private.tasks 0.1 as LatteTasks
 
-PlasmoidItem {
+Item {
     width: childrenRect.width
     height: childrenRect.height
 

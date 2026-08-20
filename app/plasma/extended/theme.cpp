@@ -4,6 +4,7 @@
 */
 
 #include "theme.h"
+#include "../../apptypes.h"
 
 // local
 #include "lattecorona.h"
@@ -59,7 +60,7 @@ Theme::Theme(KSharedConfig::Ptr config, QObject *parent) :
             emit compositingChanged();
         });
 
-        m_compositing = KX11Extras::compositingActive();
+        m_compositing = Latte::compositingActive();
     }
     //!
 
