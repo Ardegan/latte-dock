@@ -143,6 +143,12 @@ These produce no error and no visible symptom at the point of failure, so they c
   repaint. That looked exactly like a blur bug in `ViewPart::Effects`, but every startup call there
   takes the `clearEffects` branch and the final region is a correct `1114x20`. Suspect the strut, not
   the effects, when a band the height of `viewHeight - strutThickness` appears under the dock.
+- **`WindowId` is a `QVariant`, numeric on X11 and a `QByteArray` uuid on Wayland.** Any
+  `wid.toInt() > 0` validity test silently rejects every Wayland window; that single assumption in
+  `Windows::cleanupFaultyWindows()` emptied the whole tracker as fast as it filled, which killed every
+  dodge mode, the active/touching window colouring and "transparent when touching". Use
+  `WindowId::isValidId()`. When window-driven behaviour does nothing at all, check the tracker's window
+  count before reading the state machine.
 - **The Wayland strut `GhostWindow` steals pointer input.** `WaylandInterface::setViewStruts()`
   (`app/wm/waylandinterface.cpp`) creates a transparent panel-role surface sized
   `(thickness+1) x thickness`, pinned to the *horizontal centre of the view*, purely so Plasma
@@ -305,7 +311,8 @@ a Controls 1 type; the rest were stale imports. Notable points if you touch this
 | `KDE_COMPILERSETTINGS_LEVEL "5.84.0"` | left at the KF5 value |
 | Automatic icon size is recomputed only on discrete triggers | `AutoSize.updateIconSize()` drops any call arriving while `metrics.iconSize` is animating and relies on a later trigger to catch up. The `iconSizeAnimationEnded` retry fixes the max-length-ruler case, but any other input that changes size mid-animation can still lose a step |
 | Task order inside a cloned Latte Tasks applet can differ from the original | seen once while switching to *multiple* layouts memory mode: the clock was in the right place but the window buttons inside the tasks applet were in a different order on the clone. The clone's tasks applet had no `launchers59` key while the original did. Not reproducible on a normal start; the applet-level ordering bug it resembles is fixed separately |
-| Nothing beyond first render is exercised | autohide/dodge modes have not been tested. Working: hover/zoom, left/middle/right click, the context menu, both settings dialogs, edit mode (max-length ruler, alignment controls, applet drag, all four config tabs), multi-screen placement with struts on the correct output for top and left edges, and per-activity layouts in *multiple* memory mode (layouts load per activity, views are assigned to their layout's activity over plasma-window-management, and switching activity swaps the visible dock) |
+| AutoHide reveal-on-hover is unverified | AutoHide hides correctly and creates its screen-edge activation strips, but revealing it needs a real pointer, which cannot be synthesised on Wayland. Only the hide side and the absence of struts were checked |
+| Nothing beyond first render is exercised | Working: hover/zoom, left/middle/right click, the context menu, both settings dialogs, edit mode (max-length ruler, alignment controls, applet drag, all four config tabs), multi-screen placement with struts on the correct output for top and left edges, per-activity layouts in *multiple* memory mode (layouts load per activity, views are assigned to their layout's activity over plasma-window-management, and switching activity swaps the visible dock), and the AutoHide/DodgeActive/DodgeMaximized/DodgeAllWindows visibility modes |
 
 Because Debug builds define `QT_FATAL_WARNINGS`, any unresolved QML import aborts at runtime rather
 than warning — build Release when just running the dock.
