@@ -30,6 +30,18 @@ public:
     {
         return WindowId{};
     }
+
+    //! X11 window ids are numeric, Wayland ones are QByteArray uuids. QVariant::toInt()
+    //! returns 0 for a uuid, so the historic `wid().toInt() > 0` validity test rejected
+    //! every window under Wayland.
+    inline bool isValidId() const noexcept
+    {
+        if (typeId() == QMetaType::QByteArray || typeId() == QMetaType::QString) {
+            return !toByteArray().isEmpty();
+        }
+
+        return toInt() > 0;
+    }
 };
 }
 }
