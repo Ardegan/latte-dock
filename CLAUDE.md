@@ -132,7 +132,11 @@ These produce no error and no visible symptom at the point of failure, so they c
   KWin 6. Latte had only the first, so icons moved but windows slid under the dock. Check
   `workspace.clientArea(KWin.MaximizeArea, ...)` via a KWin script, not the Plasma available rect,
   when verifying window behaviour. Struts are published only from the `AlwaysVisible` branch of
-  `VisibilityManager::setMode()`.
+  `VisibilityManager::setMode()`. A layer surface is **bound to the output it was created on** and
+  cannot be re-bound, so `WaylandInterface::setViewStruts()` destroys and recreates the `GhostWindow`
+  whenever the view changes screen - struts are first published while the view is still on the primary
+  screen, so anything else leaves the zone reserved on the wrong monitor. Verify per-output with
+  `workspace.clientArea(KWin.MaximizeArea, workspace.screens[i], ...)`, not just on the primary.
   A missing strut also shows up as a *rendering* fault: a maximized window placed at `0,0` sits under
   the view's full-height (e.g. 1969x384) transparent window, the area beneath the dock is never
   painted, and stale wallpaper shows through until hovering the dock damages the region and forces a
@@ -300,7 +304,7 @@ a Controls 1 type; the rest were stale imports. Notable points if you touch this
 | `ecm_find_qmlmodule` version literals | relaxed to non-REQUIRED; `qmlplugindump` is unreliable against the Plasma 6 modules and intermittently fails for modules that are present |
 | `KDE_COMPILERSETTINGS_LEVEL "5.84.0"` | left at the KF5 value |
 | Automatic icon size is recomputed only on discrete triggers | `AutoSize.updateIconSize()` drops any call arriving while `metrics.iconSize` is animating and relies on a later trigger to catch up. The `iconSizeAnimationEnded` retry fixes the max-length-ruler case, but any other input that changes size mid-animation can still lose a step |
-| Nothing beyond first render is exercised | multi-screen, per-activity layouts and autohide/dodge modes have not been tested. Working: hover/zoom, left/middle/right click, the context menu, both settings dialogs, and edit mode (max-length ruler, alignment controls, applet drag, all four config tabs) |
+| Nothing beyond first render is exercised | per-activity layouts and autohide/dodge modes have not been tested. Working: hover/zoom, left/middle/right click, the context menu, both settings dialogs, edit mode (max-length ruler, alignment controls, applet drag, all four config tabs), and multi-screen placement with struts on the correct output for top and left edges |
 
 Because Debug builds define `QT_FATAL_WARNINGS`, any unresolved QML import aborts at runtime rather
 than warning — build Release when just running the dock.
