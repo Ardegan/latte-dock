@@ -534,7 +534,7 @@ Loader {
 
                         Component.onCompleted:actionsComboBtn.updateModel();
 
-                        function onActivated() {
+                        function onActivated(index) {
                             var item = actionsModel.get(index);
 
                             if (item && item.actionId === "add:") {

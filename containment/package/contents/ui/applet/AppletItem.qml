@@ -661,7 +661,7 @@ Item {
         property bool pressed: false
         property bool blockWheel: false
 
-        function onMousePressed(button) {
+        function onMousePressed(pos, button) {
             if (appletItem.containsPos(pos)) {
                 viewSignalsConnector.pressed = true;
                 var local = appletItem.mapFromItem(root, pos.x, pos.y);
@@ -670,7 +670,7 @@ Item {
             }
         }
 
-        function onMouseReleased(button) {
+        function onMouseReleased(pos, button) {
             if (appletItem.containsPos(pos)) {
                 viewSignalsConnector.pressed = false;
                 var local = appletItem.mapFromItem(root, pos.x, pos.y);

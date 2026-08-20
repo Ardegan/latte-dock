@@ -351,14 +351,20 @@ PlasmaExtras.Menu {
 
         text: i18n("Move To &Desktop")
 
-        Connections {
+        //! PlasmaExtras.MenuItem (QMenuItem) declares no default property in
+        //! Plasma 6, so children cannot be attached implicitly. Binding them to
+        //! an explicit property keeps the object tree without using it.
+        property QtObject _menuChild0: Connections {
             target: virtualDesktopInfo
             function onDesktopIdsChanged() { Qt.callLater(virtualDesktopsMenu.refresh) }
             function onDesktopNamesChanged() { Qt.callLater(virtualDesktopsMenu.refresh) }
             function onNumberOfDesktopsChanged() { Qt.callLater(virtualDesktopsMenu.refresh) }
         }
 
-        PlasmaExtras.Menu {
+        //! PlasmaExtras.MenuItem (QMenuItem) declares no default property in
+        //! Plasma 6, so children cannot be attached implicitly. Binding them to
+        //! an explicit property keeps the object tree without using it.
+        property QtObject _menuChild1: PlasmaExtras.Menu {
             id: virtualDesktopsMenu
 
             visualParent: virtualDesktopsMenuItem.action
@@ -437,13 +443,19 @@ PlasmaExtras.Menu {
 
         text: i18n("Move To &Activity")
 
-        Connections {
+        //! PlasmaExtras.MenuItem (QMenuItem) declares no default property in
+        //! Plasma 6, so children cannot be attached implicitly. Binding them to
+        //! an explicit property keeps the object tree without using it.
+        property QtObject _menuChild2: Connections {
             target: activityInfo
 
             function onNumberOfRunningActivitiesChanged() { activitiesDesktopsMenu.refresh() }
         }
 
-        PlasmaExtras.Menu {
+        //! PlasmaExtras.MenuItem (QMenuItem) declares no default property in
+        //! Plasma 6, so children cannot be attached implicitly. Binding them to
+        //! an explicit property keeps the object tree without using it.
+        property QtObject _menuChild3: PlasmaExtras.Menu {
             id: activitiesDesktopsMenu
 
             visualParent: activitiesDesktopsMenuItem.action
@@ -536,7 +548,10 @@ PlasmaExtras.Menu {
         text: i18n("More Actions")
         icon: "view-more-symbolic"
 
-        PlasmaExtras.Menu {
+        //! PlasmaExtras.MenuItem (QMenuItem) declares no default property in
+        //! Plasma 6, so children cannot be attached implicitly. Binding them to
+        //! an explicit property keeps the object tree without using it.
+        property QtObject _menuChild4: PlasmaExtras.Menu {
             visualParent: moreActionsMenuItem.action
 
             PlasmaExtras.MenuItem {
@@ -701,12 +716,18 @@ PlasmaExtras.Menu {
                  && plasmoid.immutability !== PlasmaCore.Types.SystemImmutable
                  && (activityInfo.numberOfRunningActivities >= 2)
 
-        Connections {
+        //! PlasmaExtras.MenuItem (QMenuItem) declares no default property in
+        //! Plasma 6, so children cannot be attached implicitly. Binding them to
+        //! an explicit property keeps the object tree without using it.
+        property QtObject _menuChild5: Connections {
             target: activityInfo
             function onNumberOfRunningActivitiesChanged() { activitiesDesktopsMenu.refresh() }
         }
 
-        PlasmaExtras.Menu {
+        //! PlasmaExtras.MenuItem (QMenuItem) declares no default property in
+        //! Plasma 6, so children cannot be attached implicitly. Binding them to
+        //! an explicit property keeps the object tree without using it.
+        property QtObject _menuChild6: PlasmaExtras.Menu {
             id: activitiesLaunchersMenu
             visualParent: showLauncherInActivitiesItem.action
 

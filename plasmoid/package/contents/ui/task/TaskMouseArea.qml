@@ -106,7 +106,6 @@ MouseArea {
     }
 
     onPressed: {
-        //console.log("Pressed Task Delegate..");
         if (LatteCore.WindowSystem.compositingActive && !LatteCore.WindowSystem.isPlatformWayland) {
             if(root.leftClickAction !== LatteTasks.Types.PreviewWindows) {
                 isAbleToShowPreview = false;
@@ -140,7 +139,6 @@ MouseArea {
     }
 
     onReleased: {
-        //console.log("Released Task Delegate...");
         _resistanerTimer.stop();
 
         if(pressed && (!inBlockingAnimation || inAttentionBuiltinAnimation) && !isSeparator){
@@ -184,18 +182,13 @@ MouseArea {
                     activateTask();
                 }
             } else if (mouse.button == Qt.LeftButton){
-                var canPresentWindowsIsSupported = false;
-
-                if (root.plasmaAtLeast525) {
-                    //! At least Plasma 5.25 case
-                    canPresentWindowsIsSupported = LatteCore.WindowSystem.compositingActive && backend.windowViewAvailable;
-                } else if (root.plasmaGreaterThan522) {
-                    //! At least Plasma 5.23 case
-                    canPresentWindowsIsSupported = LatteCore.WindowSystem.compositingActive && backend.canPresentWindows;
-                } else {
-                    //! past Plasma versions
-                    canPresentWindowsIsSupported = LatteCore.WindowSystem.compositingActive && backend.canPresentWindows();
-                }
+                //! `plasmaAtLeast525` and `plasmaGreaterThan522` are declared nowhere,
+                //! so both read as undefined and execution fell through to the legacy
+                //! branch, which called backend.canPresentWindows() -- removed in
+                //! Plasma 6. The resulting TypeError aborted this handler before it
+                //! could activate the task, so clicking a task did nothing at all.
+                //! This port requires Plasma 6, so only the >= 5.25 path applies.
+                var canPresentWindowsIsSupported = LatteCore.WindowSystem.compositingActive && backend.windowViewAvailable;
 
                 if( !taskItem.isLauncher && !root.disableAllWindowsFunctionality ){
                     if ( (root.leftClickAction === LatteTasks.Types.PreviewWindows && isGroupParent)
