@@ -26,6 +26,8 @@
 // KDE
 #include <KWindowSystem>
 #include <KWindowInfo>
+#include <LayerShellQt/window.h>
+
 #include <KWayland/Client/compositor.h>
 #include <KWayland/Client/region.h>
 #include <KWayland/Client/surface.h>
@@ -47,7 +49,7 @@ class Private::GhostWindow : public QQuickView
 public:
     WindowSystem::WindowId m_winId;
 
-    GhostWindow(WindowSystem::WaylandInterface *waylandInterface)
+    GhostWindow(WindowSystem::WaylandInterface *waylandInterface, QScreen *screen)
         : m_waylandInterface(waylandInterface) {
         setFlags(Qt::FramelessWindowHint
                  | Qt::WindowStaysOnTopHint
@@ -56,32 +58,87 @@ public:
                  | Qt::WindowTransparentForInput);
 
         setColor(QColor(Qt::transparent));
-        // FIXME: this call is no longer needed?
-        //setClearBeforeRendering(true);
+
+        //! Must be configured before anything creates the platform window, because
+        //! LayerShellQt only turns a QWindow into a layer surface at creation time.
+        m_layerWindow = LayerShellQt::Window::get(this);
+        m_layerWindow->setLayer(LayerShellQt::Window::LayerBottom);
+        m_layerWindow->setScope(QStringLiteral("latte-dock-strut"));
+        m_layerWindow->setKeyboardInteractivity(LayerShellQt::Window::KeyboardInteractivityNone);
+        m_layerWindow->setActivateOnShow(false);
+        m_layerWindow->setCloseOnDismissed(false);
+
+        if (screen) {
+            m_layerWindow->setScreen(screen);
+        }
 
         connect(m_waylandInterface, &WindowSystem::AbstractWindowInterface::latteWindowAdded, this, &GhostWindow::identifyWinId);
 
-        setupWaylandIntegration();
         show();
     }
 
     ~GhostWindow() {
         m_waylandInterface->unregisterIgnoredWindow(m_winId);
-        delete m_shellSurface;
     }
 
-    void setGeometry(const QRect &rect) {
-        if (geometry() == rect) {
+    //! Plasma 6 reserves screen space through wlr-layer-shell exclusive zones. The
+    //! legacy org_kde_plasma_surface Panel role that this window used to carry no
+    //! longer produces a strut in KWin, which is why maximized windows were sliding
+    //! underneath the dock while desktop icons - repositioned over a completely
+    //! separate D-Bus path in PlasmaExtended::ScreenGeometries - still moved.
+    void setStruts(const QRect &rect, Plasma::Types::Location location, QScreen *screen) {
+        if (m_validGeometry == rect && m_location == location && this->screen() == screen) {
             return;
         }
 
         m_validGeometry = rect;
+        m_location = location;
 
-        setMinimumSize(rect.size());
-        setMaximumSize(rect.size());
-        resize(rect.size());
+        if (screen) {
+            m_layerWindow->setScreen(screen);
+        }
 
-        m_shellSurface->setPosition(rect.topLeft());
+        LayerShellQt::Window::Anchor anchor;
+        int zone{0};
+        QSize size;
+
+        //! The surface itself stays tiny and transparent; only the exclusive zone
+        //! matters. A positive zone is honoured only when the surface is anchored to
+        //! a single edge, so anchor to the view's edge and nothing else.
+        switch (location) {
+        case Plasma::Types::TopEdge:
+            anchor = LayerShellQt::Window::AnchorTop;
+            zone = rect.height();
+            size = QSize(rect.height() + 1, rect.height());
+            break;
+        case Plasma::Types::BottomEdge:
+            anchor = LayerShellQt::Window::AnchorBottom;
+            zone = rect.height();
+            size = QSize(rect.height() + 1, rect.height());
+            break;
+        case Plasma::Types::LeftEdge:
+            anchor = LayerShellQt::Window::AnchorLeft;
+            zone = rect.width();
+            size = QSize(rect.width(), rect.width() + 1);
+            break;
+        case Plasma::Types::RightEdge:
+            anchor = LayerShellQt::Window::AnchorRight;
+            zone = rect.width();
+            size = QSize(rect.width(), rect.width() + 1);
+            break;
+        default:
+            return;
+        }
+
+        m_layerWindow->setAnchors(anchor);
+        m_layerWindow->setExclusiveEdge(anchor);
+        m_layerWindow->setExclusiveZone(zone);
+        m_layerWindow->setDesiredSize(size);
+
+        setMinimumSize(size);
+        setMaximumSize(size);
+        resize(size);
+
         clearInputRegion();
     }
 
@@ -112,30 +169,9 @@ public:
         s->commit(Surface::CommitFlag::None);
     }
 
-    void setupWaylandIntegration() {
-        using namespace KWayland::Client;
-
-        if (m_shellSurface)
-            return;
-
-        Surface *s{Surface::fromWindow(this)};
-
-        if (!s)
-            return;
-
-        m_shellSurface = m_waylandInterface->waylandCoronaInterface()->createSurface(s, this);
-        qDebug() << "wayland ghost window surface was created...";
-
-        m_shellSurface->setSkipTaskbar(true);
-        m_shellSurface->setPanelTakesFocus(false);
-        m_shellSurface->setRole(PlasmaShellSurface::Role::Panel);
-
-        clearInputRegion();
-        m_shellSurface->setPanelBehavior(PlasmaShellSurface::PanelBehavior::AlwaysVisible);
-    }
-
-    KWayland::Client::PlasmaShellSurface *m_shellSurface{nullptr};
+    LayerShellQt::Window *m_layerWindow{nullptr};
     KWayland::Client::Compositor *m_compositor{nullptr};
+    Plasma::Types::Location m_location{Plasma::Types::Floating};
     WindowSystem::WaylandInterface *m_waylandInterface{nullptr};
 
     //! geometry() function under wayland does not return nice results
@@ -330,25 +366,10 @@ void WaylandInterface::setViewExtraFlags(QObject *view, bool isPanelWindow, Latt
 void WaylandInterface::setViewStruts(QWindow &view, const QRect &rect, Plasma::Types::Location location)
 {
     if (!m_ghostWindows.contains(view.winId())) {
-        m_ghostWindows[view.winId()] = new Private::GhostWindow(this);
+        m_ghostWindows[view.winId()] = new Private::GhostWindow(this, view.screen());
     }
 
-    auto w = m_ghostWindows[view.winId()];
-
-    switch (location) {
-    case Plasma::Types::TopEdge:
-    case Plasma::Types::BottomEdge:
-        w->setGeometry({rect.x() + rect.width() / 2 - rect.height(), rect.y(), rect.height() + 1, rect.height()});
-        break;
-
-    case Plasma::Types::LeftEdge:
-    case Plasma::Types::RightEdge:
-        w->setGeometry({rect.x(), rect.y() + rect.height() / 2 - rect.width(), rect.width(), rect.width() + 1});
-        break;
-
-    default:
-        break;
-    }
+    m_ghostWindows[view.winId()]->setStruts(rect, location, view.screen());
 }
 
 void WaylandInterface::switchToNextVirtualDesktop()

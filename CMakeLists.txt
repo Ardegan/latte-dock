@@ -71,6 +71,10 @@ find_package(PlasmaActivities ${KF6_MIN_VERSION} REQUIRED)
 find_package(PlasmaQuick ${KF6_MIN_VERSION} REQUIRED)
 find_package(KWayland ${KF6_MIN_VERSION} REQUIRED)
 
+# Plasma 6 reserves screen space through wlr-layer-shell exclusive zones; the
+# legacy org_kde_plasma_surface Panel role no longer produces a strut in KWin.
+find_package(LayerShellQt REQUIRED)
+
 # needed by the taskmanager Backend vendored into plasmoid/plugin/taskmanager
 find_package(PlasmaActivitiesStats ${KF6_MIN_VERSION} REQUIRED)
 find_package(KSysGuard REQUIRED)
