@@ -308,8 +308,9 @@ Item {
                                                    wrapper.height
 
     property Item applet: null
+    //! Plasma 6: the applet's QML root is `applet` itself, not applet.children[0].
     property Item latteStyleApplet: applet && ((applet.Plasmoid.pluginName === "org.kde.latte.spacer") || (applet.Plasmoid.pluginName === "org.kde.latte.separator")) ?
-                                        (applet.children[0] ? applet.children[0] : null) : null
+                                        applet : null
 
     property Item appletWrapper: wrapper.wrapperContainer
 

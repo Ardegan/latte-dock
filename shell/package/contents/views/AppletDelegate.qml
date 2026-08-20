@@ -15,6 +15,7 @@ import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.draganddrop 2.0
 import org.kde.kirigami as Kirigami
 import org.kde.latte.core 0.2 as LatteCore
+import Qt5Compat.GraphicalEffects
 
 Item {
     id: delegate
@@ -121,7 +122,6 @@ Item {
                     radius: height
                     color: Kirigami.Theme.highlightColor
                     visible: running && delegate.GridView.isCurrentItem
-                    onVisibleChanged: maskShaderSource.scheduleUpdate()
 
                     PlasmaComponents.Label {
                         id: countLabel
@@ -132,31 +132,14 @@ Item {
                     }
                 }
 
-                ShaderEffect {
+                //! Qt6 ShaderEffect.fragmentShader needs a compiled .qsb URL rather
+                //! than inline GLSL. OpacityMask with invert:true performs the same
+                //! `source * (1 - mask.a)` and ships its own compiled shader.
+                OpacityMask {
                     anchors.fill: parent
-                    property var source: ShaderEffectSource {
-                        sourceItem: iconWidget
-                        hideSource: true
-                        live: false
-                    }
-                    property var mask: ShaderEffectSource {
-                        id: maskShaderSource
-                        sourceItem: badgeMask
-                        hideSource: true
-                        live: false
-                    }
-
-                    supportsAtlasTextures: true
-
-                    fragmentShader: "
-                        varying highp vec2 qt_TexCoord0;
-                        uniform highp float qt_Opacity;
-                        uniform lowp sampler2D source;
-                        uniform lowp sampler2D mask;
-                        void main() {
-                            gl_FragColor = texture2D(source, qt_TexCoord0.st) * (1.0 - (texture2D(mask, qt_TexCoord0.st).a)) * qt_Opacity;
-                        }
-                    "
+                    invert: true
+                    source: iconWidget
+                    maskSource: badgeMask
                 }
 
                 PlasmaComponents.ToolButton {

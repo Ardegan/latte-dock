@@ -152,12 +152,21 @@ Item {
         }
 
         sourceComponent: Item{
-            ShaderEffect {
+            //! Qt6 ShaderEffect.fragmentShader takes a pre-compiled .qsb URL, not
+            //! inline GLSL, so the old shader silently rendered nothing and the
+            //! icon disappeared whenever a badge was active. OpacityMask with
+            //! invert:true is exactly `source * (1 - mask.a)`, which is what that
+            //! shader computed, and it ships its own compiled shader.
+            OpacityMask {
                 id: iconOverlay
-                enabled: false
                 anchors.fill: parent
-                property var source: ShaderEffectSource {
-                    sourceItem: Kirigami.Icon{
+                invert: true
+                source: _overlayIcon
+                maskSource: _overlayMask
+
+                Kirigami.Icon{
+                        id: _overlayIcon
+                        visible: false
                         width: taskIconItem.width
                         height: taskIconItem.height
                         smooth: taskIconItem.smooth
@@ -175,10 +184,11 @@ Item {
                                 source: taskIconItem
                             }
                         }
-                    }
                 }
-                property var mask: ShaderEffectSource {
-                    sourceItem: Item{
+
+                Item{
+                        id: _overlayMask
+                        visible: false
                         LayoutMirroring.enabled: Qt.application.layoutDirection === Qt.RightToLeft && !root.vertical
                         LayoutMirroring.childrenInherit: true
 
@@ -271,23 +281,8 @@ Item {
                                 }
                             ]
                         } // audio mask
-                    }
-                    hideSource: true
-                    live: true
                 } //end of mask
-
-                supportsAtlasTextures: true
-
-                fragmentShader: "
-        varying highp vec2 qt_TexCoord0;
-        uniform highp float qt_Opacity;
-        uniform lowp sampler2D source;
-        uniform lowp sampler2D mask;
-        void main() {
-            gl_FragColor = texture2D(source, qt_TexCoord0.st) * (1.0 - (texture2D(mask, qt_TexCoord0.st).a)) * qt_Opacity;
-        }
-    "
-            } //end of sourceComponent
+            } //end of OpacityMask
         }
     }
     ////!

@@ -32,7 +32,17 @@ Item{
 
     property Item appletRootItem: appletDiscoveredRootItem ? appletDiscoveredRootItem : appletDefaultRootItem
     property Item appletDiscoveredRootItem: null
-    property Item appletDefaultRootItem: applet && applet.children && applet.children.length>0 ? applet.children[0] : null
+    property Item appletDefaultRootItem: {
+        //! Plasma 6: the applet's main.qml root IS the AppletQuickItem handed to
+        //! us, so `applet` is the root that carries latteBridge. Plasma 5 wrapped
+        //! the root inside a separate AppletQuickItem, hence the children[0]
+        //! lookup, which is kept as a fallback.
+        if (applet && applet.hasOwnProperty("latteBridge")) {
+            return applet;
+        }
+
+        return applet && applet.children && applet.children.length>0 ? applet.children[0] : null;
+    }
 
     property Item appletIconItem: null //first applet's IconItem to be used by Latte
     property Item appletImageItem: null //first applet's ImageItem to be used by Latte
