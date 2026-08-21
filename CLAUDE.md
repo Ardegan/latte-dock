@@ -269,6 +269,21 @@ live through the `PlayerContainer` notify signals, and play/pause toggles from b
 the context menu. Note VLC advertises `CanPause=false` while stopped and `true` while playing, so a
 disabled Pause entry on a stopped player is faithful behaviour, not a bug.
 
+### Window previews (Wayland)
+
+Task window previews go through `previews/PipeWireThumbnail.qml`:
+`TaskManager.ScreencastingRequest` asks KWin for a stream keyed by the window uuid and
+`PipeWire.PipeWireSourceItem` renders it. Plasma 5's source item flipped `enabled` from C++ once the
+stream was up and the QML bound `opacity` to it; the Plasma 6 item never touches `enabled` (it exposes
+`state`, `nodeId`, `fd`, `streamSize`, `ready`, `paintedRect`), so previews painted at zero opacity
+while the screencast ran perfectly happily. Opacity now rides on `ready`.
+
+Diagnosing this class of fault: log `uuid`/`nodeId` on the `ScreencastingRequest`. A valid uuid plus a
+non-zero nodeId means the compositor side is fine and the problem is in how the item is drawn.
+Minimized windows deliberately fall back to the app icon - nothing is composited, so there is no
+stream. A task with an MPRIS player can also mask a broken thumbnail, because the album art image
+sits in the same place.
+
 ### PlasmaCore migration — done
 
 `org.kde.plasma.core` in Plasma 6 exports only `Action`, `ActionGroup`, `Applet`, `AppletPopup`,
