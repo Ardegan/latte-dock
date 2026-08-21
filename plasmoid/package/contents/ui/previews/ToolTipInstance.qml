@@ -47,7 +47,11 @@ Column {
     //! PlayerContainer for a launcher url, and it already exposes the metadata as
     //! properties, so the xesam:/mpris: dictionary lookups are no longer needed.
     readonly property var player: mpris2Model.playerForLauncherUrl(toolTipDelegate.launcherUrl, isGroup ? appPid : pidParent)
-    readonly property bool hasPlayer: !!player
+    //! A grouped task renders one instance per window, and every one of them resolves the
+    //! same player, so a browser with two windows showed the media controls twice. The
+    //! player belongs to the application rather than to any one of its windows, so only
+    //! the first instance of a group presents it.
+    readonly property bool hasPlayer: !!player && (!isGroup || itemIndex === 0)
     readonly property bool playing: hasPlayer && player.playbackStatus === Mpris.PlaybackStatus.Playing
     readonly property bool canControl: hasPlayer && player.canControl
     readonly property bool canPlay: hasPlayer && player.canPlay

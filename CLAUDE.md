@@ -297,6 +297,22 @@ live through the `PlayerContainer` notify signals, and play/pause toggles from b
 the context menu. Note VLC advertises `CanPause=false` while stopped and `true` while playing, so a
 disabled Pause entry on a stopped player is faithful behaviour, not a bug.
 
+**How a task is matched to a player, and where it goes wrong.**
+`playerForLauncherUrl(url, pid)` matches on the player's `desktopEntry` first and falls back to
+`instancePid`. Some players advertise an **empty** `desktopEntry` - Vivaldi is one, measured as
+`identity="Vivaldi", desktopEntry=<empty>, instancePid=5804` - which leaves only the pid. Anything
+else hosted in that same process then matches too, so a browser-hosted PWA (an MS Teams PWA running
+inside Vivaldi, say) shows the browser's currently playing track as if it were its own.
+
+Nothing in this tree can separate them: same process, same pid, no desktop entry to compare. It is
+also not Latte-specific - `Mpris2Model` is Plasma's own C++ and its task manager matches identically.
+The fix belongs in the player, which should populate `DesktopEntry`.
+
+A related trap that *is* ours: a grouped task renders one `ToolTipInstance` per window, and each
+resolves the same player, so a browser with two windows drew the media controls twice. The player
+belongs to the application, not a window, so only the first instance of a group presents it
+(`hasPlayer` in `ToolTipInstance.qml`).
+
 ### Window previews (Wayland)
 
 Task window previews go through `previews/PipeWireThumbnail.qml`:
@@ -420,6 +436,7 @@ handled there by destroying and recreating the ghost; see `WaylandInterface::set
 | `KDE_COMPILERSETTINGS_LEVEL "5.84.0"` | deliberate, not an oversight. Level >= 5.85 adds `QT_NO_CAST_FROM_ASCII` and friends, and >= 6.0 also turns on `QT_NO_KEYWORDS`. Measured: bumping it to 6.0.0 produces **1025 compile errors across 447 files** (every `signals:`/`slots:` plus every implicit ASCII cast). A large mechanical refactor with no functional gain |
 | `Toolbox not loading, toolbox package is either invalid or disabled.` (once per view) | comes from Plasma, not Latte - the string is not in this tree and not in any library on disk, so it is compiled into a Plasma qrc. The containment already hides the toolbox (`main.qml` `onToolBoxChanged`). Not actionable from here |
 | Automatic icon size is recomputed only on discrete triggers | `AutoSize.updateIconSize()` drops any call arriving while `metrics.iconSize` is animating and relies on a later trigger to catch up. The `iconSizeAnimationEnded` retry fixes the max-length-ruler case, but any other input that changes size mid-animation can still lose a step |
+| A PWA hosted inside a browser shows that browser's media info | the player advertises no `desktopEntry`, so `Mpris2Model::playerForLauncherUrl()` can only match on pid, which the PWA shares with its host browser. Not separable from here, and Plasma's own task manager behaves the same; the fix belongs in the player |
 | Task order inside a cloned Latte Tasks applet can differ from the original | seen once while switching to *multiple* layouts memory mode: the clock was in the right place but the window buttons inside the tasks applet were in a different order on the clone. The clone's tasks applet had no `launchers59` key while the original did. Not reproducible on a normal start; the applet-level ordering bug it resembles is fixed separately |
 
 Because Debug builds define `QT_FATAL_WARNINGS`, any unresolved QML import aborts at runtime rather
