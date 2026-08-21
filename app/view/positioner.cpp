@@ -29,6 +29,18 @@
 
 #define RELOCATIONSHOWINGEVENT "viewInRelocationShowing"
 
+
+namespace {
+//! A view's location is Desktop/Floating until its containment config has been read.
+//! updateFormFactor(), the canvas geometry and the panel position are all reached once
+//! in that state during construction, which is expected and self-correcting - warning
+//! there just buries genuinely unexpected locations in startup noise.
+inline bool isLocationStillUnset(Plasma::Types::Location location)
+{
+    return location == Plasma::Types::Desktop || location == Plasma::Types::Floating;
+}
+}
+
 namespace Latte {
 namespace ViewPart {
 
@@ -749,7 +761,9 @@ void Positioner::updateCanvasGeometry(QRect availableScreenRect)
         break;
 
     default:
-        qWarning() << "wrong location, couldn't update the canvas config window geometry " << m_view->location();
+        if (!isLocationStillUnset(m_view->location())) {
+            qWarning() << "wrong location, couldn't update the canvas config window geometry " << m_view->location();
+        }
     }
 
     setCanvasGeometry(canvas);
@@ -845,8 +859,10 @@ void Positioner::updatePosition(QRect availableScreenRect)
         break;
 
     default:
-        qWarning() << "wrong location, couldn't update the panel position"
-                   << m_view->location();
+        if (!isLocationStillUnset(m_view->location())) {
+            qWarning() << "wrong location, couldn't update the panel position"
+                       << m_view->location();
+        }
     }
 
     if (m_slideOffset == 0 || m_nextScreenEdge != Plasma::Types::Floating /*exactly after relocating and changing screen edge*/) {
@@ -936,7 +952,9 @@ void Positioner::updateFormFactor()
         break;
 
     default:
-        qWarning() << "wrong location, couldn't update the panel position" << m_view->location();
+        if (!isLocationStillUnset(m_view->location())) {
+            qWarning() << "wrong location, couldn't update the panel position" << m_view->location();
+        }
     }
 }
 
