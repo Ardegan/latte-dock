@@ -38,7 +38,6 @@
 
 
 namespace Plasma {
-class Types;
 class Corona;
 class Containment;
 }

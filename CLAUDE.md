@@ -371,12 +371,32 @@ a Controls 1 type; the rest were stale imports. Notable points if you touch this
   Qt5 feature level — `AbstractButton.icon` only exists from 2.3, which is what made
   `ItemDelegate`'s grouped `icon` unassignable.
 
+### The `Types` enum namespaces
+
+`Latte::Types`, `Latte::Tasks::Types` and `Latte::Containment::Types` are `Q_NAMESPACE` +
+`Q_ENUM_NS`, registered with `qmlRegisterUncreatableMetaObject`. They used to be `Q_GADGET`
+classes registered with `qmlRegisterUncreatableType`, which Qt6 classifies as **value types** -
+and value type names must start lowercase, so each registration logged
+`Invalid QML element name "Types"` (three per run, once per registration, not once per view).
+
+Converting to a namespace fixes it with **no call-site changes at all**: enum scoping is identical,
+so `Latte::Types::DockView` in C++ and `LatteCore.Types.DockView` in QML both still work. An earlier
+note here claimed fixing this would break 595 QML sites and the versioned `LatteBridge` API - that
+was only true of renaming the type to lowercase, which is not the only way out.
+
+Two things the conversion does require:
+
+- redundant `class Types;` forward declarations must go (11 of them in `app/`); they conflict with
+  the namespace, and were already pointless because those headers include the real one
+- `qmlRegisterAnonymousType<Latte::Types>` in `lattecorona.cpp` cannot take a namespace; it becomes
+  `qmlRegisterUncreatableMetaObject(...)`, which is what keeps the enums resolvable for the
+  `Q_PROPERTY`s typed with them (`Latte::View::type` and friends)
+
 ### Known remaining issues
 
 | Item | Notes |
 |---|---|
 | `inNormalState` binding loop (`VisibilityManager.qml`) | the *expression* is upstream's; the port only added a `latteView.visibility &&` null guard and converted the `Connections` syntax, so this is pre-existing design that Qt6 merely detects, not a port regression. (It is **not** byte-identical to `master`, as an earlier note here claimed.) `inNormalState` has eight consumers - `updateMaskArea()`, `AutoSize`, `Layouter`, and a `Binding.when` on `latteView.effects` - which feed geometry, which feeds visibility state. Untangling it means reworking the show/hide state machine, i.e. risking exactly the behaviour that has been verified working (autohide reveal, all three dodge modes, struts, masks). The value converges and the dock behaves correctly; left alone deliberately |
-| `Invalid QML element name "Types"` (once per view) | `Latte::Types` is a `Q_GADGET` enum namespace, which Qt6 classes as a value type and wants lowercase. Renaming would break 595 `LatteCore.Types.*` sites and the versioned `LatteBridge` API |
 | `ecm_find_qmlmodule` version literals | relaxed to non-REQUIRED; `qmlplugindump` is unreliable against the Plasma 6 modules and intermittently fails for modules that are present |
 | `KDE_COMPILERSETTINGS_LEVEL "5.84.0"` | deliberate, not an oversight. Level >= 5.85 adds `QT_NO_CAST_FROM_ASCII` and friends, and >= 6.0 also turns on `QT_NO_KEYWORDS`. Measured: bumping it to 6.0.0 produces **1025 compile errors across 447 files** (every `signals:`/`slots:` plus every implicit ASCII cast). A large mechanical refactor with no functional gain |
 | `Toolbox not loading, toolbox package is either invalid or disabled.` (once per view) | comes from Plasma, not Latte - the string is not in this tree and not in any library on disk, so it is compiled into a Plasma qrc. The containment already hides the toolbox (`main.qml` `onToolBoxChanged`). Not actionable from here |

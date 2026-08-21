@@ -26,7 +26,6 @@
 
 namespace Plasma {
 class Containment;
-class Types;
 }
 
 namespace Latte {

@@ -14,13 +14,12 @@
 namespace Latte {
 namespace Tasks {
 
-class Types
+//! Q_GADGET makes this a QML *value type*, whose name must start lowercase in Qt6, so
+//! registering it as "Types" logged `Invalid QML element name "Types"`. A Q_NAMESPACE is
+//! not a value type, and enum scoping is identical, so nothing else changes.
+namespace Types
 {
-    Q_GADGET
-
-public:
-    Types() = delete;
-    ~Types() {}
+Q_NAMESPACE
 
     enum Modifier
     {
@@ -29,7 +28,7 @@ public:
         Alt,
         Meta
     };
-    Q_ENUM(Modifier);
+    Q_ENUM_NS(Modifier);
 
     enum ClickAction
     {
@@ -37,7 +36,7 @@ public:
         MiddleClick,
         RightClick
     };
-    Q_ENUM(ClickAction);
+    Q_ENUM_NS(ClickAction);
 
     enum TaskAction
     {
@@ -52,7 +51,7 @@ public:
         HighlightWindows,
         PreviewAndHighlightWindows
     };
-    Q_ENUM(TaskAction);
+    Q_ENUM_NS(TaskAction);
 
     enum TaskScrollAction
     {
@@ -60,7 +59,7 @@ public:
         ScrollTasks,
         ScrollToggleMinimized
     };
-    Q_ENUM(TaskScrollAction);
+    Q_ENUM_NS(TaskScrollAction);
 
     enum ManualScrollType
     {
@@ -68,8 +67,8 @@ public:
         ManualScrollOnlyParallel,
         ManualScrollVerticalHorizontal
     };
-    Q_ENUM(ManualScrollType);
-};
+    Q_ENUM_NS(ManualScrollType);
+}
 
 }
 }

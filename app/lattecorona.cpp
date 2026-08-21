@@ -1370,7 +1370,10 @@ inline void Corona::qmlRegisterTypes() const
     qmlRegisterAnonymousType<Latte::ViewPart::TrackerPart::AllScreensTracker>("latte-dock", 1);
     qmlRegisterAnonymousType<Latte::WindowSystem::SchemeColors>("latte-dock", 1);
     qmlRegisterAnonymousType<Latte::WindowSystem::Tracker::LastActiveWindow>("latte-dock", 1);
-    qmlRegisterAnonymousType<Latte::Types>("latte-dock", 1);
+    //! Types is a Q_NAMESPACE now, so it cannot be registered as an anonymous *type*.
+    //! Registering its metaobject keeps the enums resolvable for the Q_PROPERTYs on
+    //! latte-dock objects that are typed with them (Latte::View::type and friends).
+    qmlRegisterUncreatableMetaObject(Latte::Types::staticMetaObject, "latte-dock", 1, 0, "Types", QStringLiteral("Latte Types uncreatable"));
 
 }
 

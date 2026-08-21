@@ -14,13 +14,12 @@
 namespace Latte {
 namespace Containment {
 
-class Types
+//! Q_GADGET makes this a QML *value type*, whose name must start lowercase in Qt6, so
+//! registering it as "Types" logged `Invalid QML element name "Types"`. A Q_NAMESPACE is
+//! not a value type, and enum scoping is identical, so nothing else changes.
+namespace Types
 {
-    Q_GADGET
-
-public:
-    Types() = delete;
-    ~Types() {}
+Q_NAMESPACE
 
     enum ScrollAction
     {
@@ -30,7 +29,7 @@ public:
         ScrollTasks,
         ScrollToggleMinimized
     };
-    Q_ENUM(ScrollAction);
+    Q_ENUM_NS(ScrollAction);
 
     enum ShadowColorGroup
     {
@@ -38,7 +37,7 @@ public:
         ThemeColorShadow,
         UserColorShadow
     };
-    Q_ENUM(ShadowColorGroup);
+    Q_ENUM_NS(ShadowColorGroup);
 
     enum ThemeColorsGroup
     {
@@ -49,7 +48,7 @@ public:
         LightThemeColors,
         LayoutThemeColors
     };
-    Q_ENUM(ThemeColorsGroup);
+    Q_ENUM_NS(ThemeColorsGroup);
 
     enum WindowColorsGroup
     {
@@ -57,15 +56,15 @@ public:
         ActiveWindowColors,
         TouchingWindowColors
     };
-    Q_ENUM(WindowColorsGroup);
+    Q_ENUM_NS(WindowColorsGroup);
 
     enum ActiveWindowFilterGroup
     {
         ActiveInCurrentScreen = 0,
         ActiveFromAllScreens
     };
-    Q_ENUM(ActiveWindowFilterGroup);
-};
+    Q_ENUM_NS(ActiveWindowFilterGroup);
+}
 
 }
 }

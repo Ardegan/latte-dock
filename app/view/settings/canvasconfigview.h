@@ -24,7 +24,6 @@ namespace Plasma {
 class Applet;
 class Containment;
 class FrameSvg;
-class Types;
 }
 
 namespace KWayland {

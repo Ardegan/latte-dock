@@ -16,7 +16,6 @@
 #include <Plasma/Plasma>
 
 namespace Plasma {
-class Types;
 }
 
 namespace Latte {

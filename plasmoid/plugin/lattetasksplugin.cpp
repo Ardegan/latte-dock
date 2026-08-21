@@ -17,7 +17,7 @@
 void LatteTasksPlugin::registerTypes(const char *uri)
 {
     Q_ASSERT(uri == QLatin1String("org.kde.latte.private.tasks"));
-    qmlRegisterUncreatableType<Latte::Tasks::Types>(uri, 0, 1, "Types", "Latte Tasks Types uncreatable");
+    qmlRegisterUncreatableMetaObject(Latte::Tasks::Types::staticMetaObject, uri, 0, 1, "Types", QStringLiteral("Latte Tasks Types uncreatable"));
 
     //! Plasma 6 no longer ships org.kde.plasma.private.taskmanager as an
     //! importable QML module: the taskmanager applet registers these types

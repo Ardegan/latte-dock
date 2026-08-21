@@ -23,7 +23,6 @@
 namespace Plasma {
 class Applet;
 class Containment;
-class Types;
 }
 
 namespace KWayland {

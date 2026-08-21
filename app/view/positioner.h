@@ -21,7 +21,6 @@
 #include <Plasma/Containment>
 
 namespace Plasma {
-class Types;
 }
 
 namespace Latte {

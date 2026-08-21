@@ -13,20 +13,22 @@
 
 namespace Latte {
 
-class Types
+//! Qt6 classifies a Q_GADGET as a *value type*, and value type names must begin with a
+//! lowercase letter, so registering this as "Types" logged
+//!   Invalid QML element name "Types"; value type names should begin with a lowercase letter
+//! A Q_NAMESPACE is not a value type, so the uppercase name is legal again. Both
+//! `Latte::Types::X` in C++ and `LatteCore.Types.X` in QML are unchanged by this - enum
+//! scoping is identical for a namespace and a class - so no call site had to move.
+namespace Types
 {
-    Q_GADGET
-
-public:
-    Types() = delete;
-    ~Types(){};
+Q_NAMESPACE
 
     enum ViewType
     {
         DockView = 0,
         PanelView
     };
-    Q_ENUM(ViewType);
+    Q_ENUM_NS(ViewType);
 
     enum Visibility
     {
@@ -43,7 +45,7 @@ public:
         SidebarAutoHide,
         NormalWindow = 20
     };
-    Q_ENUM(Visibility);
+    Q_ENUM_NS(Visibility);
 
     enum Alignment
     {
@@ -55,7 +57,7 @@ public:
         Bottom,
         Justify = 10
     };
-    Q_ENUM(Alignment);
+    Q_ENUM_NS(Alignment);
 
     enum EdgesAndAlignments
     {
@@ -72,7 +74,7 @@ public:
         RightEdgeTopAlign,
         RightEdgeBottomAlign
     };
-    Q_ENUM(EdgesAndAlignments);
+    Q_ENUM_NS(EdgesAndAlignments);
 
     enum LaunchersGroup
     {
@@ -80,7 +82,7 @@ public:
         LayoutLaunchers = 1,
         GlobalLaunchers = 2
     };
-    Q_ENUM(LaunchersGroup);
+    Q_ENUM_NS(LaunchersGroup);
 
     enum ScreensGroup
     {
@@ -88,8 +90,8 @@ public:
         AllScreensGroup,
         AllSecondaryScreensGroup
     };
-    Q_ENUM(ScreensGroup)
-};
+    Q_ENUM_NS(ScreensGroup)
+}
 
 }//end of namespace
 
