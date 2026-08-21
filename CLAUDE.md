@@ -392,6 +392,25 @@ Two things the conversion does require:
   `qmlRegisterUncreatableMetaObject(...)`, which is what keeps the enums resolvable for the
   `Q_PROPERTY`s typed with them (`Latte::View::type` and friends)
 
+### Runtime screen relocation does not work on Wayland
+
+`Positioner::setScreenToFollow()` calls `QWindow::setScreen()`, which **does not move a window
+between outputs under Wayland** - the compositor owns placement. The positioner's own bookkeeping
+updates (`currentScreenId()` reports the new screen) but `m_view->screen()` keeps returning the old
+one, so every subsequent `syncGeometry()` recomputes against the wrong output and the dock stays put.
+Assigning a view to a screen only works at construction, which is why changing `lastScreen` in the
+layout file and restarting *does* move the dock.
+
+Measured while attempting a "follow the screen with the active window" mode: the handler fired with
+the right ids (`next=14 current=10`), `setScreenToFollow()` ran, and the window never moved. That
+attempt was reverted rather than shipped, because a menu entry that silently does nothing on the only
+tested platform is worse than no menu entry.
+
+Fixing it properly means recreating the view on the target output - `GenericLayout::recreateView()`
+already exists for that - but doing so on every cross-screen focus change would tear the dock down
+and rebuild it each time. The same output-binding rule bit the layer-shell strut window, which is
+handled there by destroying and recreating the ghost; see `WaylandInterface::setViewStruts()`.
+
 ### Known remaining issues
 
 | Item | Notes |
