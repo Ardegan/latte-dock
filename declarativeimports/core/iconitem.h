@@ -98,6 +98,15 @@ class IconItem : public QQuickItem
      */
     Q_PROPERTY(QString lastValidSourceName READ lastValidSourceName NOTIFY lastValidSourceNameChanged)
 
+    /**
+     * Scale that would make the icon's *visible content* fill the item, ignoring any
+     * transparent padding baked into the icon. 1.0 when the content already reaches the
+     * edges. Only computed when providesColors is true, because it piggybacks on the
+     * pixel walk that extracts the colors. Never below 1.0, and clamped, so a deliberately
+     * small glyph is nudged rather than blown up.
+     */
+    Q_PROPERTY(qreal contentScale READ contentScale NOTIFY contentScaleChanged)
+
     Q_PROPERTY(QColor backgroundColor READ backgroundColor NOTIFY backgroundColorChanged)
     Q_PROPERTY(QColor glowColor READ glowColor NOTIFY glowColorChanged)
 public:
@@ -127,6 +136,11 @@ public:
     bool usesPlasmaTheme() const;
     void setUsesPlasmaTheme(bool usesPlasmaTheme);
 
+    qreal contentScale() const;
+    void setContentScale(qreal scale);
+
+    static qreal calculateContentScale(const QSize &size, int minCol, int minRow, int maxCol, int maxRow);
+
     int paintedWidth() const;
     int paintedHeight() const;
 
@@ -146,6 +160,7 @@ public:
 
 signals:
     void activeChanged();
+    void contentScaleChanged();
     void backgroundColorChanged();
     void colorSetChanged();
     void glowColorChanged();
@@ -179,6 +194,8 @@ private:
     bool m_textureChanged;
     bool m_sizeChanged;
     bool m_usesPlasmaTheme;
+
+    qreal m_contentScale{1.0};
 
     QColor m_backgroundColor;
     QColor m_glowColor;

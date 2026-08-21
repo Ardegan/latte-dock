@@ -130,6 +130,7 @@ PlasmoidItem {
     property bool manualScrollTasksEnabled: scrollingEnabled &&  manualScrollTasksType !== LatteTasks.Types.ManualScrollDisabled
     property int manualScrollTasksType: plasmoid.configuration.manualScrollTasksType
 
+    property bool normalizeIconSizes: plasmoid.configuration.normalizeIconSizes
     property bool showInfoBadge: plasmoid.configuration.showInfoBadge
     property bool showProgressBadge: plasmoid.configuration.showProgressBadge
     property bool showAudioBadge: plasmoid.configuration.showAudioBadge

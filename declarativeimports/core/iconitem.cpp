@@ -430,6 +430,13 @@ void IconItem::updateColors()
         float rtotal = 0, gtotal = 0, btotal = 0;
         float total = 0.0f;
 
+        //! Bounding box of the visibly opaque pixels, tracked in the same pass so that
+        //! icons which bake in their own transparent padding can be scaled up to match
+        //! icons that reach their edges. 40 is a deliberately high alpha threshold: soft
+        //! shadows and antialiased skirts should not count as content.
+        static const int contentAlphaThreshold = 40;
+        int minRow = icon.height(), maxRow = -1, minCol = icon.width(), maxCol = -1;
+
         for(int row=0; row<icon.height(); ++row) {
             QRgb *line = (QRgb *)icon.scanLine(row);
 
@@ -440,6 +447,13 @@ void IconItem::updateColors()
                 int g = qGreen(pix);
                 int b = qBlue(pix);
                 int a = qAlpha(pix);
+
+                if (a > contentAlphaThreshold) {
+                    minRow = qMin(minRow, row);
+                    maxRow = qMax(maxRow, row);
+                    minCol = qMin(minCol, col);
+                    maxCol = qMax(maxCol, col);
+                }
 
                 float saturation = (qMax(r, qMax(g, b)) - qMin(r, qMin(g, b))) / 255.0f;
                 float relevance = .1 + .9 * (a / 255.0f) * saturation;
@@ -469,7 +483,46 @@ void IconItem::updateColors()
         tempColor.setHsvF(tempColor.hueF(), tempColor.saturationF(), 1.0f);
 
         setGlowColor(tempColor);
+
+        setContentScale(calculateContentScale(icon.size(), minCol, minRow, maxCol, maxRow));
     }
+}
+
+//! Turns the opaque bounding box into a scale factor. Never shrinks an icon, and refuses
+//! to magnify beyond maxContentScale so that a genuinely small glyph is not blown up into
+//! a blurry mess. Falls back to 1.0 for anything degenerate.
+qreal IconItem::calculateContentScale(const QSize &size, int minCol, int minRow, int maxCol, int maxRow)
+{
+    static const qreal maxContentScale = 1.35;
+
+    if (maxCol < minCol || maxRow < minRow || size.width() <= 0 || size.height() <= 0) {
+        return 1.0;
+    }
+
+    const qreal contentWidth = maxCol - minCol + 1;
+    const qreal contentHeight = maxRow - minRow + 1;
+    const qreal widest = qMax(contentWidth / size.width(), contentHeight / size.height());
+
+    if (widest <= 0.0) {
+        return 1.0;
+    }
+
+    return qBound(1.0, 1.0 / widest, maxContentScale);
+}
+
+qreal IconItem::contentScale() const
+{
+    return m_contentScale;
+}
+
+void IconItem::setContentScale(qreal scale)
+{
+    if (qFuzzyCompare(m_contentScale, scale)) {
+        return;
+    }
+
+    m_contentScale = scale;
+    emit contentScaleChanged();
 }
 
 void IconItem::loadPixmap()

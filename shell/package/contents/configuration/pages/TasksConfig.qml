@@ -42,6 +42,32 @@ PlasmaComponents.Page {
         Layout.leftMargin: Kirigami.Units.smallSpacing * 2
         Layout.rightMargin: Kirigami.Units.smallSpacing * 2
 
+        //! BEGIN: Appearance
+        ColumnLayout {
+            spacing: Kirigami.Units.smallSpacing
+            Layout.topMargin: Kirigami.Units.smallSpacing
+
+            LatteComponents.Header {
+                text: i18n("Appearance")
+            }
+
+            LatteComponents.CheckBoxesColumn {
+                Layout.leftMargin: Kirigami.Units.smallSpacing * 2
+
+                LatteComponents.CheckBox {
+                    Layout.maximumWidth: dialog.optionsWidth
+                    text: i18n("Equalize icon sizes")
+                    tooltip: i18n("Scale up icons that bake in their own transparent padding, so that all icons appear the same size")
+                    value: tasks.Plasmoid.configuration.normalizeIconSizes
+
+                    onClicked: {
+                        tasks.Plasmoid.configuration.normalizeIconSizes = !tasks.Plasmoid.configuration.normalizeIconSizes;
+                    }
+                }
+            }
+        }
+        //! END: Appearance
+
         //! BEGIN: Badges
         ColumnLayout {
             spacing: Kirigami.Units.smallSpacing

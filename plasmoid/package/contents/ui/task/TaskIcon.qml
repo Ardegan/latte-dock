@@ -59,10 +59,11 @@ Item {
         }
     }
 
-    //! Provide icon background and glow colors
+    //! Provide icon background and glow colors, and - as a side effect of the same pixel
+    //! walk - the scale that would make the icon's visible content fill its cell.
     Loader {
         id: iconColorsLoader
-        active: taskItem.abilities.indicators.info.needsIconColors
+        active: taskItem.abilities.indicators.info.needsIconColors || root.normalizeIconSizes
         visible: false
 
         sourceComponent: LatteCore.IconItem{
@@ -73,12 +74,20 @@ Item {
         }
     }
 
+    //! 1.0 unless the icon bakes in transparent padding and normalization is enabled.
+    readonly property real iconContentScale: (root.normalizeIconSizes && iconColorsLoader.item)
+                                             ? iconColorsLoader.item.contentScale : 1.0
+
     Kirigami.Icon {
         id: taskIconItem
         anchors.fill: parent
         //roundToIconSize: false
         source: decoration
         visible: !badgesLoader.active
+
+        //! Compensates for padding baked into the icon itself. Composes with the parabolic
+        //! zoom, which scales the surrounding item rather than this one.
+        scale: taskIconContainer.iconContentScale
 
         readonly property real size: Math.min(width,height)
 

@@ -127,6 +127,10 @@
     <entry name="showProgressBadge" type="Bool">
       <default>true</default>
     </entry>
+    <entry name="normalizeIconSizes" type="Bool">
+      <default>false</default>
+      <label>Scale up icons that bake in their own transparent padding, so all icons look the same size</label>
+    </entry>
     <entry name="showAudioBadge" type="Bool">
       <default>true</default>
     </entry>
