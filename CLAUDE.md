@@ -259,6 +259,16 @@ menu now use `org.kde.plasma.private.mpris`: `Mpris2Model::playerForLauncherUrl(
 Plasma's own `shells/org.kde.plasma.desktop/contents/lockscreen/MediaControls.qml` is the on-disk
 reference implementation.
 
+The media controls only appear in the **preview** tooltip, which is gated by the tasks applet's
+`hoverAction` (`showPreviews` is true only for `PreviewWindows` or `PreviewAndHighlightWindows`).
+`hoverAction` defaults to `0`/None, so a default configuration shows no tooltip at all - that is a
+setting, not a broken port. `titleTooltips` is a separate, containment-level thin tooltip.
+
+Verified against live players: VLC and Vivaldi both resolve, `track` and `playbackStatus` update
+live through the `PlayerContainer` notify signals, and play/pause toggles from both the tooltip and
+the context menu. Note VLC advertises `CanPause=false` while stopped and `true` while playing, so a
+disabled Pause entry on a stopped player is faithful behaviour, not a bug.
+
 ### PlasmaCore migration — done
 
 `org.kde.plasma.core` in Plasma 6 exports only `Action`, `ActionGroup`, `Applet`, `AppletPopup`,
