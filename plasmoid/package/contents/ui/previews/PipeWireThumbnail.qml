@@ -18,13 +18,19 @@ Item {
     PipeWire.PipeWireSourceItem {
         id: pipeWireSourceItem
 
-        enabled: false // Must be set in pipewiresourceitem.cpp so opacity animation can work
+        //! Plasma 5's PipeWireSourceItem flipped `enabled` from C++ once the stream was
+        //! up, and the opacity below rode on it. The Plasma 6 item does not touch
+        //! `enabled` at all - it exposes `ready` instead - so `enabled` stayed false and
+        //! the thumbnail was painted completely transparent even though the screencast
+        //! was running and had a valid PipeWire nodeId. Keep the item non-interactive
+        //! but drive opacity from `ready`.
+        enabled: false
         visible: waylandItem.nodeId > 0
         nodeId: waylandItem.nodeId
 
         anchors.fill: parent
 
-        opacity: enabled ? 1 : 0
+        opacity: ready ? 1 : 0
 
         TaskManager.ScreencastingRequest {
             id: waylandItem
