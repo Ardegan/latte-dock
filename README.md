@@ -135,6 +135,24 @@ Known remaining issues, and the developer-facing notes on the port, are kept in
 [CLAUDE.md](./CLAUDE.md).
 
 
+Alternatives on Plasma 6
+========================
+
+If you would rather use something actively developed for Plasma 6 than a port of an unmaintained
+project, these two are worth knowing about:
+
+- **[krema](https://github.com/isac322/krema)** — a standalone dock for Plasma 6 written in C++,
+  describing itself as a spiritual successor to Latte Dock. Wayland and layer-shell oriented, so it is
+  the closest equivalent to what this repository is: a separate dock process rather than a panel
+  widget.
+- **[WaveTask](https://github.com/vickoc911/org.vicko.wavetask)** — a Plasma *applet*, not a separate
+  dock. It is an icons-only task manager with macOS-style parabolic zoom that you add to an ordinary
+  Plasma panel. If the zoom effect is the part of Latte you actually want, this gets you it without
+  running a second shell process.
+
+Neither is affiliated with this fork; check their own documentation for requirements and status.
+
+
 Development
 ============
 
