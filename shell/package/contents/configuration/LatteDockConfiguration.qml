@@ -33,6 +33,17 @@ Loader {
         width: appliedWidth
         height: appliedHeight
 
+        //! This window is a plain QQuickView, so Kirigami.Theme falls back to the
+        //! application colour scheme while the Plasma Components controls inside it
+        //! keep drawing their KSvg backgrounds from the Plasma desktop theme. When the
+        //! two disagree - a dark desktop theme with a light colour scheme - the result
+        //! is dark text on dark buttons. Pin Kirigami to the Plasma theme's own colours
+        //! so both halves match; before the Plasma 6 port this file read the very same
+        //! colours through the old `theme` (PlasmaCore.Theme) context object.
+        Kirigami.Theme.inherit: false
+        Kirigami.Theme.textColor: themeExtended ? themeExtended.defaultTheme.textColor : Kirigami.Theme.textColor
+        Kirigami.Theme.backgroundColor: themeExtended ? themeExtended.defaultTheme.backgroundColor : Kirigami.Theme.backgroundColor
+
         readonly property bool basicLevel: !advancedLevel
         readonly property bool advancedLevel: universalSettings.inAdvancedModeForEditSettings
 

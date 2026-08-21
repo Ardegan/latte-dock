@@ -27,6 +27,15 @@ Loader {
     sourceComponent: FocusScope {
         id: dialog
 
+        //! See LatteDockConfiguration.qml: this is a plain QQuickView, so Kirigami
+        //! resolves colours from the application scheme while the Plasma Components
+        //! inside draw KSvg backgrounds from the Plasma desktop theme. Pin Kirigami to
+        //! the Plasma theme so a dark theme with a light colour scheme does not end up
+        //! painting dark text on dark buttons.
+        Kirigami.Theme.inherit: false
+        Kirigami.Theme.textColor: themeExtended ? themeExtended.defaultTheme.textColor : Kirigami.Theme.textColor
+        Kirigami.Theme.backgroundColor: themeExtended ? themeExtended.defaultTheme.backgroundColor : Kirigami.Theme.backgroundColor
+
         width: typeSettings.width + Kirigami.Units.smallSpacing * 4
         height: typeSettings.height + Kirigami.Units.smallSpacing * 4
         Layout.minimumWidth: width
