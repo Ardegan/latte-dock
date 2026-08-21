@@ -1,5 +1,74 @@
 #**CHANGELOG**#
 
+#### Version 0.10.240 (qt6-port branch) — Qt 6 / KF6 / Plasma 6
+
+Port of Latte Dock to Qt 6, KDE Frameworks 6 and Plasma 6, continuing from upstream's
+`work/plasma6` branch, which compiled but had never been run. Developed and verified on
+TUXEDO OS 24.04 (Ubuntu 24.04 base), Plasma 6.6.5, KF6 6.24.0, Qt 6.10.2, **Wayland**.
+X11 code paths still compile but are untested.
+
+**Build and infrastructure**
+* build against Qt 6.5+/KF6 6.0+/Plasma 6; `Qt::GuiPrivate` is a separate CMake package in Qt 6
+* new `install-qt6-deps.sh` with the verified Debian/Ubuntu dependency list
+* require `LayerShellQt`, used by the Wayland strut
+* vendor the taskmanager `Backend` as `org.kde.latte.private.tasks`: Plasma 6 no longer ships
+  `org.kde.plasma.private.taskmanager` as an importable QML module
+* restore the activity run-state API that plasma-activities dropped, by talking to
+  `org.kde.ActivityManager` over D-Bus. Activities can no longer be *stopped* on Plasma 6, so
+  `Monitor::canStopActivities()` reports that explicitly instead of silently doing nothing
+
+**QML migrations**
+* adopt the Plasma 6 split between `PlasmaQuick::AppletQuickItem` and `Plasma::Applet`
+* migrate the Svg family to `org.kde.ksvg`, `IconItem` to `LatteCore.IconItem`, `ColorScope` to
+  `Kirigami.Theme`, and `theme`/`units` context properties to Kirigami
+* port `QtQuick.Controls 1` usage to Controls 2; `ExclusiveGroup` was removed rather than converted
+* replace the inline GLSL shaders, which Qt 6 no longer accepts
+* port MPRIS media controls to `org.kde.plasma.private.mpris`; the `mpris2` data engine is gone, so
+  the controls in task tooltips and the context menu had been inert
+
+**Fixes — the dock itself**
+* fix the dock never appearing on screen: 149 `Connections { onFoo: }` handlers were silently dead
+  under Qt 6, one of which left the view parked off-screen for the whole session
+* hand the `LatteBridge` to applets again, restoring the parabolic zoom
+* fix task activation, so clicking an icon starts or raises the application
+* `Qt.MidButton` no longer exists — use `Qt.MiddleButton` for middle-click
+* fix the context menu freezing the dock, and restore the "Edit Dock" entry, which needs the
+  containmentaction plugin file named after its plugin id on Plasma 6
+* pin `Binding.restoreMode` to `RestoreNone` at 106 sites: Qt 6 changed the default, which silently
+  reset properties this code expects to persist — most visibly the clock vanishing while hovered
+* guard against dereferencing `m_windowManagement` before plasma-window-management binds, which
+  segfaulted on the first view construction
+* fix `CompactApplet` and the applet colorizer, and stop calling `KX11Extras::compositingActive()`
+  on Wayland, which warned 168 times per startup
+
+**Fixes — Wayland**
+* fix window tracking discarding every window: `WindowId` is a `QByteArray` uuid on Wayland, and a
+  `wid.toInt() > 0` validity test emptied the tracker as fast as it filled. This is what made all
+  dodge visibility modes, the active/touching window colouring and "transparent when touching" inert
+* reserve struts through a wlr-layer-shell exclusive zone, so maximized windows respect the dock;
+  the legacy plasma-shell Panel role no longer produces a strut in KWin 6
+* rebuild the strut window when its view changes screen — a layer surface is bound to the output it
+  was created on, so the reservation used to stay on the primary screen
+* stop the transparent strut helper window swallowing pointer input, which left whichever dock item
+  sat at the centre of the dock completely dead
+* make window previews visible: Plasma 6's `PipeWireSourceItem` no longer sets `enabled`, so previews
+  were painted at zero opacity while the screencast ran perfectly happily
+* do not call `KX11Extras` off X11, including merely connecting to its signals
+
+**Fixes — configuration and edit mode**
+* make both settings UIs work again
+* fix combo boxes entirely: Qt 6 made `QQuickComboBox::pressed` read-only, so the popup never opened,
+  and a stale `tooltip` reference left an invisible button over every entry, eating the clicks
+* pin the config windows to the Plasma theme's colours, fixing dark text on dark buttons when the
+  desktop theme and the application colour scheme disagree
+* recompute the automatic icon size once its animation ends, so moving the max-length ruler back no
+  longer leaves items stuck at the shrunken size
+* preserve applet order when copying a view; screen clones could come out reversed, differently on
+  every run
+* fix Controls 1 leftovers in the shared components (`CheckBox`, `TextField`, `ComboBox`), the
+  `PopupPlacement` enum moving to `PlasmaExtras.Menu`, and `KWindowSystem` becoming a KF6 singleton —
+  the last of which stopped the widget explorer ("Add Widgets") loading at all
+
 #### Version 0.10.X (current development build)
 * optionally maximise panel size in presence of maximised windows (https://invent.kde.org/plasma/latte-dock/-/merge_requests/46)
 
