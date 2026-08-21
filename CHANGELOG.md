@@ -69,6 +69,18 @@ X11 code paths still compile but are untested.
   `PopupPlacement` enum moving to `PlasmaExtras.Menu`, and `KWindowSystem` becoming a KF6 singleton —
   the last of which stopped the widget explorer ("Add Widgets") loading at all
 
+**Startup diagnostics**
+* register the three `Types` enum holders as `Q_NAMESPACE` rather than `Q_GADGET`. Qt 6 classifies a
+  gadget as a value type, whose name must start lowercase, so each registration logged
+  `Invalid QML element name "Types"`. A namespace is not a value type and enum scoping is identical,
+  so `Latte::Types::X` and `LatteCore.Types.X` are both unchanged — no call site moved
+* stop warning about a view location that simply has not been configured yet; a view is
+  `Plasma::Types::Desktop` until its containment config is read, and three code paths are reached in
+  that state while it is being constructed
+* net effect with the `KX11Extras` guards above: startup warnings drop from 25 to 13, and none of the
+  remainder are Latte's — they come from the Plasma theme, plasma-workspace, xdg portals and
+  kuiserver, apart from the pre-existing upstream `inNormalState` binding loop
+
 #### Version 0.10.X (current development build)
 * optionally maximise panel size in presence of maximised windows (https://invent.kde.org/plasma/latte-dock/-/merge_requests/46)
 
