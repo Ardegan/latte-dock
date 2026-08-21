@@ -1,47 +1,105 @@
 Installation
 ============
 
-## Using installation script
+This branch targets **Qt 6 / KF6 / Plasma 6**. The Qt 5 dependency lists that used to be here no
+longer apply — building this tree against KF5 is not possible.
 
-**Before running the installation script you have to install the dependencies needed for compiling.**
+For the short version — dependencies, build, run — see [Build from source](./README.md#build-from-source)
+in the README. This file covers dependencies per distribution.
 
 
-### Kubuntu only
+Debian / Ubuntu / KDE neon / TUXEDO OS
+--------------------------------------
 
-```
-sudo add-apt-repository ppa:kubuntu-ppa/backports
-sudo apt update
-sudo apt dist-upgrade
-```
+Verified on Ubuntu 24.04 (TUXEDO OS 24.04.4). Use the bundled script, which carries the exact list:
 
-### Kubuntu and KDE Neon
-
-```
-sudo apt install cmake extra-cmake-modules qtdeclarative5-dev libqt5x11extras5-dev libkf5iconthemes-dev libkf5plasma-dev libkf5windowsystem-dev libkf5declarative-dev libkf5xmlgui-dev libkf5activities-dev build-essential libxcb-util-dev libkf5wayland-dev git gettext libkf5archive-dev libkf5notifications-dev libxcb-util0-dev libsm-dev libkf5crash-dev libkf5newstuff-dev libxcb-shape0-dev libxcb-randr0-dev libx11-dev libx11-xcb-dev kirigami2-dev libwayland-dev libwayland-client0 plasma-wayland-protocols libqt5waylandclient5-dev qtwayland5-dev-tools
+```bash
+./install-qt6-deps.sh
 ```
 
-### Arch Linux
+It installs:
 
 ```
-sudo pacman -Syu
-sudo pacman -S cmake extra-cmake-modules python plasma-framework plasma-desktop plasma-wayland-protocols
+qt6-base-dev qt6-declarative-dev qt6-wayland-dev
+libkf6archive-dev libkf6config-dev libkf6coreaddons-dev libkf6crash-dev
+libkf6dbusaddons-dev libkf6declarative-dev libkf6globalaccel-dev libkf6guiaddons-dev
+libkf6i18n-dev libkf6iconthemes-dev libkf6kio-dev libkf6newstuff-dev
+libkf6notifications-dev libkf6package-dev libkf6svg-dev libkf6windowsystem-dev
+libkf6xmlgui-dev libkirigami-dev
+libplasma-dev libplasmaactivities-dev libplasmaactivitiesstats-dev
+libksysguard-dev kwayland-dev liblayershellqtinterface-dev plasma-workspace-dev
 ```
 
-### Fedora/RHEL
-```
-sudo dnf install cmake extra-cmake-modules qt5-qtdeclarative-devel qt5-qtx11extras-devel kf5-kiconthemes-devel kf5-plasma-devel kf5-kwindowsystem-devel kf5-kdeclarative-devel kf5-kxmlgui-devel kf5-kactivities-devel gcc-c++ gcc xcb-util-devel kf5-kwayland-devel git gettext kf5-karchive-devel kf5-knotifications-devel libSM-devel kf5-kcrash-devel kf5-knewstuff-devel kf5-kdbusaddons-devel kf5-kxmlgui-devel kf5-kglobalaccel-devel kf5-kio-devel kf5-kguiaddons-devel kf5-kirigami2-devel kf5-kirigami-devel kf5-ki18n-devel qt5-qtwayland-devel plasma-wayland-protocols-devel wayland-devel
-``` 
+Two traps worth repeating:
 
-### openSUSE
+- `libplasma-dev` provides **both** `Plasma::Plasma` and `Plasma::PlasmaQuick`. The activities package
+  is `libplasmaactivities-dev`, Kirigami is `libkirigami-dev`, and KWayland is `kwayland-dev` — not the
+  `libkf6*-dev` names you would guess.
+- **Do not install `qt6-wayland-dev-tools`.** `qtwaylandscanner` ships in `qt6-base-dev-tools`, and the
+  older 6.9.2 package `Breaks:` against it, making the transaction unsatisfiable.
+
+You also need `cmake`, `extra-cmake-modules`, `git` and a C++20 compiler, which the script assumes are
+already present on a development machine.
+
+
+Other distributions
+-------------------
+
+Package names for Arch, Fedora and openSUSE are deliberately not listed here: the previous lists were
+Qt 5 and had gone stale, and publishing guesses that have never been built is worse than publishing
+nothing.
+
+Instead, here is what the build actually looks for. Install whichever packages provide these CMake
+config files on your distribution — if `cmake` configures, you have them all.
+
+**Qt 6** (>= 6.5) — components `DBus`, `Gui`, `Qml`, `Quick`, plus `GuiPrivate` (a separate CMake
+package in Qt 6, needed for `QX11Info` under `HAVE_X11`), and `Qt6WaylandClient`.
+
+**KDE Frameworks 6** (>= 6.0) — components:
+
 ```
-sudo zypper install cmake extra-cmake-modules gcc-c++ gcc xcb-util-devel git gettext libSM-devel wayland-devel libQt5DBus-devel libQt5Gui-devel qtdeclarative-imports-provides-qt5 libqt5-qtdeclarative-devel knotifications-devel kactivities5-devel karchive-devel kcoreaddons-devel kcoreaddons-devel kguiaddons-devel kcrash-devel kdbusaddons-devel kdeclarative-devel kglobalaccel-devel kirigami2-devel ki18n-devel kiconthemes-devel kio-devel knewstuff-devel plasma-framework-devel kwayland-devel plasma5-workspace-devel kitemmodels-devel libqt5-qtx11extras-devel plasma-wayland-protocols libqt5-qtwayland
+Archive  Config  CoreAddons  Crash  DBusAddons  Declarative  GlobalAccel  GuiAddons
+I18n  IconThemes  KIO  Kirigami  NewStuff  Notifications  Package  Svg
+WindowSystem  XmlGui
 ```
 
-### Building and Installing
-
-**Now you can run the installation script.**
+**Plasma and friends:**
 
 ```
+ECM (extra-cmake-modules)   Plasma            PlasmaQuick
+PlasmaActivities            PlasmaActivitiesStats
+KWayland                    PlasmaWaylandProtocols (>= 1.6)
+LayerShellQt                LibTaskManager     LibNotificationManager
+KSysGuard                   QtWaylandScanner   Wayland (Client)
+X11 / XCB (XCB RANDR SHAPE EVENT, libSM)
+```
+
+Notes on the less obvious ones:
+
+- **LayerShellQt** is required. Plasma 6 reserves screen space through wlr-layer-shell exclusive
+  zones, and the dock's Wayland strut depends on it. On Debian it is `liblayershellqtinterface-dev`.
+- **LibTaskManager**, **LibNotificationManager** and **KSysGuard** come from plasma-workspace; on
+  Debian a single `plasma-workspace-dev` covers all three.
+- **PlasmaActivitiesStats** is needed by the taskmanager backend vendored into
+  `plasmoid/plugin/taskmanager`.
+
+
+Building and installing
+-----------------------
+
+```bash
+cmake -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DKDE_L10N_AUTO_TRANSLATIONS=OFF
+cmake --build build -j$(nproc)
+sudo cmake --install build
+```
+
+or, equivalently, the bundled script:
+
+```bash
 sh install.sh
 ```
 
+Then run `latte-dock --replace --clear-cache`. Installing to `/usr` matters: Plasma loads Latte's
+KPackages by installed plugin id, not from the source tree.
+
+To remove it again: `sh uninstall.sh` (uses `build/install_manifest.txt`).

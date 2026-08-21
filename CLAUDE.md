@@ -12,7 +12,9 @@ KPackage/QML packages (shell, containment, tasks plasmoid, indicators) that Plas
 **Branch matters.** `master` is the Qt5/KF5/Plasma5 line and is effectively unmaintained upstream (its
 CI was dropped in 2026 because Plasma 5 CI no longer exists). Active work happens on **`qt6-port`**
 (local, based on upstream `origin/work/plasma6` merged with `origin/master`), where the dock builds and
-runs on Plasma 6 — see "Qt6 port status". Nothing on `qt6-port` has been pushed anywhere.
+runs on Plasma 6 — see "Qt6 port status". `qt6-port` is a personal fork: it has never been pushed to
+the KDE upstream and is not intended to be, so its history has been rewritten freely. Do not assume
+its commit hashes are stable or that upstream branches share them.
 
 Stack on `qt6-port`: C++20 / Qt 6.5+ / KF6 6.0+ / Plasma 6. On `master`: C++17 / Qt 5.15 / KF5 5.88.
 Version is set in the top-level `CMakeLists.txt`
@@ -55,6 +57,11 @@ latte-dock --replace --clear-cache -d      # -d/--debug prints qDebug to stdout
 A Nix flake (`flake.nix` + `.envrc`) is checked in for pulling KF6 build deps; set
 `GENERATE_COMPILE_COMMANDS=1` in the environment to get `compile_commands.json`.
 
+`README.md` and `INSTALLATION.md` carry the user-facing version of the above: the verified
+environment table, the dependency list (`install-qt6-deps.sh` for Debian/Ubuntu, and the CMake
+packages to map for other distributions) and the build/run recipe. Keep them in step when the build
+requirements change — the dependency list has already gone stale once.
+
 There is **no test suite** and no lint target beyond qmllint. `./formatter.sh` runs `astyle` with
 `astylerc` (mozilla style, 4 spaces, `--align-pointer=name`) over `*.cpp`/`*.h` up to depth 3 — match
 existing formatting rather than reformatting untouched files.
@@ -75,10 +82,25 @@ User state lives in `~/.config/lattedockrc` (screens, universal settings) and `~
 
 ## Qt6 port status (`qt6-port` branch)
 
-**The dock builds, runs and renders on Plasma 6.** Verified on Qt 6.10.2 / KF6 6.24.0 /
-Plasma 6.6.5 (Wayland): a clean tree configures and builds with no errors, `latte-dock` starts, loads
-its layout, creates its view, and the Latte Tasks plasmoid and Plasma applets appear in it. Startup
-QML warnings are down to 16, of which 11 come from outside Latte.
+**The dock builds, runs and works on Plasma 6.** Verified on TUXEDO OS 24.04 (Ubuntu 24.04 base),
+Qt 6.10.2 / KF6 6.24.0 / Plasma 6.6.5, **Wayland**: a clean out-of-tree build configures and compiles
+with no errors, and the dock runs with no QML load errors.
+
+Exercised and working: rendering and the parabolic zoom, left/middle/right click, the task context
+menu, thin tooltips, window previews, MPRIS media controls, both settings dialogs, edit mode
+(max-length ruler, alignment controls, applet drag, all config tabs), multi-screen placement with
+per-output struts, per-activity layouts in *multiple* memory mode, and the
+AutoHide/DodgeActive/DodgeMaximized/DodgeAllWindows visibility modes.
+
+Startup emits roughly two dozen warnings with three views. Most are per-view, so the count scales
+with the number of docks - do not treat any absolute figure as a regression signal. Roughly half come
+from outside Latte (the Plasma theme's legacy `metadata.desktop`, plasma-workspace's toolbox, xdg
+portals, kuiserver); the Latte-side ones are the two QML issues listed below plus the `wrong location`
+and `KX11Extras::connectNotify` messages.
+
+**X11 is untested.** The X11 paths still compile and are guarded, but nothing here has been run under
+an X11 session; several fixes in this port are specifically about Wayland behaviour that X11 never
+hit (window tracking, struts, window thumbnails).
 
 The port started from upstream `origin/work/plasma6` (merged with `origin/master`); everything below
 this line was added on top of it, because upstream's branch compiled but had never been run.
@@ -348,12 +370,12 @@ a Controls 1 type; the rest were stale imports. Notable points if you touch this
 | Item | Notes |
 |---|---|
 | `inNormalState` binding loop (`VisibilityManager.qml`) | byte-identical to `master`, so pre-existing upstream design that Qt6 merely detects; untangling it means reworking the show/hide state machine |
-| `Invalid QML element name "Types"` (x3) | `Latte::Types` is a `Q_GADGET` enum namespace, which Qt6 classes as a value type and wants lowercase. Renaming would break 595 `LatteCore.Types.*` sites and the versioned `LatteBridge` API |
+| `Invalid QML element name "Types"` (once per view) | `Latte::Types` is a `Q_GADGET` enum namespace, which Qt6 classes as a value type and wants lowercase. Renaming would break 595 `LatteCore.Types.*` sites and the versioned `LatteBridge` API |
 | `ecm_find_qmlmodule` version literals | relaxed to non-REQUIRED; `qmlplugindump` is unreliable against the Plasma 6 modules and intermittently fails for modules that are present |
 | `KDE_COMPILERSETTINGS_LEVEL "5.84.0"` | left at the KF5 value |
+| `KX11Extras::connectNotify may only be used on X11` at startup | harmless but noisy, once per view. Something still connects to a `KX11Extras` signal unconditionally; `Latte::compositingActive()` and `InfoView::setOnActivities()` were the two call sites already guarded, so this is a third one that has not been tracked down |
 | Automatic icon size is recomputed only on discrete triggers | `AutoSize.updateIconSize()` drops any call arriving while `metrics.iconSize` is animating and relies on a later trigger to catch up. The `iconSizeAnimationEnded` retry fixes the max-length-ruler case, but any other input that changes size mid-animation can still lose a step |
 | Task order inside a cloned Latte Tasks applet can differ from the original | seen once while switching to *multiple* layouts memory mode: the clock was in the right place but the window buttons inside the tasks applet were in a different order on the clone. The clone's tasks applet had no `launchers59` key while the original did. Not reproducible on a normal start; the applet-level ordering bug it resembles is fixed separately |
-| Nothing beyond first render is exercised | Working: hover/zoom, left/middle/right click, the context menu, both settings dialogs, edit mode (max-length ruler, alignment controls, applet drag, all four config tabs), multi-screen placement with struts on the correct output for top and left edges, per-activity layouts in *multiple* memory mode (layouts load per activity, views are assigned to their layout's activity over plasma-window-management, and switching activity swaps the visible dock), and the AutoHide/DodgeActive/DodgeMaximized/DodgeAllWindows visibility modes, including AutoHide reveal-on-hover from the screen-edge strip |
 
 Because Debug builds define `QT_FATAL_WARNINGS`, any unresolved QML import aborts at runtime rather
 than warning — build Release when just running the dock.

@@ -1,8 +1,19 @@
-# <img src="logo.png" width="48"/> Latte Dock
+# <img src="logo.png" width="48"/> Latte Dock — Qt 6 / Plasma 6 port
 
 Latte is a dock based on plasma frameworks that provides an elegant and intuitive experience for your tasks and plasmoids. It animates its contents by using parabolic zoom effect and tries to be there only when it is needed.
 
 **"Art in Coffee"**
+
+> ### About this fork
+>
+> Upstream Latte Dock targets **Qt 5 / KF5 / Plasma 5** and is effectively unmaintained — its CI was
+> dropped once Plasma 5 CI disappeared. This branch (`qt6-port`) continues from upstream's
+> `work/plasma6` branch and makes the dock **build and actually run on Plasma 6**, which upstream's
+> branch never did.
+>
+> It is a personal port, not an official KDE release. There are no packages for it: you build it
+> from source. See [Build from source](#build-from-source) below, and
+> [Current state](#current-state) for what is known to work.
 
 Screenshots
 ===========
@@ -11,109 +22,144 @@ Screenshots
 
 ![](https://cdn.kde.org/screenshots/latte-dock/latte-dock_settings.png)
 
+
+Verified environment
+====================
+
+This branch is developed and tested on exactly this stack. Nearby versions will very likely work;
+these are the ones it is known to run on.
+
+| Component        | Verified version                          |
+| ---------------- | ----------------------------------------- |
+| OS               | TUXEDO OS 24.04.4 LTS (Ubuntu 24.04 base) |
+| Kernel           | 6.17                                      |
+| Session          | **Wayland** (KWin)                        |
+| Plasma           | 6.6.5                                     |
+| KDE Frameworks 6 | 6.24.0                                    |
+| Qt               | 6.10.2                                    |
+| CMake            | 4.2                                       |
+| Compiler         | GCC 13.3 (C++20)                          |
+
+**Wayland is the tested path.** The X11 code paths still compile and are guarded, but nothing in this
+port has been exercised under an X11 session — several fixes here are specifically about Wayland
+behaviour that X11 never hit (window tracking, struts, window thumbnails).
+
+Minimum versions enforced by the build: **Qt >= 6.5**, **KF6 >= 6.0**, **Plasma >= 6.0**,
+**PlasmaWaylandProtocols >= 1.6**.
+
+
+Build from source
+=================
+
+The whole procedure, from a clean checkout to a running dock. Every command below was run verbatim on
+the environment in the table above.
+
+### 1. Install the build dependencies
+
+**Debian / Ubuntu / KDE neon / TUXEDO OS** — a script with the exact package list is included:
+
+```bash
+./install-qt6-deps.sh
+```
+
+Two things that script exists to get right, and that trip people up if they resolve the names by hand:
+
+- `libplasma-dev` provides **both** `Plasma::Plasma` and `Plasma::PlasmaQuick`. The activities package
+  is `libplasmaactivities-dev`, Kirigami is `libkirigami-dev`, and KWayland is `kwayland-dev` — not the
+  `libkf6*-dev` names the pattern would suggest.
+- **Do not install `qt6-wayland-dev-tools`.** `qtwaylandscanner` now ships in `qt6-base-dev-tools`, and
+  the older 6.9.2 package `Breaks:` against it, making the transaction unsatisfiable.
+
+For other distributions, see [INSTALLATION.md](./INSTALLATION.md), which lists the CMake packages the
+build actually looks for so you can map them to your own package names.
+
+### 2. Build and install
+
+```bash
+cmake -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DKDE_L10N_AUTO_TRANSLATIONS=OFF
+cmake --build build -j$(nproc)
+sudo cmake --install build
+```
+
+The bundled `install.sh` does the same thing if you prefer (`sh install.sh`, or `sh install.sh Debug`).
+
+`/usr` is not optional in practice. Latte is a `Plasma::Corona` host plus a set of KPackages that
+Plasma loads **by installed plugin id**, not from the source tree, so the packages have to land
+somewhere Plasma searches.
+
+### 3. Run it
+
+```bash
+latte-dock --replace --clear-cache
+```
+
+- `--replace` takes over from an already running instance.
+- `--clear-cache` drops Plasma's QML disk cache. **Always pass it after reinstalling**, otherwise you
+  can keep running the previously cached QML and think your change did nothing.
+- Add `-d` / `--debug` to print debug output to stdout.
+
+After the first run, launch **Latte Dock** from the applications menu as usual.
+
+### Rebuilding after a change
+
+QML lives in installed KPackages, so editing a `.qml` in the source tree has **no effect** until you
+reinstall:
+
+```bash
+cmake --build build -j$(nproc) && sudo cmake --install build && latte-dock --replace --clear-cache
+```
+
+### Uninstall
+
+```bash
+sh uninstall.sh          # uses build/install_manifest.txt
+```
+
+### Note on Debug builds
+
+`-DCMAKE_BUILD_TYPE=Debug` adds a `qmllint` pass over every QML file **and defines
+`QT_FATAL_WARNINGS`**, which turns any QML warning into a hard abort at runtime. Useful for finding
+QML problems, unusable for daily driving. Build **Release** unless you specifically want that.
+
+
+Current state
+=============
+
+Working and exercised on Plasma 6 / Wayland: dock rendering and the parabolic zoom, left/middle/right
+click, the task context menu, thin tooltips and window previews, MPRIS media controls, both settings
+dialogs, edit mode (max-length ruler, alignment controls, applet drag, all config tabs), multi-screen
+placement with correct per-output struts, per-activity layouts in *multiple* memory mode, and the
+AutoHide / DodgeActive / DodgeMaximized / DodgeAllWindows visibility modes.
+
+Known remaining issues, and the developer-facing notes on the port, are kept in
+[CLAUDE.md](./CLAUDE.md).
+
+
 Development
 ============
 
-- Official KDE repo in which you can also send your MRs is located at: https://invent.kde.org/plasma/latte-dock
-- Bug reports can be sent at: https://bugs.kde.org/enter_bug.cgi?product=lattedock
+- Upstream KDE repo (Qt 5 line): https://invent.kde.org/plasma/latte-dock
+- Upstream bug reports: https://bugs.kde.org/enter_bug.cgi?product=lattedock
+
+Bugs in *this* port are not upstream's; please do not file them against KDE.
+
+[CLAUDE.md](./CLAUDE.md) documents the architecture, the Plasma 5 → 6 API split that drove most of the
+work, and the Qt 6 traps that fail silently. Read it before touching the QML.
 
 
-Installation
-============
+Packages from distributions
+===========================
 
-### Requirements
+The packages below are the **old Qt 5 / Plasma 5 release**, not this port. They are listed for
+reference only; installing one will not give you this branch.
 
-We need to use at least:
-
-- **Plasma >= 6.0**
-- **PlasmaWaylandProtocols >= 1.6.0**
-- **Qt >= 6.5**
-
-Minimum requirements:
-
-**tools:**
-```
- bash
-```
-
-**development packages for:**
-```
- QtCore >= 6.5.0
- QtGui >= 6.5.0
- QtDbus >= 6.5.0
-
- KF6Plasma >= 6.0
- KF6PlasmaQuick >= 6.0
- KF6Activities >= 6.0
- KF6CoreAddons >= 6.0
- KF6GuiAddons >= 6.0
- KF6DBusAddons >= 6.0
- KF6Declarative >= 6.0
- KF6Kirigami2 >= 6.0
- KF6Wayland >= 6.0
- KF6Package >= 6.0
- KF6XmlGui >= 6.0
- KF6IconThemes >= 6.0
- KF6KIO >= 6.0
- KF6I18n >= 6.0
- KF6Notifications >= 6.0
- KF6NewStuff >= 6.0
- KF6Archive >= 6.0
- KF6GlobalAccel >= 6.0
- KF6Crash >= 6.0
-
-  For X11 support:
-    KF6WindowSystem >= 6.0
-    libxcb
-    libxcb-randr
-    libxcb-shape
-    libSM
-```
-
-### From repositories
-
-#### Ubuntu/Debian
-
-- [Ubuntu](https://packages.ubuntu.com/bionic/latte-dock)
-
-#### OpenSUSE
-
+- [Ubuntu](https://packages.ubuntu.com/search?keywords=latte-dock)
 - [openSUSE](https://software.opensuse.org/package/latte-dock?search_term=latte+dock)
-- [psifidotos - OBS](https://software.opensuse.org//download.html?project=home%3Apsifidotos&package=latte-dock)
-
-#### Fedora
-
 - [Fedora](https://koji.fedoraproject.org/koji/packageinfo?packageID=24229)
-
-#### Arch Linux
-
 - [Arch Linux](https://aur.archlinux.org/packages/latte-dock)
-
-#### Gentoo
-
 - [Gentoo](https://packages.gentoo.org/packages/kde-misc/latte-dock)
-
-#### Solus Project
-
-- [Solus](https://packages.solus-project.com/shannon/l/latte-dock/)
-
-#### Void Linux
-
 - [Void Linux](https://github.com/void-linux/void-packages/tree/master/srcpkgs/latte-dock)
-
-#### FreeBSD
 - [FreeBSD Port](https://www.freshports.org/deskutils/latte-dock/)
-
-See the [installation instructions](./INSTALLATION.md) for other Linux distributions or development builds
-
-## Run Latte-Dock
-
-Latte is now ready to be used by executing
-```
-latte-dock
-```
-
-or activating **Latte Dock** from the applications menu.
 
 
 Contributors
