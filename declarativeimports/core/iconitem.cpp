@@ -493,7 +493,13 @@ void IconItem::updateColors()
 //! a blurry mess. Falls back to 1.0 for anything degenerate.
 qreal IconItem::calculateContentScale(const QSize &size, int minCol, int minRow, int maxCol, int maxRow)
 {
-    static const qreal maxContentScale = 1.35;
+    //! Aim the visible content at a *fraction* of the cell rather than the whole of it.
+    //! Filling the cell edge to edge leaves no gap between neighbouring items, and because
+    //! contentAlphaThreshold deliberately ignores soft edges, the antialiased skirt then
+    //! spills past the measured box and neighbouring icons appear to touch or overlap.
+    static const qreal targetContentFill = 0.86;
+    static const qreal minContentScale = 0.75;
+    static const qreal maxContentScale = 1.30;
 
     if (maxCol < minCol || maxRow < minRow || size.width() <= 0 || size.height() <= 0) {
         return 1.0;
@@ -507,7 +513,9 @@ qreal IconItem::calculateContentScale(const QSize &size, int minCol, int minRow,
         return 1.0;
     }
 
-    return qBound(1.0, 1.0 / widest, maxContentScale);
+    //! Icons whose content already overflows the target are scaled *down* to it: equalizing
+    //! means every icon ends at the same visual size, not that every icon grows.
+    return qBound(minContentScale, targetContentFill / widest, maxContentScale);
 }
 
 qreal IconItem::contentScale() const
