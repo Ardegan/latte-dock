@@ -165,6 +165,12 @@ These produce no error and no visible symptom at the point of failure, so they c
   repaint. That looked exactly like a blur bug in `ViewPart::Effects`, but every startup call there
   takes the `clearEffects` branch and the final region is a correct `1114x20`. Suspect the strut, not
   the effects, when a band the height of `viewHeight - strutThickness` appears under the dock.
+- **Touching `KX11Extras` off X11 warns, including merely connecting to its signals.** KF6 logs
+  "may only be used on X11" from `connectNotify`, so a `connect(KX11Extras::self(), ...)` is enough
+  even if the signal can never fire. Guard with `KWindowSystem::isPlatformX11()`. Guarded so far:
+  `Latte::compositingActive()` (`apptypes.h`), `InfoView::setOnActivities()`,
+  `PlasmaExtended::Theme` and `ViewPart::Effects`. `app/wm/xwindowinterface.cpp` is exempt - it only
+  runs on X11.
 - **`WindowId` is a `QVariant`, numeric on X11 and a `QByteArray` uuid on Wayland.** Any
   `wid.toInt() > 0` validity test silently rejects every Wayland window; that single assumption in
   `Windows::cleanupFaultyWindows()` emptied the whole tracker as fast as it filled, which killed every
@@ -373,7 +379,6 @@ a Controls 1 type; the rest were stale imports. Notable points if you touch this
 | `Invalid QML element name "Types"` (once per view) | `Latte::Types` is a `Q_GADGET` enum namespace, which Qt6 classes as a value type and wants lowercase. Renaming would break 595 `LatteCore.Types.*` sites and the versioned `LatteBridge` API |
 | `ecm_find_qmlmodule` version literals | relaxed to non-REQUIRED; `qmlplugindump` is unreliable against the Plasma 6 modules and intermittently fails for modules that are present |
 | `KDE_COMPILERSETTINGS_LEVEL "5.84.0"` | left at the KF5 value |
-| `KX11Extras::connectNotify may only be used on X11` at startup | harmless but noisy, once per view. Something still connects to a `KX11Extras` signal unconditionally; `Latte::compositingActive()` and `InfoView::setOnActivities()` were the two call sites already guarded, so this is a third one that has not been tracked down |
 | Automatic icon size is recomputed only on discrete triggers | `AutoSize.updateIconSize()` drops any call arriving while `metrics.iconSize` is animating and relies on a later trigger to catch up. The `iconSizeAnimationEnded` retry fixes the max-length-ruler case, but any other input that changes size mid-animation can still lose a step |
 | Task order inside a cloned Latte Tasks applet can differ from the original | seen once while switching to *multiple* layouts memory mode: the clock was in the right place but the window buttons inside the tasks applet were in a different order on the clone. The clone's tasks applet had no `launchers59` key while the original did. Not reproducible on a normal start; the applet-level ordering bug it resembles is fixed separately |
 

@@ -57,13 +57,19 @@ void Effects::init()
     connect(m_view, &QQuickWindow::widthChanged, this, &Effects::updateMask);
     connect(m_view, &QQuickWindow::heightChanged, this, &Effects::updateMask);
     connect(m_view, &Latte::View::behaveAsPlasmaPanelChanged, this, &Effects::updateMask);
-    connect(KX11Extras::self(), &KX11Extras::compositingChanged, this, [&]() {
-        if (!Latte::compositingActive() && !m_view->behaveAsPlasmaPanel()) {
-            setMask(m_rect);
-        }
+    //! KX11Extras::compositingChanged can never fire off X11, and merely connecting to
+    //! it there logs "may only be used on X11" - once per view, because Effects is
+    //! constructed per view. PlasmaExtended::Theme already guards the same connection
+    //! the same way.
+    if (KWindowSystem::isPlatformX11()) {
+        connect(KX11Extras::self(), &KX11Extras::compositingChanged, this, [&]() {
+            if (!Latte::compositingActive() && !m_view->behaveAsPlasmaPanel()) {
+                setMask(m_rect);
+            }
 
-        updateMask();
-    });
+            updateMask();
+        });
+    }
 
     connect(this, &Effects::rectChanged, this, [&]() {
         if (!Latte::compositingActive() && !m_view->behaveAsPlasmaPanel()) {
