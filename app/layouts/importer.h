@@ -69,6 +69,11 @@ public:
     static void enableAutostart();
     static void disableAutostart();
     static bool isAutostartEnabled();
+    //! an autostart entry exists but its Exec= names a program that is not
+    //! there any more, e.g. because it was written by an installation at a
+    //! different prefix
+    static bool isAutostartBroken();
+    static QString autostartFilePath();
 
     static Importer::LatteFileVersion fileVersion(QString file);
 

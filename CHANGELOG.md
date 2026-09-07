@@ -68,6 +68,9 @@ X11 code paths still compile but are untested.
 * fix Controls 1 leftovers in the shared components (`CheckBox`, `TextField`, `ComboBox`), the
   `PopupPlacement` enum moving to `PlasmaExtras.Menu`, and `KWindowSystem` becoming a KF6 singleton —
   the last of which stopped the widget explorer ("Add Widgets") loading at all
+* repair a stale "Enable autostart during startup" entry instead of keeping it forever. The entry is
+  a copy of the installed `.desktop` file, so one written by an install at a different prefix keeps an
+  `Exec=` that no longer exists; the option kept reading as enabled while the dock never started
 
 **Startup diagnostics**
 * register the three `Types` enum holders as `Q_NAMESPACE` rather than `Q_GADGET`. Qt 6 classifies a

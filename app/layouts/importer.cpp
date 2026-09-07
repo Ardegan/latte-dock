@@ -21,14 +21,17 @@
 #include <QFile>
 #include <QLatin1String>
 #include <QRegularExpression>
+#include <QStandardPaths>
 
 // KDE
 #include <KTar>
 #include <KArchiveEntry>
 #include <KArchiveDirectory>
 #include <KConfigGroup>
+#include <KDesktopFile>
 #include <KLocalizedString>
 #include <KNotification>
+#include <KShell>
 
 
 enum SessionType
@@ -533,10 +536,29 @@ bool Importer::importHelper(QString fileName)
     return true;
 }
 
+QString Importer::autostartFilePath()
+{
+    return Latte::configPath() + "/autostart/org.kde.latte-dock.desktop";
+}
+
 bool Importer::isAutostartEnabled()
 {
-    QFile autostartFile(Latte::configPath() + "/autostart/org.kde.latte-dock.desktop");
+    QFile autostartFile(autostartFilePath());
     return autostartFile.exists();
+}
+
+bool Importer::isAutostartBroken()
+{
+    if (!isAutostartEnabled()) {
+        return false;
+    }
+
+    KDesktopFile autostartEntry(autostartFilePath());
+    //! Exec= may carry arguments, only the program itself can be checked
+    const QString program = KShell::splitArgs(autostartEntry.desktopGroup().readEntry("Exec", QString())).value(0);
+
+    //! findExecutable() accepts an absolute path as well as a plain program name
+    return program.isEmpty() || QStandardPaths::findExecutable(program).isEmpty();
 }
 
 void Importer::enableAutostart()
@@ -549,11 +571,12 @@ void Importer::enableAutostart()
         oldAutostartFile.remove();
     }
 
-    QFile autostartFile(Latte::configPath() + "/autostart/org.kde.latte-dock.desktop");
+    QFile autostartFile(autostartFilePath());
     QFile metaFile(standardPath("applications/org.kde.latte-dock.desktop", false));
 
-    if (autostartFile.exists()) {
-        //! if autostart file already exists, do nothing
+    if (autostartFile.exists() && !isAutostartBroken()) {
+        //! if a working autostart file already exists, do nothing and keep
+        //! whatever the user may have changed in it
         return;
     }
 
@@ -563,6 +586,13 @@ void Importer::enableAutostart()
         if (!autostartDir.exists()) {
             QDir configDir(Latte::configPath());
             configDir.mkdir("autostart");
+        }
+
+        if (autostartFile.exists()) {
+            //! a broken entry can not be repaired in place, QFile::copy() refuses
+            //! to overwrite, so it is replaced by a fresh copy of the installed one
+            qDebug() << "autostart entry is broken, recreating it from" << metaFile.fileName();
+            autostartFile.remove();
         }
 
         metaFile.copy(autostartFile.fileName());
@@ -578,7 +608,7 @@ void Importer::disableAutostart()
         oldAutostartFile.remove();
     }
 
-    QFile autostartFile(Latte::configPath() + "/autostart/org.kde.latte-dock.desktop");
+    QFile autostartFile(autostartFilePath());
 
     if (autostartFile.exists()) {
         autostartFile.remove();

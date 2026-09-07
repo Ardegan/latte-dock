@@ -87,6 +87,11 @@ void UniversalSettings::load()
 
         setAutostart(true);
         m_universalGroup.writeEntry("userConfiguredAutostart", true);
+    } else if (Layouts::Importer::isAutostartBroken()) {
+        //! an entry written by an installation at a different prefix keeps an Exec= that
+        //! is gone, which makes autostart silently do nothing while the option still
+        //! reads as enabled; recreate it from the installation that is running now
+        Layouts::Importer::enableAutostart();
     }
 
     //! init screen scales
