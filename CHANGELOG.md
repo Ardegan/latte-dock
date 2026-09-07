@@ -63,6 +63,12 @@ X11 code paths still compile but are untested.
   desktop theme and the application colour scheme disagree
 * recompute the automatic icon size once its animation ends, so moving the max-length ruler back no
   longer leaves items stuck at the shrunken size
+* make the parabolic zoom smooth again: `Kirigami.Icon` rounds its painted size down to the nearest
+  standard icon size, so the hovered icon held one size across the whole gap between two of them and
+  then jumped - measured with a 48px icon, it did not move at all from 48px to 63px and then grew 34%
+  in a single frame. Latte's own `IconItem`, used here before upstream moved tasks to
+  `Kirigami.Icon`, always rendered at the exact requested size, and the containment already forces
+  this off for Plasma applet icons for the same reason
 * preserve applet order when copying a view; screen clones could come out reversed, differently on
   every run
 * fix Controls 1 leftovers in the shared components (`CheckBox`, `TextField`, `ComboBox`), the

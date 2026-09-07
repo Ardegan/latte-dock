@@ -81,7 +81,16 @@ Item {
     Kirigami.Icon {
         id: taskIconItem
         anchors.fill: parent
-        //roundToIconSize: false
+
+        //! Kirigami.Icon rounds its *painted* size down to the nearest standard icon size by
+        //! default, so it holds one size across the whole gap between two of them and then
+        //! jumps. The parabolic zoom drives this item's size continuously, so rounding turns
+        //! the zoom into a staircase - measured with a 48px icon: the painted icon does not
+        //! move at all from 48px to 63px, then jumps 34% at 64px. Latte's own IconItem, used
+        //! here before Kirigami.Icon, always rendered at the exact requested size, and
+        //! ItemWrapper.qml already forces this off for Plasma applet icons for the same reason.
+        roundToIconSize: false
+
         source: decoration
         visible: !badgesLoader.active
 
@@ -180,7 +189,7 @@ Item {
                         height: taskIconItem.height
                         smooth: taskIconItem.smooth
                         source: taskIconItem.source
-                        //roundToIconSize: taskIconItem.roundToIconSize
+                        roundToIconSize: taskIconItem.roundToIconSize
                         active: taskIconItem.active
 
                         Loader{
