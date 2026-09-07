@@ -179,28 +179,43 @@ Item {
                 id: iconOverlay
                 anchors.fill: parent
                 invert: true
-                source: _overlayIcon
+                source: _overlayIconSource
                 maskSource: _overlayMask
 
-                Kirigami.Icon{
-                        id: _overlayIcon
+                //! The mask samples this item and stretches it across its own rect, so the
+                //! source has to keep the cell's geometry. That is why the padding
+                //! compensation sits on a *child* of the source rather than on the source
+                //! itself: a `scale` on the sampled item is ignored, and resizing it is
+                //! undone by that same stretch. Both were measured.
+                Item {
+                        id: _overlayIconSource
                         visible: false
                         width: taskIconItem.width
                         height: taskIconItem.height
-                        smooth: taskIconItem.smooth
-                        source: taskIconItem.source
-                        roundToIconSize: taskIconItem.roundToIconSize
-                        active: taskIconItem.active
 
-                        Loader{
-                            anchors.fill: parent
-                            active: plasmoid.configuration.forceMonochromaticIcons
-
-                            sourceComponent: ColorOverlay {
+                        Kirigami.Icon{
+                                id: _overlayIcon
                                 anchors.fill: parent
-                                color: latteBridge ? latteBridge.palette.textColor : "transparent"
-                                source: taskIconItem
-                            }
+                                smooth: taskIconItem.smooth
+                                source: taskIconItem.source
+                                roundToIconSize: taskIconItem.roundToIconSize
+                                active: taskIconItem.active
+
+                                //! taskIconItem is hidden while a badge is up and this copy is
+                                //! drawn in its place, so it has to equalize identically or the
+                                //! icon changes size as a badge appears and disappears.
+                                scale: taskIconContainer.iconContentScale
+
+                                Loader{
+                                    anchors.fill: parent
+                                    active: plasmoid.configuration.forceMonochromaticIcons
+
+                                    sourceComponent: ColorOverlay {
+                                        anchors.fill: parent
+                                        color: latteBridge ? latteBridge.palette.textColor : "transparent"
+                                        source: taskIconItem
+                                    }
+                                }
                         }
                 }
 

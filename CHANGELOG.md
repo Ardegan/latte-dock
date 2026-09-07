@@ -69,6 +69,11 @@ X11 code paths still compile but are untested.
   in a single frame. Latte's own `IconItem`, used here before upstream moved tasks to
   `Kirigami.Icon`, always rendered at the exact requested size, and the containment already forces
   this off for Plasma applet icons for the same reason
+* apply icon equalization to the badge render path too. A task showing a count, progress or audio
+  badge is drawn through an `OpacityMask` copy of the icon rather than the icon itself, so an
+  equalized icon changed size as a badge appeared. The mask stretches whatever it samples across its
+  own rect, so the compensation has to sit on a child of the sampled item - a transform on the
+  sampled item itself is ignored
 * preserve applet order when copying a view; screen clones could come out reversed, differently on
   every run
 * fix Controls 1 leftovers in the shared components (`CheckBox`, `TextField`, `ComboBox`), the
